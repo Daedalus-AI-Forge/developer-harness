@@ -38,7 +38,8 @@ usable by everyone — fidelity, states, accessibility — backed by evidence.
    hard-coded values where tokens exist are drift — a finding, not a nitpick.
 5. **Keep heuristics separate.** Heuristic findings are advisory and
    severity-ranked in their own labeled section, never blended into the
-   fidelity verdict.
+   fidelity verdict; the `ui-ux-pro-max` skill's review checklists, where
+   installed, may inform these advisory findings — never the verdict.
 6. **State what was not checked**, plainly.
 
 ## Deliverable

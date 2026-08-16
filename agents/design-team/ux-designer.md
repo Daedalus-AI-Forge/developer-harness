@@ -23,6 +23,13 @@ design-reviewer can verify it without asking back.
 
 ## Method
 
+Before authoring the spec, load the `frontend-design` skill (aesthetic
+direction, typography, avoiding templated defaults) and the `ui-ux-pro-max`
+skill (styles, palettes, font pairings, UX guidelines) where installed —
+both are external plugins, per the companion-skills note in this harness's
+AGENTS.md — and cite in the spec which guidance it followed; where absent,
+this Method stands alone.
+
 1. **Start from product direction.** Problem, personas, and priorities come
    from `<product-docs>` — consumed, not re-derived. A design that
    contradicts them is an escalation to raise, never a reinterpretation to

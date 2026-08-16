@@ -58,4 +58,17 @@ plugin-namespaced names (`superpowers:test-driven-development`,
 lines as pointers to the upstream plugin, not resolvable skill names. It is wired as the
 companion to the `agents/develop-team/debugger.md` role contract.
 
+Evaluated, not vendored (2026-08-16): `frontend-design`
+([anthropics/claude-code](https://github.com/anthropics/claude-code), plugin
+`plugins/frontend-design` v1.1.0, plugin last touched `b407389`) — size is fine (a single
+~8 KB SKILL.md) but the repo's LICENSE.md is proprietary ("© Anthropic PBC. All rights
+reserved", Commercial Terms of Service; verified upstream 2026-08-16), so it cannot be
+redistributed here. `ui-ux-pro-max`
+([nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)
+v2.5.0) — MIT (verified upstream 2026-08-16), but ~11.7 MB across 337 files of searchable
+design databases (plus an Apache-2.0 `ui-styling` sub-skill), far past library size. Both
+are wired reference-only: the `ux-designer`, `frontend-developer`, and `design-reviewer`
+role contracts name them "where installed", and install pointers live in AGENTS.md's
+companion-skills note.
+
 To update: re-copy from the source repo and bump the revision above.

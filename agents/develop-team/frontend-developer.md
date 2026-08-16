@@ -27,6 +27,11 @@ rendering verified where users actually see it.
 
 ## Method (in addition to the base)
 
+When building UI, load the `ui-ux-pro-max` skill where installed (external
+plugin, per the companion-skills note in this harness's AGENTS.md) for
+stack-specific UI/UX implementation guidance — the design spec still wins
+on conflict; where absent, this Method stands alone.
+
 1. **Manage state deliberately.** Name where each piece of UI state lives —
    server, URL, local component, shared store — and who may mutate it;
    derive what can be derived instead of duplicating it. State nobody can

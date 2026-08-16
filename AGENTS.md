@@ -129,6 +129,19 @@ a team (template: `rules/agents-md/teams-section.md`). The template ships five p
 teams — feature-build, design-review, bug-diagnosis, research-to-decision, legal-vetting —
 and `define-team` scaffolds custom ones.
 
+### Companion skills (external, not vendored)
+
+Two design-side skills are wired into roles by name but deliberately not copied into
+`skills/` — install them from their own sources where you want them:
+
+| Skill | Used by | Install | Why not vendored |
+| --- | --- | --- | --- |
+| `frontend-design` | `ux-designer` | Claude Code: `/plugin install frontend-design@claude-code-plugins` (Anthropic's official marketplace, [anthropics/claude-code](https://github.com/anthropics/claude-code)) | Proprietary licence — the source repo's LICENSE.md is "© Anthropic PBC. All rights reserved", Commercial Terms of Service — so it is not redistributable here. |
+| `ui-ux-pro-max` | `ux-designer`, `frontend-developer`, `design-reviewer` (advisory only) | `/plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill` then `/plugin install ui-ux-pro-max@ui-ux-pro-max-skill` ([repo](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill), MIT) | ~12 MB across ~337 files of searchable design databases — far past this repo's library size budget. |
+
+Both are load-before-writing references, not method gates; every role that names them
+degrades gracefully where they are absent.
+
 ## Guards
 
 `hooks/scripts/secret-scan.sh` scans staged additions (`git diff --cached`) for credential
