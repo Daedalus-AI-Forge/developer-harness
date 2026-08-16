@@ -1,0 +1,10 @@
+{
+  "name": "developer-harness",
+  "description": "Language conventions, engineering-method skills, review checklists, diagram skills, command wrappers, agent role templates, and guard hooks for any codebase.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Daedalus AI Forge"
+  },
+  "homepage": "https://github.com/daedalus-ai-forge/developer-harness",
+  "license": "MIT"
+}

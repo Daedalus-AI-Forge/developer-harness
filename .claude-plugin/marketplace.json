@@ -1,0 +1,13 @@
+{
+  "name": "developer-harness",
+  "owner": {
+    "name": "Daedalus AI Forge"
+  },
+  "plugins": [
+    {
+      "name": "developer-harness",
+      "source": "./",
+      "description": "Language conventions, engineering-method skills, review checklists, diagram skills, command wrappers, agent role templates, and guard hooks for any codebase."
+    }
+  ]
+}
