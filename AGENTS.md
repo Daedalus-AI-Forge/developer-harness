@@ -12,10 +12,10 @@ this repo or selecting a skill *from* it.
 
 ```
 developer-harness/
-├── skills/                  # 20 skills (SKILL.md format), one directory per skill
+├── skills/                  # 21 skills (SKILL.md format), one directory per skill
 │   ├── architect-shared/    #   shared resources for the two architect skills (NOT a skill)
 │   └── contracts/           #   review contracts for the architect skills (NOT a skill)
-├── commands/                # 8 thin /command wrappers around explicitly-invocable skills
+├── commands/                # 9 thin /command wrappers around explicitly-invocable skills
 ├── agents/                  # generic role contracts in five groups (+ _template.md + install guide)
 │   │                        #   root — coordination: product-owner, person-of-contact;
 │   │                        #     shared specialist: researcher
@@ -40,11 +40,11 @@ developer-harness/
 
 Invocation by tool: `/name` in Claude Code (`/developer-harness:name` when installed as the
 plugin) and Cursor; `$name` in Codex; OpenCode loads skills on demand through its native
-`skill` tool when the task matches a skill description. Eight skills are explicitly
+`skill` tool when the task matches a skill description. Nine skills are explicitly
 invocable and ship both a `commands/` wrapper and a Codex `default_prompt`:
 **tighten-types, contract-docstrings, architect-design-review, architect-codebase-review,
-mermaid-skill, gantt-roadmap, feature-build, define-team**. The rest are
-load-before-writing references that tools auto-select by description.
+mermaid-skill, gantt-roadmap, feature-build, define-team, systematic-debugging**. The
+rest are load-before-writing references that tools auto-select by description.
 
 ### Python (6 skills)
 
@@ -93,10 +93,11 @@ precedence over both.
 | Implementing C# / Unity code | `csharp-developer` | Vendored capability reference: async/await, DI, LINQ, records, analyzers, memory. Fit note inside: for non-web projects (Unity, desktop) take the language craft, discard the ASP.NET/EF architecture opinions. |
 | Implementing Java | `java-architect` | Vendored capability reference: modern Java, concurrency, module/service structure, JVM performance. Fit note inside: upstream assumes Maven/Spring; your build tool and framework choices win. |
 
-### Method / review (2 skills)
+### Method / review (3 skills)
 
 | You are doing | Skill | Why / when |
 | --- | --- | --- |
+| Diagnosing any bug, test failure, or unexpected behavior | `systematic-debugging` | Companion to the `debugger` role — load before proposing any fix. Four-phase gate (root cause → pattern → hypothesis → implementation); no fixes without root-cause investigation. Vendored from obra/superpowers. |
 | Gating a design spec BEFORE building | `architect-design-review` | Reads a spec, generates Mermaid architecture diagrams, evaluates against architecture principles, writes an HTML report to `docs/architecture/review/`. Never reviews existing code. |
 | Auditing an EXISTING codebase | `architect-codebase-review` | Explores the code, produces current-state diagrams, evaluates, proposes improvements with revised diagrams, writes an HTML report. Never evaluates design specs. |
 
@@ -267,7 +268,7 @@ Hard rules when editing anything in this repo:
    the `VENDOR-LICENSE-*.txt` files must be preserved.
 4. **OpenAI sidecar per skill.** Every skill directory carries
    `agents/openai.yaml` with `interface.display_name` and `interface.short_description`;
-   add `default_prompt` only for explicitly-invocable skills (the eight listed above),
+   add `default_prompt` only for explicitly-invocable skills (the nine listed above),
    never for load-before-writing references.
 5. **English only.** All content in this repo is written in English.
 6. **Keep the consumption docs true.** Adding or changing a harness class means updating

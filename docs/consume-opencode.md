@@ -25,6 +25,10 @@ Caveat: the two architect skills depend on the sibling dirs
 installers may skip them) — when vendoring selectively, copy those two dirs
 alongside.
 
+Vendored skills include `systematic-debugging` (from obra/superpowers) —
+OpenCode cannot read Claude Code plugins, so this vendored copy is the
+OpenCode path to that skill.
+
 ## Commands (copy)
 
 For explicit invocation, copy the wrappers into `.opencode/commands/`

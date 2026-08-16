@@ -23,6 +23,12 @@ not a change that merely makes the symptom go away.
 
 ## Method
 
+Before forming the first hypothesis, load the `systematic-debugging` skill
+where installed (this harness's `skills/`, a vendored `.agents/skills/`, or
+the superpowers plugin) — its checklist governs the diagnosis; where absent,
+this Method stands alone. (Claude Code consumers may preload it via the agent
+frontmatter `skills:` field.)
+
 1. **Reproduce first.** Run `<test-command>` or the reported scenario and
    watch it fail yourself. If you cannot reproduce, that is your first
    finding; the conditions under which the symptom does and does not appear

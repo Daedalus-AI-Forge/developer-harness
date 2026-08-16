@@ -27,7 +27,10 @@ Every skill ships an OpenAI sidecar (`skills/<name>/agents/openai.yaml`) with
 picker — plus a `default_prompt` on the explicitly-invocable skills
 (tighten-types, contract-docstrings, architect-design-review,
 architect-codebase-review, mermaid-skill, gantt-roadmap, feature-build,
-define-team).
+define-team, systematic-debugging). Vendored skills include
+`systematic-debugging` (from obra/superpowers) — invoke `$systematic-debugging`
+when debugging starts; Codex cannot read Claude Code plugins, so this vendored
+copy is the Codex path to that skill.
 
 Caveat: our marketplace entry points at the repo root (`"path": "."`); the
 official examples only show `./plugins/<name>` subdirectory paths, so the

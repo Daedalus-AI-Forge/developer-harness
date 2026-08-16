@@ -20,11 +20,13 @@ Two vendoring shapes are in use, and the difference matters when auditing:
 | `csharp-developer` | VoltAgent/awesome-claude-code-subagents | `categories/02-language-specialists/csharp-developer.md` | MIT | `947b44ca0c58d606b084e9cb1a2389335b49278b` | converted | 2026-07-27 |
 | `typescript-pro` | VoltAgent/awesome-claude-code-subagents | `categories/02-language-specialists/typescript-pro.md` | MIT | `947b44ca0c58d606b084e9cb1a2389335b49278b` | converted | 2026-07-27 |
 | `architect-design-review` + `architect-codebase-review` + `architect-shared/` + `contracts/` | [sirius-zuo/architect-skills](https://github.com/sirius-zuo/architect-skills) | whole repo minus `tests/`, `RUNS.md`, assets (its own `install.sh`) | MIT | `2513f0f92297e8813f03d1e31c5a075372152133` | verbatim (4 sibling dirs — skills reference `../architect-shared/`) | 2026-08-02 |
+| `systematic-debugging` | [obra/superpowers](https://github.com/obra/superpowers) | `skills/systematic-debugging` | MIT | `b36e0829c6d0140e93cfef2ca599b1b07d4a7797` | verbatim | 2026-08-16 |
 
 Licence texts retained as required: `VENDOR-LICENSE-pm-claude-skills-MIT.txt`,
 `VENDOR-LICENSE-agents365-mermaid-MIT.txt`,
 `VENDOR-LICENSE-voltagent-awesome-claude-code-subagents-MIT.txt`,
-`VENDOR-LICENSE-architect-skills-MIT.txt`.
+`VENDOR-LICENSE-architect-skills-MIT.txt`,
+`VENDOR-LICENSE-obra-superpowers-MIT.txt`.
 
 `architect-skills` pre-install content review (2026-08-02): no egress or exec in any
 installed file (`install.sh` is plain `cp -r` and is not itself installed); both SKILL.md files
@@ -43,5 +45,17 @@ Why vendored rather than installed as plugins: `pm-claude-skills` exposes 96 plu
 skills (too coarse — we want one skill), and `Agents365-ai/mermaid-skill` ships no
 `.claude-plugin/marketplace.json` at all. Prefer the plugin route when a well-scoped plugin
 exists.
+
+`systematic-debugging` (2026-08-16): the six runtime files were taken (`SKILL.md`,
+`root-cause-tracing.md`, `defense-in-depth.md`, `condition-based-waiting.md`,
+`condition-based-waiting-example.ts`, `find-polluter.sh`); upstream's authoring artifacts
+(`CREATION-LOG.md`, `test-*.md` pressure-test scenarios) were deliberately skipped. All
+copied files verified byte-identical to upstream revision `b36e082` by git blob hash.
+Local modifications: none to any body; `license` + `metadata.source` fields added to the
+SKILL.md frontmatter (house convention). The body references two sibling skills by their
+plugin-namespaced names (`superpowers:test-driven-development`,
+`superpowers:verification-before-completion`) which are not vendored here — treat those
+lines as pointers to the upstream plugin, not resolvable skill names. It is wired as the
+companion to the `agents/develop-team/debugger.md` role contract.
 
 To update: re-copy from the source repo and bump the revision above.
