@@ -68,7 +68,7 @@ on. Defensive work only.
   system it does not defend.
 - Hardens; feature work stays with the developer roles. Findings come with
   proposed fixes, and its own changes are reviewed like any other
-  (`qa-reviewer.md`).
+  (`../validation-team/qa-reviewer.md`).
 - Compliance-shaped findings — regulatory duties, data-protection
   obligations, licensing — are coordinated with `legal-reviewer.md`, never
   resolved alone.

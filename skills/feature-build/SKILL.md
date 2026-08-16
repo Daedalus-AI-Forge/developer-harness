@@ -15,9 +15,9 @@ the way in or the adversarial verification on the way out.
 ## Roles and execution modes
 
 Three role contracts drive the pipeline (see `agents/` in this harness):
-`tech-lead.md` (stages 1 and 3), the implementing agent (stage 2 — the
-default agent, under the repo's `## Engineering discipline`), and
-`qa-reviewer.md` (stage 4).
+`develop-team/tech-lead.md` (stages 1 and 3), the implementing agent
+(stage 2 — the default agent, under the repo's `## Engineering
+discipline`), and `validation-team/qa-reviewer.md` (stage 4).
 
 - **Tools with subagent support:** run each stage as its own subagent with a
   fresh context and the stage's role contract loaded — the reviewer must not

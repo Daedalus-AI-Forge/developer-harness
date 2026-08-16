@@ -60,8 +60,8 @@ convenience.
 ## Boundaries
 
 - The developer boundaries apply: implements but never approves its own
-  work (`qa-reviewer.md`); design questions go to the tech lead; gates are
-  never weakened.
+  work (`../validation-team/qa-reviewer.md`); design questions go to the
+  tech lead; gates are never weakened.
 - Never runs destructive migrations or backfills against shared or
   production data on its own authority.
 - Never decides retention, consent, or compliance questions — those carry

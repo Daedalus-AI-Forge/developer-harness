@@ -47,8 +47,8 @@ stage, and never move work forward on an incomplete handoff.
 
 - **Members:** tech-lead → `agents/develop-team/tech-lead.md` · implementer
   → the default agent under `## Engineering discipline` · qa-reviewer →
-  `agents/develop-team/qa-reviewer.md`. Routing is the consuming tool's own
-  delegation.
+  `agents/validation-team/qa-reviewer.md`. Routing is the consuming tool's
+  own delegation.
 - **Chain:** plan gate (tech-lead) → implement (implementer, TDD) →
   design-conformance review (tech-lead) → verification (qa-reviewer).
   Executable step-by-step via the `feature-build` skill.

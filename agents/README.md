@@ -3,8 +3,8 @@
 Generic, project-agnostic subagent **role contracts**: markdown files with YAML
 frontmatter that define a role's bindings, mission, method, deliverable, and
 boundaries. Roles are grouped by team: the coordination pair stays at this
-root, and the rest live in `project-control/`, `develop-team/`, and
-`design-team/`.
+root, and the rest live in `project-control/`, `develop-team/`,
+`design-team/`, and `validation-team/`.
 
 ## Shipped roles
 
@@ -32,8 +32,9 @@ delivery, legal exposure, research.
 
 ### develop-team/
 
-The roles that build and verify software: the design gate, the implementation
-layers, root-causing, and adversarial verification.
+The roles that build software: the design gate, the implementation layers,
+and root-causing. The done-verdict on what they build lives in
+`validation-team/`.
 
 | Role | Delegate when |
 | --- | --- |
@@ -45,18 +46,17 @@ layers, root-causing, and adversarial verification.
 | [`mobile-developer.md`](develop-team/mobile-developer.md) | Mobile app work — the base plus platform lifecycle and background-execution constraints, offline-first data, permissions/privacy UX, app-store review discipline, device evidence, bundle/battery budgets. |
 | [`data-engineer.md`](develop-team/data-engineer.md) | Data platform work — schema/migration custody, idempotent replayable pipelines, data-quality checks as code, PII discipline with lineage, storage/query cost awareness. |
 | [`security-engineer.md`](develop-team/security-engineer.md) | Defensive security — threat modeling on new surfaces, secrets hygiene, supply-chain vetting, least-privilege and trust-boundary review; reviews and hardens, never builds offensive tooling. |
-| [`qa-reviewer.md`](develop-team/qa-reviewer.md) | Adversarial review of a diff, PR, or "done" claim — runs the tests, reads the output, hunts silent failures; never implements. |
 | [`debugger.md`](develop-team/debugger.md) | Any bug, regression, flaky test, or unexplained behavior — finds root cause with evidence; proposes fixes, applies them only when explicitly asked. |
 
 ### design-team/
 
-The roles that specify, steward, and verify the designed experience — specs
-in, verdicts and audits out; none of them edits production code.
+The roles that specify and steward the designed experience — specs and
+audits out; none of them edits production code. The experience verdict on
+the built UI lives in `validation-team/`.
 
 | Role | Delegate when |
 | --- | --- |
 | [`ux-designer.md`](design-team/ux-designer.md) | Design-spec authoring — flows, per-screen states (empty/loading/error/first-run included), interaction behavior, and visual intent, precise enough that frontend-developer can implement and design-reviewer can verify without asking back. |
-| [`design-reviewer.md`](design-team/design-reviewer.md) | Review of a built UI against its design spec — fidelity state-by-state, accessibility with executed checks plus labeled judgment, design-system conformance; experience verdict only — functional correctness stays with qa-reviewer. |
 | [`content-designer.md`](design-team/content-designer.md) | Interface language — labels, errors, empty states, a terminology glossary as source of truth, audits of the strings the code actually ships; legal-sounding copy routes to `legal-reviewer`. |
 | [`design-system-steward.md`](design-team/design-system-steward.md) | Design-system custody — tokens/components/conventions in one source of truth, drift audits across the code, additions gated against stated need; reports drift, never patches product code. |
 | [`technical-artist.md`](design-team/technical-artist.md) | Opt-in, for real-time/3D/character products — asset budgets as gates, mechanical asset validation, the source-to-runtime pipeline documented, asset-touching code reviewed; validates and specifies, never authors art. |
@@ -66,6 +66,23 @@ Researched but deliberately not shipped: a ux-researcher role collides with
 visual/brand/motion/3d-craft roles have no honest text-agent deliverable —
 their reviewable fragments live in `ux-designer`, `design-reviewer`, and
 `technical-artist`.
+
+### validation-team/
+
+The roles that judge finished work — verdicts with executed evidence, never
+fixes. Validators live OUTSIDE the teams they judge, and the five verdicts
+(functional, experience, integration, performance, readiness) are
+independent — none substitutes for another. Across the group, a check that
+could not run yields unverified — never a pass: a missing or broken
+verifier is reported with the reason, not silently converted into approval.
+
+| Role | Delegate when |
+| --- | --- |
+| [`qa-reviewer.md`](validation-team/qa-reviewer.md) | Adversarial review of a diff, PR, or "done" claim — runs the tests, reads the output, hunts silent failures; never implements. |
+| [`design-reviewer.md`](validation-team/design-reviewer.md) | Review of a built UI against its design spec — fidelity state-by-state, accessibility with executed checks plus labeled judgment, design-system conformance; experience verdict only — functional correctness stays with qa-reviewer. |
+| [`integration-validator.md`](validation-team/integration-validator.md) | A verdict on whether independently built parts work as one system — the contract under test identified, the real seam exercised end-to-end (never mocked), contract-corpus drift and seam failure modes probed; judges the seam, never patches either side. |
+| [`performance-validator.md`](validation-team/performance-validator.md) | Performance verdicts against explicit budgets — reproducible measurements (medians and tails) compared to budget and baseline; no budget or no measurement means no verdict; proposes optimization targets, never implementations. |
+| [`release-validator.md`](validation-team/release-validator.md) | Ship-readiness of the actual release artifact — built and smoke-tested, checklist walked, every claim traced to a merged change and its passing test, rollback path known before ship; judges readiness, never cuts, deploys, or times the release. |
 
 ## Standalone vs team use
 
@@ -87,18 +104,26 @@ The groups map to how the roles compose:
 - **develop-team/** — `developer` is the generic base;
   `frontend-developer`, `backend-developer`, `mobile-developer`,
   `data-engineer`, `devops-engineer`, and `security-engineer` cover one
-  layer's concerns each, while `tech-lead` gates, `debugger` root-causes,
-  and `qa-reviewer` verifies. Language expertise stays in skills: a
+  layer's concerns each, while `tech-lead` gates and `debugger`
+  root-causes; the done-verdict comes from `validation-team/`'s
+  `qa-reviewer`. Language expertise stays in skills: a
   language-specific dev role is composed per repo by pairing a dev role
   with the matching language skills (e.g. `dev-csharp` = `developer` + the
   `csharp-developer` skill) — see the example in
   [`../rules/agents-md/roles-section.md`](../rules/agents-md/roles-section.md).
 - **design-team/** — `ux-designer` specifies, `content-designer` owns the
-  words, `design-system-steward` governs the vocabulary, `design-reviewer`
-  verdicts the built experience (independently of `qa-reviewer`'s
-  functional verdict — neither substitutes for the other), and
-  `technical-artist` is the opt-in bridge to art pipelines. They hand specs
-  and findings to develop-team roles rather than editing code.
+  words, `design-system-steward` governs the vocabulary, and
+  `technical-artist` is the opt-in bridge to art pipelines; the experience
+  verdict on the built UI comes from `validation-team/`'s
+  `design-reviewer`. They hand specs and findings to develop-team roles
+  rather than editing code.
+- **validation-team/** — the five independent verdicts: `qa-reviewer`
+  (functional), `design-reviewer` (experience), `integration-validator`
+  (integration), `performance-validator` (performance), and
+  `release-validator` (readiness). Each is complete standalone — delegate
+  one artifact, get one verdict back — and all five sit outside the teams
+  they judge, so no builder approves its own work and no verdict
+  substitutes for another.
 
 Teams — which roles form a chain, what each stage hands the next, and who
 holds which authority — are declared per repo in a `## Teams` section

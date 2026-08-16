@@ -16,14 +16,16 @@ developer-harness/
 │   ├── architect-shared/    #   shared resources for the two architect skills (NOT a skill)
 │   └── contracts/           #   review contracts for the architect skills (NOT a skill)
 ├── commands/                # 7 thin /command wrappers around explicitly-invocable skills
-├── agents/                  # generic role contracts in four groups (+ _template.md + install guide)
+├── agents/                  # generic role contracts in five groups (+ _template.md + install guide)
 │   │                        #   root — coordination: product-owner, person-of-contact
 │   ├── project-control/     #   product-manager, project-manager, legal-reviewer, researcher
 │   ├── develop-team/        #   tech-lead, developer, frontend-developer, backend-developer,
 │   │                        #     devops-engineer, mobile-developer, data-engineer,
-│   │                        #     security-engineer, qa-reviewer, debugger
-│   └── design-team/         #   ux-designer, design-reviewer, content-designer,
-│                            #     design-system-steward, technical-artist
+│   │                        #     security-engineer, debugger
+│   ├── design-team/         #   ux-designer, content-designer, design-system-steward,
+│   │                        #     technical-artist
+│   └── validation-team/     #   qa-reviewer, design-reviewer, integration-validator,
+│                            #     performance-validator, release-validator
 ├── hooks/                   # guard scripts (scripts/secret-scan.sh) + wiring template (hooks.json)
 ├── rules/                   # AGENTS.md/CLAUDE.md section templates (## Roles, ## Teams, ## Guards, ## Engineering discipline, ## Project bindings, ## RACI)
 ├── docs/                    # consume-claude-code.md, consume-codex.md, consume-cursor.md, consume-opencode.md
@@ -137,8 +139,9 @@ move it to an ignored env file — never bypass the guard.
 
 ## Roles
 
-`agents/` ships twenty-one concrete generic roles in four groups: the coordination pair
-at the directory root, plus `project-control/`, `develop-team/`, and `design-team/`.
+`agents/` ships twenty-four concrete generic roles in five groups: the coordination pair
+at the directory root, plus `project-control/`, `develop-team/`, `design-team/`, and
+`validation-team/`.
 
 **Coordination root.** **product-owner** (owns the Product Goal and the single ordered
 backlog, authors acceptance criteria before work starts, accepts or returns delivered
@@ -174,29 +177,41 @@ data-quality checks as code, PII discipline with lineage, cost awareness),
 **devops-engineer** (pipeline custody, reproducible builds, secrets hygiene,
 release/rollback — never bypasses gates), and **security-engineer** (defensive only:
 threat modeling, secrets hygiene, supply-chain vetting, least-privilege and
-trust-boundary review — reviews and hardens, never builds offensive tooling); and two
-verifiers close the loop: **debugger** (root cause with evidence, proposes rather than
-fixes) and **qa-reviewer** (adversarial verification with executed evidence, never
-implements).
+trust-boundary review — reviews and hardens, never builds offensive tooling); and
+**debugger** closes the loop on failures (root cause with evidence, proposes rather
+than fixes). The done-verdict on develop-team's work comes from validation-team's
+qa-reviewer, not from anyone inside the team.
 
 **Design team (`design-team/`).** **ux-designer** (buildable design specs: flows,
 per-screen states including empty/loading/error/first-run, verifiable visual intent —
-consumes product direction, never edits production code), **design-reviewer** (verdict
-on whether the built experience matches the designed one: fidelity state-by-state,
-accessibility with executed checks plus labeled judgment, design-system conformance),
-**content-designer** (interface language: one name per concept in a terminology
-glossary, errors and empty states as first-class content, audits of the strings the
-code actually ships; legal-sounding copy routes to legal-reviewer),
-**design-system-steward** (tokens, components, and conventions in one source of truth;
-drift audits with canonical replacements; gated additions — reports drift, never
-patches product code), and **technical-artist** (opt-in, for real-time/3D/character
-products: asset budgets as gates, mechanical asset validation, the source-to-runtime
-pipeline documented — validates and specifies, never authors art). design-reviewer is
-independent of qa-reviewer: the experience verdict and the functional verdict are
-separate, and neither substitutes for the other. The group adds two bindings to the
+consumes product direction, never edits production code), **content-designer**
+(interface language: one name per concept in a terminology glossary, errors and empty
+states as first-class content, audits of the strings the code actually ships;
+legal-sounding copy routes to legal-reviewer), **design-system-steward** (tokens,
+components, and conventions in one source of truth; drift audits with canonical
+replacements; gated additions — reports drift, never patches product code), and
+**technical-artist** (opt-in, for real-time/3D/character products: asset budgets as
+gates, mechanical asset validation, the source-to-runtime pipeline documented —
+validates and specifies, never authors art). The experience verdict on the built UI
+comes from validation-team's design-reviewer. The group adds two bindings to the
 vocabulary: `<design-system>` (the design system's source of truth — tokens, component
 conventions, theme) and `<design-assets>` (source art/asset files, distinct from code
 and docs).
+
+**Validation team (`validation-team/`).** The five independent verdicts on finished
+work: **qa-reviewer** (functional — adversarial review with executed evidence, never
+implements), **design-reviewer** (experience — fidelity state-by-state, accessibility
+with executed checks plus labeled judgment, design-system conformance),
+**integration-validator** (integration — the contract under test identified, the real
+seam exercised end-to-end and never mocked, contract drift and seam failure modes
+probed), **performance-validator** (performance — reproducible measurements against
+explicit budgets; no budget or no measurement means no verdict), and
+**release-validator** (readiness — the actual artifact built and smoke-tested, claims
+traced to merged changes and passing tests, rollback path known). Validators live
+outside the teams they judge and none of the five verdicts substitutes for another.
+release-validator judges readiness only — whether the release is safely shippable —
+while release timing and value stay product-owner's call: readiness and value are
+different verdicts.
 
 **Language lives in skills; layer lives in roles; compose per repo.** A
 language-specific developer is a dev role plus the matching language skills — e.g.

@@ -70,8 +70,9 @@ thing.
   applied — the moment this role patches the work it judges, the gate is
   gone.
 - Conformance is not correctness: this role judges "is it the designed
-  thing"; whether it works is the verifier's call (see `qa-reviewer.md`),
-  and only the verifier declares work done.
+  thing"; whether it works is the verifier's call (see
+  `../validation-team/qa-reviewer.md`), and only the verifier declares work
+  done.
 - A design constraint that seems wrong is escalated to the caller with the
   trade-off spelled out — never silently violated, and never silently
   obeyed into a build known to be bad.

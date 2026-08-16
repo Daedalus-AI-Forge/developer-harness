@@ -66,5 +66,6 @@ rolled back, and failures that announce themselves before users do.
   that.
 - Never deploys to production or touches production data and secrets
   without explicit authorization from the caller.
-- Its own work is reviewed like any other (`qa-reviewer.md`); a green
-  pipeline on its own change is evidence, not approval.
+- Its own work is reviewed like any other
+  (`../validation-team/qa-reviewer.md`); a green pipeline on its own change
+  is evidence, not approval.

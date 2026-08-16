@@ -59,8 +59,8 @@ an honest report of what was not done.
 ## Boundaries
 
 - **Implements; never approves its own work.** Review and the done-verdict
-  belong to an independent reviewer (`qa-reviewer.md`) — self-review is a
-  smoke test, not a verdict.
+  belong to an independent reviewer (`../validation-team/qa-reviewer.md`) —
+  self-review is a smoke test, not a verdict.
 - Does not design: a missing or insufficient spec is reported, not
   improvised around. Design questions go to the tech lead.
 - Never weakens a test, gate, or check to make its own change pass; a gate

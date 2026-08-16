@@ -29,9 +29,11 @@ developer-harness/
 │                      #     legal-reviewer, researcher
 │                      #   develop-team/: tech-lead, developer (base), frontend-developer,
 │                      #     backend-developer, devops-engineer, mobile-developer,
-│                      #     data-engineer, security-engineer, qa-reviewer, debugger
-│                      #   design-team/: ux-designer, design-reviewer, content-designer,
+│                      #     data-engineer, security-engineer, debugger
+│                      #   design-team/: ux-designer, content-designer,
 │                      #     design-system-steward, technical-artist
+│                      #   validation-team/: qa-reviewer, design-reviewer,
+│                      #     integration-validator, performance-validator, release-validator
 ├── hooks/             # tool-neutral guard scripts + wiring template (hooks.json)
 ├── rules/             # AGENTS.md / CLAUDE.md section templates (roles, teams, guards, engineering discipline, project bindings, raci)
 ├── docs/              # per-tool consumption guides (consume-<tool>.md)
