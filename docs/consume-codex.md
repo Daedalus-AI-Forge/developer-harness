@@ -26,7 +26,7 @@ Every skill ships an OpenAI sidecar (`skills/<name>/agents/openai.yaml`) with
 `display_name` and `short_description` — that is what Codex shows in its skill
 picker — plus a `default_prompt` on the explicitly-invocable skills
 (tighten-types, contract-docstrings, architect-design-review,
-architect-codebase-review, mermaid-skill, gantt-roadmap).
+architect-codebase-review, mermaid-skill, gantt-roadmap, feature-build).
 
 Caveat: our marketplace entry points at the repo root (`"path": "."`); the
 official examples only show `./plugins/<name>` subdirectory paths, so the

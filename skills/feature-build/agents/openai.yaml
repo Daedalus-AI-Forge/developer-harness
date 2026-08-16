@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feature Build"
+  short_description: "Gated team pipeline for one scoped feature: tech-lead plan gate, TDD implementation, design-conformance review, adversarial verification."
+  default_prompt: "Use $feature-build to build this feature through the gated pipeline."

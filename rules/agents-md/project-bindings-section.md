@@ -27,3 +27,6 @@ proceeding.
 | `<lint-command>` | How to run lint / static checks | `ruff check .` |
 | `<docs-root>` | Human-facing documentation | `docs/` |
 | `<research-notes>` | Where research write-ups are filed | `docs/research/` |
+| `<product-docs>` | Where product direction docs live (briefs, personas, metric definitions) | `docs/product/` |
+| `<roadmap-docs>` | Where delivery plans, schedules, and risk registers live | `docs/roadmap/` |
+| `<team-log>` | Append-only team handoff log (see the `## Teams` template) | `docs/team-log.md` |

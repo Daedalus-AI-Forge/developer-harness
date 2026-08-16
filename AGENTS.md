@@ -12,13 +12,13 @@ this repo or selecting a skill *from* it.
 
 ```
 developer-harness/
-├── skills/                  # 18 skills (SKILL.md format), one directory per skill
+├── skills/                  # 19 skills (SKILL.md format), one directory per skill
 │   ├── architect-shared/    #   shared resources for the two architect skills (NOT a skill)
 │   └── contracts/           #   review contracts for the architect skills (NOT a skill)
-├── commands/                # 6 thin /command wrappers around explicitly-invocable skills
-├── agents/                  # generic role contracts (debugger, qa-reviewer, researcher) + template + install guide
+├── commands/                # 7 thin /command wrappers around explicitly-invocable skills
+├── agents/                  # generic role contracts: specialists (debugger, qa-reviewer, researcher) + management chain (tech-lead, project-manager, product-manager, project-controller) + template + install guide
 ├── hooks/                   # guard scripts (scripts/secret-scan.sh) + wiring template (hooks.json)
-├── rules/                   # AGENTS.md/CLAUDE.md section templates (## Roles, ## Guards, ## Engineering discipline, ## Project bindings)
+├── rules/                   # AGENTS.md/CLAUDE.md section templates (## Roles, ## Teams, ## Guards, ## Engineering discipline, ## Project bindings)
 ├── docs/                    # consume-claude-code.md, consume-codex.md, consume-cursor.md, consume-opencode.md
 ├── .claude-plugin/          # plugin.json + marketplace.json — repo root is a Claude Code plugin
 ├── .codex-plugin/           # plugin.json — repo root is also a Codex plugin
@@ -30,11 +30,11 @@ developer-harness/
 
 Invocation by tool: `/name` in Claude Code (`/developer-harness:name` when installed as the
 plugin) and Cursor; `$name` in Codex; OpenCode loads skills on demand through its native
-`skill` tool when the task matches a skill description. Six skills are explicitly
+`skill` tool when the task matches a skill description. Seven skills are explicitly
 invocable and ship both a `commands/` wrapper and a Codex `default_prompt`:
 **tighten-types, contract-docstrings, architect-design-review, architect-codebase-review,
-mermaid-skill, gantt-roadmap**. The rest are load-before-writing references that tools
-auto-select by description.
+mermaid-skill, gantt-roadmap, feature-build**. The rest are load-before-writing references
+that tools auto-select by description.
 
 ### Python (6 skills)
 
@@ -106,6 +106,15 @@ Mermaid can draw Gantt charts too — prefer `gantt-roadmap` when the point is t
 *schedule* (dates, dependencies, critical path); prefer `mermaid-skill` when the point is
 the *diagram and its export*.
 
+### Team orchestration (1 skill)
+
+| You are doing | Skill | Why / when |
+| --- | --- | --- |
+| Building one scoped feature end-to-end with gates | `feature-build` | Runs the team chain: tech-lead plan gate → TDD implementation → tech-lead design-conformance review → qa-reviewer verdict. One fix round per gate; only the verifier declares done. In tools with subagent support each stage runs as its own subagent with the role contract loaded; elsewhere one agent adopts the roles in sequence. |
+
+`feature-build` composes the roles in `agents/`; the same chain is declarable per repo as
+a team (template: `rules/agents-md/teams-section.md`).
+
 ## Guards
 
 `hooks/scripts/secret-scan.sh` scans staged additions (`git diff --cached`) for credential
@@ -121,19 +130,31 @@ move it to an ignored env file — never bypass the guard.
 
 ## Roles
 
-`agents/` ships three concrete generic roles — **debugger** (root cause with evidence,
-proposes rather than fixes), **qa-reviewer** (adversarial verification with executed
-evidence, never implements), **researcher** (cited primary sources, inference labeled as
-inference) — plus the role-contract **template** (`_template.md`: frontmatter + Mission /
-Method / Deliverable / Boundaries) for authoring more. The shipped roles reference
-project layout only through `<placeholder>` bindings (`<source-root>`, `<test-command>`,
-…) that a consuming repo resolves in a `## Project bindings` section of its AGENTS.md or
-CLAUDE.md — template in
+`agents/` ships seven concrete generic roles in two kinds. Standalone specialists:
+**debugger** (root cause with evidence, proposes rather than fixes), **qa-reviewer**
+(adversarial verification with executed evidence, never implements), **researcher**
+(cited primary sources, inference labeled as inference). Management chain: **tech-lead**
+(design gate before build, decomposition, design-conformance review — never implements),
+**project-manager** (goals into sequenced, owned tasks with schedule and risk — consumes
+product direction, never sets it), **product-manager** (problem framing, personas,
+prioritization rationale, success metrics — direction not delivery; legal exposure goes
+to human review), and **project-controller** (routes work through the team, one owner
+per task, handoff completeness, authority rules — coordinates, never does the
+specialists' work). The role-contract **template** (`_template.md`: frontmatter +
+Mission / Method / Deliverable / Boundaries) is for authoring more.
+
+The shipped roles reference project layout only through `<placeholder>` bindings
+(`<source-root>`, `<test-command>`, …) that a consuming repo resolves in a
+`## Project bindings` section of its AGENTS.md or CLAUDE.md — template in
 [rules/agents-md/project-bindings-section.md](rules/agents-md/project-bindings-section.md);
-a missing binding means the agent asks instead of guessing. Project-specific roles still
-belong in consuming repos (e.g. their `.claude/agents/`), and both kinds route through an
-AGENTS.md `## Roles` section for tools that cannot read markdown agents (Codex, OpenCode).
-See [agents/README.md](agents/README.md) and
+a missing binding means the agent asks instead of guessing. Multi-role chains — members,
+stage order, handoff record, authority rules, optional team memory — are declared per
+repo in a `## Teams` section (template in
+[rules/agents-md/teams-section.md](rules/agents-md/teams-section.md)); the
+`feature-build` skill ships one such chain as an executable process. Project-specific
+roles still belong in consuming repos (e.g. their `.claude/agents/`), and both kinds
+route through an AGENTS.md `## Roles` section for tools that cannot read markdown agents
+(Codex, OpenCode). See [agents/README.md](agents/README.md) and
 [rules/agents-md/roles-section.md](rules/agents-md/roles-section.md).
 
 ## Contributing to this harness
@@ -152,8 +173,8 @@ Hard rules when editing anything in this repo:
    the `VENDOR-LICENSE-*.txt` files must be preserved.
 4. **OpenAI sidecar per skill.** Every skill directory carries
    `agents/openai.yaml` with `interface.display_name` and `interface.short_description`;
-   add `default_prompt` only for explicitly-invocable skills (the six listed above), never
-   for load-before-writing references.
+   add `default_prompt` only for explicitly-invocable skills (the seven listed above),
+   never for load-before-writing references.
 5. **English only.** All content in this repo is written in English.
 6. **Keep the consumption docs true.** Adding or changing a harness class means updating
    the README consumption matrix and the relevant `docs/consume-<tool>.md`; a new

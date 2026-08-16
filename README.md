@@ -10,7 +10,7 @@ understand.
 
 ```
 developer-harness/
-├── skills/            # 18 Agent Skills (SKILL.md format) + 2 shared-resource dirs
+├── skills/            # 19 Agent Skills (SKILL.md format) + 2 shared-resource dirs
 │   │                  #   language: csharp-developer, java-architect, python-pro,
 │   │                  #     rust-engineer, typescript-pro
 │   │                  #   conventions: python-conventions, python-api-design,
@@ -19,11 +19,14 @@ developer-harness/
 │   │                  #   method/review: tighten-types, architect-design-review,
 │   │                  #     architect-codebase-review
 │   │                  #   diagrams/planning: mermaid-skill, gantt-roadmap
+│   │                  #   team orchestration: feature-build
 │   │                  #   shared resources (not skills): architect-shared/, contracts/
 ├── commands/          # thin /command wrappers around explicitly-invocable skills
-├── agents/            # generic subagent role contracts (debugger, qa-reviewer, researcher + template)
+├── agents/            # generic subagent role contracts: specialists (debugger, qa-reviewer,
+│                      #   researcher) + management chain (tech-lead, project-manager,
+│                      #   product-manager, project-controller) + template
 ├── hooks/             # tool-neutral guard scripts + wiring template (hooks.json)
-├── rules/             # AGENTS.md / CLAUDE.md section templates (roles, guards, engineering discipline, project bindings)
+├── rules/             # AGENTS.md / CLAUDE.md section templates (roles, teams, guards, engineering discipline, project bindings)
 ├── docs/              # per-tool consumption guides (consume-<tool>.md)
 └── .claude-plugin/    # plugin.json + marketplace.json (repo root = plugin root)
 ```
