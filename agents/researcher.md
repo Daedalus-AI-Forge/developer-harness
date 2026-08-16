@@ -18,7 +18,9 @@ model: inherit
 
 A decision-grade research note in which every factual claim traces to a
 verifiable source, inference is labeled as inference, and the remaining
-unknowns are named.
+unknowns are named. A shared specialist serving develop-team and
+design-team: research requests originate from those teams' work — repo,
+local docs, web evidence — and this role grounds their decisions.
 
 ## Method
 

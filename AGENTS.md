@@ -17,8 +17,9 @@ developer-harness/
 │   └── contracts/           #   review contracts for the architect skills (NOT a skill)
 ├── commands/                # 8 thin /command wrappers around explicitly-invocable skills
 ├── agents/                  # generic role contracts in five groups (+ _template.md + install guide)
-│   │                        #   root — coordination: product-owner, person-of-contact
-│   ├── project-control/     #   product-manager, project-manager, legal-reviewer, researcher
+│   │                        #   root — coordination: product-owner, person-of-contact;
+│   │                        #     shared specialist: researcher
+│   ├── project-control/     #   product-manager, project-manager, legal-reviewer
 │   ├── develop-team/        #   tech-lead, developer, frontend-developer, backend-developer,
 │   │                        #     devops-engineer, mobile-developer, data-engineer,
 │   │                        #     security-engineer, debugger
@@ -143,16 +144,21 @@ move it to an ignored env file — never bypass the guard.
 ## Roles
 
 `agents/` ships twenty-four concrete generic roles in five groups: the coordination pair
-at the directory root, plus `project-control/`, `develop-team/`, `design-team/`, and
-`validation-team/`.
+and the shared researcher specialist at the directory root, plus `project-control/`,
+`develop-team/`, `design-team/`, and `validation-team/`.
 
-**Coordination root.** **product-owner** (owns the Product Goal and the single ordered
-backlog, authors acceptance criteria before work starts, accepts or returns delivered
-increments — judges value, never dispatches work or designs solutions) and
-**person-of-contact** (resolves completed work against the repo's `## RACI` table, hands
-outcomes to the Responsible/Accountable parties, brokers cross-component collaborations
-— routes and brokers, never decides value or assigns work). Dispatch itself lives in the
-consuming tool's orchestration, not in any role.
+**Coordination root + shared specialist.** **product-owner** (owns the Product Goal and
+the single ordered backlog, authors acceptance criteria before work starts, accepts or
+returns delivered increments — judges value, never dispatches work or designs solutions)
+and **person-of-contact** (resolves completed work against the repo's `## RACI` table,
+hands outcomes to the Responsible/Accountable parties, brokers cross-component
+collaborations — routes and brokers, never decides value or assigns work). Dispatch
+itself lives in the consuming tool's orchestration, not in any role. In team operation
+the human has two doors into the team: requests to add or change functionality enter
+through product-owner, and handoff communication flows through person-of-contact —
+standalone use of a single role is unaffected. **researcher** also sits at the root as a
+shared specialist serving develop-team and design-team (cited primary sources, inference
+labeled as inference — grounds their decisions, never makes them).
 
 **Project control (`project-control/`).** **product-manager** (problem framing,
 personas, prioritization rationale, success metrics — direction not delivery; legal
@@ -160,10 +166,9 @@ exposure routes to legal-reviewer), **project-manager** (goals into sequenced, o
 tasks with schedule and risk — consumes product direction, never sets it),
 **legal-reviewer** (red-flag ledgers, clause summaries, attorney question lists —
 analysis for human review, never final legal advice; any role may engage it before
-public-facing or license-touching decisions), **researcher** (cited primary sources,
-inference labeled as inference). The boundary in the management trio: product-manager
-answers "are we building the right thing?", product-owner "what is most valuable next —
-and did it deliver?", project-manager "will it ship predictably?".
+public-facing or license-touching decisions). The boundary in the management trio:
+product-manager answers "are we building the right thing?", product-owner "what is most
+valuable next — and did it deliver?", project-manager "will it ship predictably?".
 
 **Develop team (`develop-team/`).** **tech-lead** gates (design gate before build,
 buy-vs-build, seam pinning, design-conformance review — never implements);

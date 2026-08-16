@@ -2,33 +2,39 @@
 
 Generic, project-agnostic subagent **role contracts**: markdown files with YAML
 frontmatter that define a role's bindings, mission, method, deliverable, and
-boundaries. Roles are grouped by team: the coordination pair stays at this
-root, and the rest live in `project-control/`, `develop-team/`,
-`design-team/`, and `validation-team/`.
+boundaries. Roles are grouped by team: the coordination pair and the shared
+`researcher` specialist stay at this root, and the rest live in
+`project-control/`, `develop-team/`, `design-team/`, and
+`validation-team/`.
 
 ## Shipped roles
 
-### Coordination root
+### Coordination root + shared specialist
 
 The pair at the root of multi-role work — value and communication; dispatch
-itself lives in the consuming tool's orchestration.
+itself lives in the consuming tool's orchestration. In team operation the
+human has two doors into the team: requests to add or change functionality
+enter through `product-owner`, and handoff communication flows through
+`person-of-contact` — standalone use of a single role is unaffected.
+`researcher` sits here too as a shared specialist serving develop-team and
+design-team, whose work its research requests originate from.
 
 | Role | Delegate when |
 | --- | --- |
 | [`product-owner.md`](product-owner.md) | Value execution against the product blueprint: one Product Goal, a single ordered backlog with acceptance criteria authored before work starts, accept/return calls on delivered increments — judges value, never dispatches work or designs solutions. |
 | [`person-of-contact.md`](person-of-contact.md) | Communication routing after work completes or a decision lands: resolves the affected components in the repo's `## RACI` table, hands outcomes to the Responsible/Accountable parties, brokers cross-component collaborations — routes and brokers, never decides value or assigns work. |
+| [`researcher.md`](researcher.md) | Research grounding a decision — cited primary sources with access dates, adversarial verification, inference labeled as inference. Shared specialist serving develop-team and design-team. |
 
 ### project-control/
 
 The roles that steer and ground work without touching code: direction,
-delivery, legal exposure, research.
+delivery, legal exposure.
 
 | Role | Delegate when |
 | --- | --- |
 | [`product-manager.md`](project-control/product-manager.md) | Product direction: problem framing, personas, prioritization rationale, success metrics — direction not delivery; legal exposure routes to `legal-reviewer`. |
 | [`project-manager.md`](project-control/project-manager.md) | Turning agreed goals into sequenced, owned tasks with schedule, risk (pre-mortem/retro), and progress tracking — consumes product direction, never sets it. |
 | [`legal-reviewer.md`](project-control/legal-reviewer.md) | Anything public-facing or license-touching, BEFORE the decision — red-flag ledgers, clause-by-clause summaries, attorney question lists; analysis for human review, never final legal advice. |
-| [`researcher.md`](project-control/researcher.md) | Research grounding a decision — cited primary sources with access dates, adversarial verification, inference labeled as inference. |
 
 ### develop-team/
 
@@ -88,19 +94,20 @@ verifier is reported with the reason, not silently converted into approval.
 
 The groups map to how the roles compose:
 
-- **Coordination root** — `product-owner` (value: the Product Goal, the
-  single ordered backlog, accept/return on delivered increments) ·
-  `person-of-contact` (communication: RACI routing, brokered
-  cross-component collaborations). The pair at the root of multi-role
-  work. Dispatch itself lives in the consuming tool's orchestration, not
-  in any role.
-- **project-control/** — the standalone specialists `researcher` and
-  `legal-reviewer` are complete on their own: delegate one task, get one
-  deliverable back — and `legal-reviewer` is nobody's exclusive: any role
-  may engage it before a public-facing or license-touching decision. The
-  management chain — product-manager (strategy) · product-owner (value
-  execution) · project-manager (delivery) · tech-lead (design) — is useful
-  individually (a design gate alone is worth having) but built to compose.
+- **Coordination root + shared specialist** — `product-owner` (value: the
+  Product Goal, the single ordered backlog, accept/return on delivered
+  increments) · `person-of-contact` (communication: RACI routing, brokered
+  cross-component collaborations) · `researcher` (complete standalone;
+  in team operation the shared specialist serving develop-team and
+  design-team). The pair at the root of multi-role work. Dispatch itself
+  lives in the consuming tool's orchestration, not in any role.
+- **project-control/** — the standalone specialist `legal-reviewer` is
+  complete on its own: delegate one task, get one deliverable back — and
+  it is nobody's exclusive: any role may engage it before a public-facing
+  or license-touching decision. The management chain — product-manager
+  (strategy) · product-owner (value execution) · project-manager
+  (delivery) · tech-lead (design) — is useful individually (a design gate
+  alone is worth having) but built to compose.
 - **develop-team/** — `developer` is the generic base;
   `frontend-developer`, `backend-developer`, `mobile-developer`,
   `data-engineer`, `devops-engineer`, and `security-engineer` cover one

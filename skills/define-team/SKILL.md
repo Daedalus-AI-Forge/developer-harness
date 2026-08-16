@@ -29,15 +29,16 @@ Ask in order, one question at a time; record every answer.
 
 1. **Team name** — short, hyphenated, unique within the section.
 2. **Members** — offer the harness role library grouped by its five
-   groups: coordination root (product-owner, person-of-contact) ·
-   project-control (product-manager, project-manager, legal-reviewer,
-   researcher) · develop-team (tech-lead, developer, frontend-developer,
-   backend-developer, devops-engineer, mobile-developer, data-engineer,
-   security-engineer, debugger) · design-team (ux-designer,
-   content-designer, design-system-steward, technical-artist) ·
-   validation-team (qa-reviewer, design-reviewer, integration-validator,
-   performance-validator, release-validator). External or custom
-   contract paths are allowed — confirm each one explicitly.
+   groups: coordination root (product-owner, person-of-contact,
+   researcher — shared specialist) · project-control (product-manager,
+   project-manager, legal-reviewer) · develop-team (tech-lead,
+   developer, frontend-developer, backend-developer, devops-engineer,
+   mobile-developer, data-engineer, security-engineer, debugger) ·
+   design-team (ux-designer, content-designer, design-system-steward,
+   technical-artist) · validation-team (qa-reviewer, design-reviewer,
+   integration-validator, performance-validator, release-validator).
+   External or custom contract paths are allowed — confirm each one
+   explicitly.
 3. **Chain order** — the stages in order, and for EVERY stage: where the
    work returns on failure, or an explicit "cannot fail here" with why.
 4. **Handoff record** — the fields every stage hands the next. Baseline:

@@ -47,11 +47,16 @@ stage, and never move work forward on an incomplete handoff.
 
 - **Members:** tech-lead → `agents/develop-team/tech-lead.md` · implementer
   → the default agent under `## Engineering discipline` · qa-reviewer →
-  `agents/validation-team/qa-reviewer.md`. Routing is the consuming tool's
-  own delegation.
+  `agents/validation-team/qa-reviewer.md` · debugger →
+  `agents/develop-team/debugger.md`. Routing is the consuming tool's own
+  delegation.
 - **Chain:** plan gate (tech-lead) → implement (implementer, TDD) →
   design-conformance review (tech-lead) → verification (qa-reviewer).
-  Executable step-by-step via the `feature-build` skill.
+  On needs-work: debugger diagnoses the findings (root cause plus
+  falsifications — diagnose-only) → the ORIGINAL implementer applies the
+  fix, failing test first, for the diagnosed cause → qa-reviewer
+  re-verifies against the original findings plus a full rerun. Approve
+  ends the chain. Executable step-by-step via the `feature-build` skill.
 - **Handoff record:** task record path + design reference + approved plan
   from the gate; files changed + test command + full test output from the
   implementer; pass/fail with reason from the conformance review; verdict +
@@ -59,7 +64,10 @@ stage, and never move work forward on an incomplete handoff.
 - **Authority rules:** only qa-reviewer declares done; tech-lead's
   conformance fail returns the work with instructions, never patches it;
   the orchestrating harness routes and enforces, and may not overrule
-  either verdict.
+  either verdict; the implementer who built the work fixes it —
+  ownership does not transfer on a failed verdict; debugger proposes,
+  never patches; a second needs-work on the same finding escalates to
+  tech-lead (and the human if contested).
 - **Team memory:** one `<team-log>` entry per run — verdicts and what
   remains open.
 
@@ -120,7 +128,7 @@ stage, and never move work forward on an incomplete handoff.
 - **Members:** decision-owner (tech-lead →
   `agents/develop-team/tech-lead.md` or product-owner →
   `agents/product-owner.md`) · researcher →
-  `agents/project-control/researcher.md` · qa-reviewer →
+  `agents/researcher.md` · qa-reviewer →
   `agents/validation-team/qa-reviewer.md` (fact-checker).
 - **Chain:** decision-owner authors the scope record with explicit
   acceptance criteria and constraints → researcher delivers a cited

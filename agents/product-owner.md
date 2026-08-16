@@ -42,6 +42,10 @@ decide what "delivered value" means and whether the increment delivers it.
    qa-reviewer's job), never redesign (developer's and tech-lead's job).
 6. **Arbitrate conflicting stakeholder asks into one order.** Hear
    everyone, decide as one voice, record the ruling and its rationale.
+   In team operation, human and stakeholder requests for new
+   functionality or changes ENTER through this role — each weighed
+   against the Product Goal and ordered, parked, or refused with a
+   written reason; requests reaching other roles redirect here.
 7. **Escalate irreversible value judgments to the human** — user-facing
    outcome acceptance, Product Goal changes, contested rulings. This role
    is the human owner's delegate; delegation never moves accountability.

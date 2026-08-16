@@ -1,6 +1,6 @@
 ---
 name: feature-build
-description: Run one scoped feature through a gated team pipeline — tech-lead plan gate, TDD implementation, tech-lead design-conformance review, qa-reviewer verification. Use when asked to build a feature end-to-end with gates, or to run the feature-build chain. Works with subagents (one per stage) or as one agent adopting the roles in sequence.
+description: Run one scoped feature through a gated team pipeline — tech-lead plan gate, TDD implementation, tech-lead design-conformance review, qa-reviewer verification, and a debugger-diagnosed needs-work loop. Use when asked to build a feature end-to-end with gates, or to run the feature-build chain. Works with subagents (one per stage) or as one agent adopting the roles in sequence.
 license: MIT
 ---
 
@@ -14,10 +14,12 @@ the way in or the adversarial verification on the way out.
 
 ## Roles and execution modes
 
-Three role contracts drive the pipeline (see `agents/` in this harness):
+Four role contracts drive the pipeline (see `agents/` in this harness):
 `develop-team/tech-lead.md` (stages 1 and 3), the implementing agent
 (stage 2 — the default agent, under the repo's `## Engineering
-discipline`), and `validation-team/qa-reviewer.md` (stage 4).
+discipline`), `validation-team/qa-reviewer.md` (stage 4), and
+`develop-team/debugger.md` (stage 5 — engaged only on a `needs-work`
+verdict).
 
 - **Tools with subagent support:** run each stage as its own subagent with a
   fresh context and the stage's role contract loaded — the reviewer must not
@@ -77,11 +79,27 @@ Rejected ends the run.
 2. Probe adversarially: edge cases, silent failures, untested paths.
 3. Verdict `approved` or `needs-work`, with findings ranked by severity,
    each with a concrete failure scenario.
-4. On `needs-work`: the implementer gets **one fix round** scoped to the
-   findings, then one re-verification that first checks those exact
-   findings.
+4. On `needs-work`: enter the needs-work loop (stage 5) — **one round
+   only**.
 5. Only this stage declares the feature done. A missing or failed verdict
    is `needs-work`, never a silent pass.
+
+## Stage 5 — Needs-work loop (debugger, then implementer)
+
+Runs only on a `needs-work` verdict from stage 4.
+
+1. Run the debugger per its contract: root cause with evidence and
+   falsifications for each finding — diagnose-only, it proposes fixes
+   and never patches. In subagent mode it gets a fresh context: it must
+   not inherit the implementer's assumptions. Sequential-adoption mode
+   honors the same boundary — diagnose before touching code.
+2. Hand the diagnosis — mechanism, falsifications, proposed fix — to the
+   stage-2 implementer, who fixes test-first: a failing test for the
+   diagnosed cause, then the code that makes it pass.
+3. Rerun stage 4: the original findings checked first, then a full
+   rerun.
+4. Loop guard: a second `needs-work` on the same finding escalates to
+   tech-lead — and to the human if contested — never a second loop.
 
 ## Result
 

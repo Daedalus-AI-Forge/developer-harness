@@ -24,9 +24,10 @@ developer-harness/
 ├── commands/          # thin /command wrappers around explicitly-invocable skills
 ├── agents/            # generic subagent role contracts, grouped by team:
 │                      #   root — coordination: product-owner (value execution),
-│                      #     person-of-contact (communication/RACI routing)  (+ _template.md)
+│                      #     person-of-contact (communication/RACI routing),
+│                      #     researcher (shared specialist)  (+ _template.md)
 │                      #   project-control/: product-manager, project-manager,
-│                      #     legal-reviewer, researcher
+│                      #     legal-reviewer
 │                      #   develop-team/: tech-lead, developer (base), frontend-developer,
 │                      #     backend-developer, devops-engineer, mobile-developer,
 │                      #     data-engineer, security-engineer, debugger
