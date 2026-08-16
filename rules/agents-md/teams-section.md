@@ -4,8 +4,9 @@ Copy the block below into the consuming repo's `AGENTS.md` (or `CLAUDE.md`),
 then replace the placeholder team with real teams. A team is a named chain of
 roles: who is in it, what order work moves through it, what each stage must
 hand the next, and who holds which authority. Role contract files follow
-`agents/_template.md` in developer-harness; the routing itself can be driven
-by the `project-controller` role or by the tool's own delegation.
+`agents/_template.md` in developer-harness; the routing itself is driven by
+the consuming tool's own delegation — orchestration lives in the harness
+that runs the team, not in any role.
 
 If any listed contract uses `<placeholder>` bindings (the generic roles in
 developer-harness's `agents/` do), also add a `## Project bindings` section —
@@ -46,8 +47,7 @@ stage, and never move work forward on an incomplete handoff.
 
 - **Members:** tech-lead → `agents/tech-lead.md` · implementer → the
   default agent under `## Engineering discipline` · qa-reviewer →
-  `agents/qa-reviewer.md` · routed by project-controller →
-  `agents/project-controller.md`.
+  `agents/qa-reviewer.md`. Routing is the consuming tool's own delegation.
 - **Chain:** plan gate (tech-lead) → implement (implementer, TDD) →
   design-conformance review (tech-lead) → verification (qa-reviewer).
   Executable step-by-step via the `feature-build` skill.
@@ -57,7 +57,8 @@ stage, and never move work forward on an incomplete handoff.
   ranked findings from verification.
 - **Authority rules:** only qa-reviewer declares done; tech-lead's
   conformance fail returns the work with instructions, never patches it;
-  the controller routes and enforces, and may not overrule either verdict.
+  the orchestrating harness routes and enforces, and may not overrule
+  either verdict.
 - **Team memory:** one `<team-log>` entry per run — verdicts and what
   remains open.
 

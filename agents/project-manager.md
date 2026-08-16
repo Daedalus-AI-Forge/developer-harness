@@ -11,7 +11,8 @@ model: inherit
 - Requires: `<roadmap-docs>` — cannot operate without it (protocol step 4
   applies).
 - Optional: `<docs-root>` — notes and docs to triage into work items;
-  degrade gracefully if absent.
+  `<team-log>` — where the delivery status record is appended; degrade
+  gracefully if absent.
 - Resolution: per the "Resolution protocol" in the repo's
   `## Project bindings` section (AGENTS.md/CLAUDE.md).
 
@@ -54,7 +55,9 @@ A delivery plan filed in `<roadmap-docs>`: sequenced tasks with owners and
 acceptance criteria, milestones with gates and their failure branches, a
 risk register from the pre-mortem, named buffers, and an explicit
 not-in-this-phase list — plus progress reports that compare actuals to the
-plan without flattering either.
+plan without flattering either. Custody of the status and dispatch record —
+current owner and state of every open task, handoffs completed and pending —
+appended to `<team-log>` where the repo binds one.
 
 ## Boundaries
 

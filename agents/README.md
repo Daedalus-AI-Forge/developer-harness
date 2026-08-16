@@ -6,6 +6,13 @@ boundaries.
 
 ## Shipped roles
 
+### Coordination root
+
+| Role | Delegate when |
+| --- | --- |
+| [`product-owner.md`](product-owner.md) | Value execution against the product blueprint: one Product Goal, a single ordered backlog with acceptance criteria authored before work starts, accept/return calls on delivered increments — judges value, never dispatches work or designs solutions. |
+| [`person-of-contact.md`](person-of-contact.md) | Communication routing after work completes or a decision lands: resolves the affected components in the repo's `## RACI` table, hands outcomes to the Responsible/Accountable parties, brokers cross-component collaborations — routes and brokers, never decides value or assigns work. |
+
 ### Method roles
 
 | Role | Delegate when |
@@ -17,7 +24,6 @@ boundaries.
 | [`tech-lead.md`](tech-lead.md) | Design gating, buy-vs-build calls, seam/interface pinning, decomposition into buildable tasks, and design-conformance review of finished work — gates and reviews, never implements. |
 | [`project-manager.md`](project-manager.md) | Turning agreed goals into sequenced, owned tasks with schedule, risk (pre-mortem/retro), and progress tracking — consumes product direction, never sets it. |
 | [`product-manager.md`](product-manager.md) | Product direction: problem framing, personas, prioritization rationale, success metrics — direction not delivery; legal exposure routes to `legal-reviewer`. |
-| [`project-controller.md`](project-controller.md) | Orchestrating multi-role work: routing, one owner per task, handoff completeness, authority rules — coordinates, never does the specialists' work. |
 
 ### Developer roles
 
@@ -33,19 +39,23 @@ boundaries.
 
 ## Standalone vs team use
 
-The roles come in three kinds:
+The roles come in three tiers:
 
-- **Standalone specialists** — `debugger`, `qa-reviewer`, `researcher`,
-  `legal-reviewer`. Complete on their own: delegate one task, get one
-  deliverable back. They are also the dispatchable specialists a team routes
-  work to — and `legal-reviewer` is nobody's exclusive: any role may engage
-  it before a public-facing or license-touching decision.
-- **Management chain** — `tech-lead`, `project-manager`, `product-manager`,
-  `project-controller`. Useful individually (a design gate alone is worth
-  having), but built to compose: product-manager sets direction,
-  project-manager sequences delivery, tech-lead gates and reviews the
-  build, and project-controller routes work between them and the
-  specialists.
+- **Coordination root** — `product-owner` (value: the Product Goal, the
+  single ordered backlog, accept/return on delivered increments) ·
+  `person-of-contact` (communication: RACI routing, brokered
+  cross-component collaborations). The pair at the root of multi-role
+  work. Dispatch itself lives in the consuming tool's orchestration, not
+  in any role.
+- **Method roles** — the standalone specialists `debugger`, `qa-reviewer`,
+  `researcher`, `legal-reviewer` are complete on their own: delegate one
+  task, get one deliverable back. They are also the dispatchable
+  specialists a team routes work to — and `legal-reviewer` is nobody's
+  exclusive: any role may engage it before a public-facing or
+  license-touching decision. The management chain — product-manager
+  (strategy) · product-owner (value execution) · project-manager
+  (delivery) · tech-lead (design) — is useful individually (a design gate
+  alone is worth having) but built to compose.
 - **Developer roles** — `developer` is the generic base;
   `frontend-developer`, `backend-developer`, `mobile-developer`,
   `data-engineer`, `devops-engineer`, and `security-engineer` cover one

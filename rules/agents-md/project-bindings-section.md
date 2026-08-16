@@ -31,8 +31,37 @@ Each contract's `## Bindings` block declares which placeholders it
 | `<docs-root>` | Human-facing documentation | `docs/` |
 | `<research-notes>` | Where research write-ups are filed | `docs/research/` |
 | `<product-docs>` | Where product direction docs live (briefs, personas, metric definitions) | `docs/product/` |
-| `<roadmap-docs>` | Where delivery plans, schedules, and risk registers live | `docs/roadmap/` |
-| `<team-log>` | Append-only team handoff log (see the `## Teams` template) | `docs/team-log.md` |
+| `<roadmap-docs>` | Where delivery plans, ordered backlogs, schedules, and risk registers live | `docs/roadmap/` |
+| `<team-log>` | Append-only team log: product-owner's decision/acceptance records, project-manager's delivery status records, person-of-contact's routing records (see the `## Teams` template) | `docs/team-log.md` |
+| `<work-tracker>` | The one authoritative place tasks live — person-of-contact handoffs and task pickups resolve against it. A type plus location; three supported forms, documented below | `github` |
+
+`<work-tracker>` takes one of three forms — each readable by both humans
+and agents:
+
+- `github` — GitHub Issues/Projects. Agents access via the `gh` CLI
+  (`gh issue view <n>`, `gh project item-list`); humans via the web board.
+- `azure-devops` — Azure DevOps Boards. Agents access via the `az boards`
+  CLI or Microsoft's official Azure DevOps MCP server; humans via the web.
+- `local:<path>` — a task-file directory in the repo (e.g.
+  `local:docs/tasks/`), one markdown file per task; the file convention is
+  in the `## RACI` template (`raci-section.md`).
+
+**Auth** (by reference, per tracker type):
+
+- `github` — authenticate once via `gh auth login` (CLI, keychain-backed);
+  CI uses the `GH_TOKEN` env var. Agents inherit ambient auth — no token
+  configuration in the repo.
+- `azure-devops` — `az devops login` (the az CLI stores the PAT) or the
+  `AZURE_DEVOPS_EXT_PAT` env var; with the Azure DevOps MCP server, pass
+  the PAT via environment-variable expansion in the MCP config (e.g.
+  `${AZURE_DEVOPS_PAT}`) — the committed config carries the variable NAME
+  only. Tool-local secret homes: shell profile, OS keychain, or Claude
+  Code's `.claude/settings.local.json` (auto-gitignored).
+- `local:<path>` — no auth.
+
+**Token values never enter tracked files — configs reference environment
+variables by name; the harness's secret-scan hook blocks common token
+patterns at commit time, by design.**
 
 ### Resolution protocol
 

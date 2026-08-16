@@ -13,6 +13,11 @@ Current scripts:
 | --- | --- | --- |
 | `scripts/secret-scan.sh` | Scans staged additions (`git diff --cached`) for AWS `AKIA...` keys, `sk-...` keys, GitHub `ghp_...` tokens, PEM private-key headers, and hardcoded `password=` assignments | Any pattern matches (exit 2) |
 
+These patterns cover exactly the class of leak that work-tracker access
+invites (PATs, API keys): tracker credentials belong in env vars or the OS
+keychain per the Auth note in the `## Project bindings` template
+(`rules/agents-md/project-bindings-section.md`), never in tracked files.
+
 [`hooks.json`](hooks.json) is the wiring template in the Claude Code plugin
 hook schema (`hooks` → event → `matcher` → `hooks[]`). JSON has no comments,
 so all explanation lives here.

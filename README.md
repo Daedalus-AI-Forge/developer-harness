@@ -23,13 +23,15 @@ developer-harness/
 │   │                  #   shared resources (not skills): architect-shared/, contracts/
 ├── commands/          # thin /command wrappers around explicitly-invocable skills
 ├── agents/            # generic subagent role contracts:
+│                      #   coordination root: product-owner (value execution),
+│                      #     person-of-contact (communication/RACI routing)
 │                      #   method roles: debugger, qa-reviewer, researcher, legal-reviewer
-│                      #     + tech-lead, project-manager, product-manager, project-controller
+│                      #     + tech-lead, project-manager, product-manager
 │                      #   dev roles: developer (base), frontend-developer, backend-developer,
 │                      #     mobile-developer, data-engineer, devops-engineer,
 │                      #     security-engineer   (+ _template.md)
 ├── hooks/             # tool-neutral guard scripts + wiring template (hooks.json)
-├── rules/             # AGENTS.md / CLAUDE.md section templates (roles, teams, guards, engineering discipline, project bindings)
+├── rules/             # AGENTS.md / CLAUDE.md section templates (roles, teams, guards, engineering discipline, project bindings, raci)
 ├── docs/              # per-tool consumption guides (consume-<tool>.md)
 └── .claude-plugin/    # plugin.json + marketplace.json (repo root = plugin root)
 ```

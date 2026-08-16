@@ -16,9 +16,9 @@ developer-harness/
 │   ├── architect-shared/    #   shared resources for the two architect skills (NOT a skill)
 │   └── contracts/           #   review contracts for the architect skills (NOT a skill)
 ├── commands/                # 7 thin /command wrappers around explicitly-invocable skills
-├── agents/                  # generic role contracts: method roles (debugger, qa-reviewer, researcher, legal-reviewer + tech-lead, project-manager, product-manager, project-controller) + dev roles (developer, frontend-developer, backend-developer, mobile-developer, data-engineer, devops-engineer, security-engineer) + template + install guide
+├── agents/                  # generic role contracts: coordination root (product-owner, person-of-contact) + method roles (debugger, qa-reviewer, researcher, legal-reviewer + tech-lead, project-manager, product-manager) + dev roles (developer, frontend-developer, backend-developer, mobile-developer, data-engineer, devops-engineer, security-engineer) + template + install guide
 ├── hooks/                   # guard scripts (scripts/secret-scan.sh) + wiring template (hooks.json)
-├── rules/                   # AGENTS.md/CLAUDE.md section templates (## Roles, ## Teams, ## Guards, ## Engineering discipline, ## Project bindings)
+├── rules/                   # AGENTS.md/CLAUDE.md section templates (## Roles, ## Teams, ## Guards, ## Engineering discipline, ## Project bindings, ## RACI)
 ├── docs/                    # consume-claude-code.md, consume-codex.md, consume-cursor.md, consume-opencode.md
 ├── .claude-plugin/          # plugin.json + marketplace.json — repo root is a Claude Code plugin
 ├── .codex-plugin/           # plugin.json — repo root is also a Codex plugin
@@ -130,7 +130,15 @@ move it to an ignored env file — never bypass the guard.
 
 ## Roles
 
-`agents/` ships fifteen concrete generic roles in two groups.
+`agents/` ships sixteen concrete generic roles in three tiers.
+
+**Coordination root.** **product-owner** (owns the Product Goal and the single ordered
+backlog, authors acceptance criteria before work starts, accepts or returns delivered
+increments — judges value, never dispatches work or designs solutions) and
+**person-of-contact** (resolves completed work against the repo's `## RACI` table, hands
+outcomes to the Responsible/Accountable parties, brokers cross-component collaborations
+— routes and brokers, never decides value or assigns work). Dispatch itself lives in the
+consuming tool's orchestration, not in any role.
 
 **Method roles.** Standalone specialists: **debugger** (root cause with evidence,
 proposes rather than fixes), **qa-reviewer** (adversarial verification with executed
@@ -142,9 +150,9 @@ before public-facing or license-touching decisions). Management chain: **tech-le
 implements), **project-manager** (goals into sequenced, owned tasks with schedule and
 risk — consumes product direction, never sets it), **product-manager** (problem framing,
 personas, prioritization rationale, success metrics — direction not delivery; legal
-exposure routes to legal-reviewer), and **project-controller** (routes work through the
-team, one owner per task, handoff completeness, authority rules — coordinates, never
-does the specialists' work).
+exposure routes to legal-reviewer). The boundary between the trio: product-manager
+answers "are we building the right thing?", product-owner "what is most valuable next —
+and did it deliver?", project-manager "will it ship predictably?".
 
 **Developer roles.** **developer** is the generic base (TDD from a failing test, repo
 conventions, small reviewable changes — implements, never approves its own work); the
@@ -180,7 +188,10 @@ path, while optional bindings degrade gracefully. Multi-role chains — members,
 stage order, handoff record, authority rules, optional team memory — are declared per
 repo in a `## Teams` section (template in
 [rules/agents-md/teams-section.md](rules/agents-md/teams-section.md)); the
-`feature-build` skill ships one such chain as an executable process. Project-specific
+`feature-build` skill ships one such chain as an executable process. The
+`person-of-contact` role consumes a per-repo `## RACI` section — component ownership
+rows it routes communication by — template in
+[rules/agents-md/raci-section.md](rules/agents-md/raci-section.md). Project-specific
 roles still belong in consuming repos (e.g. their `.claude/agents/`), and both kinds
 route through an AGENTS.md `## Roles` section for tools that cannot read markdown agents
 (Codex, OpenCode). See [agents/README.md](agents/README.md) and
