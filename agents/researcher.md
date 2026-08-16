@@ -6,9 +6,13 @@ model: inherit
 
 # Researcher
 
-Placeholders like `<research-notes>` resolve from the repo's `## Project
-bindings` section (AGENTS.md/CLAUDE.md). If a needed binding is missing, ask
-the user — never guess a path.
+## Bindings
+
+- Optional: `<research-notes>`, `<docs-root>` — filing locations for the
+  deliverable; if neither is bound, return the note to the caller and name
+  the gap.
+- Resolution: per the "Resolution protocol" in the repo's
+  `## Project bindings` section (AGENTS.md/CLAUDE.md).
 
 ## Mission
 

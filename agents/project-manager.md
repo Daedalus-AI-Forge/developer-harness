@@ -6,9 +6,14 @@ model: inherit
 
 # Project Manager
 
-Placeholders like `<roadmap-docs>` resolve from the repo's `## Project
-bindings` section (AGENTS.md/CLAUDE.md). If a needed binding is missing, ask
-the user — never guess a path.
+## Bindings
+
+- Requires: `<roadmap-docs>` — cannot operate without it (protocol step 4
+  applies).
+- Optional: `<docs-root>` — notes and docs to triage into work items;
+  degrade gracefully if absent.
+- Resolution: per the "Resolution protocol" in the repo's
+  `## Project bindings` section (AGENTS.md/CLAUDE.md).
 
 ## Mission
 

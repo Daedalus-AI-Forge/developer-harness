@@ -16,7 +16,7 @@ developer-harness/
 │   ├── architect-shared/    #   shared resources for the two architect skills (NOT a skill)
 │   └── contracts/           #   review contracts for the architect skills (NOT a skill)
 ├── commands/                # 7 thin /command wrappers around explicitly-invocable skills
-├── agents/                  # generic role contracts: specialists (debugger, qa-reviewer, researcher) + management chain (tech-lead, project-manager, product-manager, project-controller) + template + install guide
+├── agents/                  # generic role contracts: method roles (debugger, qa-reviewer, researcher, legal-reviewer + tech-lead, project-manager, product-manager, project-controller) + dev roles (developer, frontend-developer, backend-developer, mobile-developer, data-engineer, devops-engineer, security-engineer) + template + install guide
 ├── hooks/                   # guard scripts (scripts/secret-scan.sh) + wiring template (hooks.json)
 ├── rules/                   # AGENTS.md/CLAUDE.md section templates (## Roles, ## Teams, ## Guards, ## Engineering discipline, ## Project bindings)
 ├── docs/                    # consume-claude-code.md, consume-codex.md, consume-cursor.md, consume-opencode.md
@@ -130,24 +130,53 @@ move it to an ignored env file — never bypass the guard.
 
 ## Roles
 
-`agents/` ships seven concrete generic roles in two kinds. Standalone specialists:
-**debugger** (root cause with evidence, proposes rather than fixes), **qa-reviewer**
-(adversarial verification with executed evidence, never implements), **researcher**
-(cited primary sources, inference labeled as inference). Management chain: **tech-lead**
-(design gate before build, decomposition, design-conformance review — never implements),
-**project-manager** (goals into sequenced, owned tasks with schedule and risk — consumes
-product direction, never sets it), **product-manager** (problem framing, personas,
-prioritization rationale, success metrics — direction not delivery; legal exposure goes
-to human review), and **project-controller** (routes work through the team, one owner
-per task, handoff completeness, authority rules — coordinates, never does the
-specialists' work). The role-contract **template** (`_template.md`: frontmatter +
-Mission / Method / Deliverable / Boundaries) is for authoring more.
+`agents/` ships fifteen concrete generic roles in two groups.
 
-The shipped roles reference project layout only through `<placeholder>` bindings
-(`<source-root>`, `<test-command>`, …) that a consuming repo resolves in a
-`## Project bindings` section of its AGENTS.md or CLAUDE.md — template in
-[rules/agents-md/project-bindings-section.md](rules/agents-md/project-bindings-section.md);
-a missing binding means the agent asks instead of guessing. Multi-role chains — members,
+**Method roles.** Standalone specialists: **debugger** (root cause with evidence,
+proposes rather than fixes), **qa-reviewer** (adversarial verification with executed
+evidence, never implements), **researcher** (cited primary sources, inference labeled as
+inference), **legal-reviewer** (red-flag ledgers, clause summaries, attorney question
+lists — analysis for human review, never final legal advice; any role may engage it
+before public-facing or license-touching decisions). Management chain: **tech-lead**
+(design gate before build, buy-vs-build, seam pinning, design-conformance review — never
+implements), **project-manager** (goals into sequenced, owned tasks with schedule and
+risk — consumes product direction, never sets it), **product-manager** (problem framing,
+personas, prioritization rationale, success metrics — direction not delivery; legal
+exposure routes to legal-reviewer), and **project-controller** (routes work through the
+team, one owner per task, handoff completeness, authority rules — coordinates, never
+does the specialists' work).
+
+**Developer roles.** **developer** is the generic base (TDD from a failing test, repo
+conventions, small reviewable changes — implements, never approves its own work); the
+rest cover one layer's concerns each: **frontend-developer** (UI state, accessibility,
+responsive/asset budgets, design fidelity, rendering evidence), **backend-developer**
+(API contract discipline, data integrity and migrations, failure modes and idempotency,
+observability hooks), **mobile-developer** (platform lifecycle and background-execution
+constraints, offline-first data, permissions/privacy UX, app-store review discipline,
+device evidence, bundle/battery budgets), **data-engineer** (schema/migration custody,
+idempotent replayable pipelines, data-quality checks as code, PII discipline with
+lineage, cost awareness), **devops-engineer** (pipeline custody, reproducible builds,
+secrets hygiene, release/rollback — never bypasses gates), and **security-engineer**
+(defensive only: threat modeling, secrets hygiene, supply-chain vetting,
+least-privilege and trust-boundary review — reviews and hardens, never builds
+offensive tooling).
+
+**Language lives in skills; layer lives in roles; compose per repo.** A
+language-specific developer is a dev role plus the matching language skills — e.g.
+`dev-csharp` = `developer` + the `csharp-developer` skill — declared in the consuming
+repo's `## Roles` section, not shipped here.
+
+The role-contract **template** (`_template.md`: frontmatter + `## Bindings` +
+Mission / Method / Deliverable / Boundaries) is for authoring more. The shipped roles
+reference project layout only through `<placeholder>` bindings (`<source-root>`,
+`<test-command>`, …) that a consuming repo resolves in a `## Project bindings` section
+of its AGENTS.md or CLAUDE.md — template in
+[rules/agents-md/project-bindings-section.md](rules/agents-md/project-bindings-section.md).
+Each contract declares which bindings it **requires** and which are **optional**; a
+missing binding is handled by that section's Resolution protocol (infer candidates from
+the repo → confirm with the user → persist the row), and a *required* binding that
+cannot be established disables the role for the repo — it never proceeds on a guessed
+path, while optional bindings degrade gracefully. Multi-role chains — members,
 stage order, handoff record, authority rules, optional team memory — are declared per
 repo in a `## Teams` section (template in
 [rules/agents-md/teams-section.md](rules/agents-md/teams-section.md)); the

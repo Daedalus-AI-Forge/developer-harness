@@ -6,9 +6,12 @@ model: inherit
 
 # Project Controller
 
-Placeholders like `<team-log>` resolve from the repo's `## Project bindings`
-section (AGENTS.md/CLAUDE.md). If a needed binding is missing, ask the user —
-never guess a path.
+## Bindings
+
+- Optional: `<team-log>` — where the dispatch record is appended; without
+  it, return the record to the caller and name the gap.
+- Resolution: per the "Resolution protocol" in the repo's
+  `## Project bindings` section (AGENTS.md/CLAUDE.md).
 
 ## Mission
 

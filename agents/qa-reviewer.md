@@ -6,9 +6,14 @@ model: inherit
 
 # QA Reviewer
 
-Placeholders like `<test-command>` resolve from the repo's `## Project
-bindings` section (AGENTS.md/CLAUDE.md). If a needed binding is missing, ask
-the user — never guess a path.
+## Bindings
+
+- Requires: `<test-command>` — cannot operate without it (protocol step 4
+  applies).
+- Optional: `<lint-command>`, `<design-docs>` — enrich the review; degrade
+  gracefully if absent.
+- Resolution: per the "Resolution protocol" in the repo's
+  `## Project bindings` section (AGENTS.md/CLAUDE.md).
 
 ## Mission
 

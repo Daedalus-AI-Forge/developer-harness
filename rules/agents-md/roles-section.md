@@ -20,6 +20,12 @@ and Boundaries.
 | Role | When to assume it | Contract file |
 | --- | --- | --- |
 | `<role-name>` | `<one-line trigger, e.g. "reviewing a design spec">` | `<relative/path/to/role-name.md>` |
-| `<role-name>` | `<trigger>` | `<relative/path/to/role-name.md>` |
+| `dev-csharp` | implementing C# code | `<path/to>/developer.md` + load the `csharp-developer` skill |
 
 If no role matches, proceed normally without loading any contract.
+
+A language-specific developer role is composed, not authored: point its row
+at the generic `developer` contract (or `frontend-developer` /
+`backend-developer`) and name the language skills to load alongside it, as in
+the `dev-csharp` example row — language expertise stays in skills; the role
+contract carries the method.

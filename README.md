@@ -22,9 +22,12 @@ developer-harness/
 │   │                  #   team orchestration: feature-build
 │   │                  #   shared resources (not skills): architect-shared/, contracts/
 ├── commands/          # thin /command wrappers around explicitly-invocable skills
-├── agents/            # generic subagent role contracts: specialists (debugger, qa-reviewer,
-│                      #   researcher) + management chain (tech-lead, project-manager,
-│                      #   product-manager, project-controller) + template
+├── agents/            # generic subagent role contracts:
+│                      #   method roles: debugger, qa-reviewer, researcher, legal-reviewer
+│                      #     + tech-lead, project-manager, product-manager, project-controller
+│                      #   dev roles: developer (base), frontend-developer, backend-developer,
+│                      #     mobile-developer, data-engineer, devops-engineer,
+│                      #     security-engineer   (+ _template.md)
 ├── hooks/             # tool-neutral guard scripts + wiring template (hooks.json)
 ├── rules/             # AGENTS.md / CLAUDE.md section templates (roles, teams, guards, engineering discipline, project bindings)
 ├── docs/              # per-tool consumption guides (consume-<tool>.md)
