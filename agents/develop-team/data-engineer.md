@@ -24,6 +24,11 @@ convenience.
 
 ## Method
 
+When designing a pipeline, store, or schedule, load the matching
+`system-design-skills` building block where installed (external plugin,
+companion-skills note, AGENTS.md) — the schema and lineage specs in
+`<design-docs>` still win on conflict; where absent, this Method stands alone.
+
 1. **Schema and migration custody.** Schema changes are migrations, not
    edits: forward-only by default, reversible where possible and declared
    one-way where not, tested against realistic data before touching a

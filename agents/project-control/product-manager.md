@@ -29,7 +29,9 @@ enough that delivery can be planned from it without coming back to ask.
    `researcher.md`), not asserted; inference is labeled as inference.
 3. **Prioritize with stated rationale.** Every priority carries its
    reasoning, and load-bearing assumptions are written as falsifiable bets:
-   what observation would prove this wrong, and by when.
+   what observation would prove this wrong, and by when. Load the `grill-me`
+   skill where installed to grill the human on those bets before the
+   direction doc is filed; where absent, this step stands alone.
 4. **Define success so it can be measured.** Each metric gets a precise
    definition — what counts, what does not, over what window — so delivery
    can report against it without interpretation. Every number in the

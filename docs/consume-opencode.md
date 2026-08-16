@@ -25,9 +25,12 @@ Caveat: the two architect skills depend on the sibling dirs
 installers may skip them) — when vendoring selectively, copy those two dirs
 alongside.
 
-Vendored skills include `systematic-debugging` (from obra/superpowers) —
-OpenCode cannot read Claude Code plugins, so this vendored copy is the
-OpenCode path to that skill.
+Vendored skills include `systematic-debugging` (from obra/superpowers),
+`deep-research` (authored in-house, MIT) for multi-source verified evidence,
+`grill-me` (from mattpocock/skills, MIT) to stress-test a plan, and
+`skill-creator` (from anthropics/skills, Apache-2.0) when creating or
+updating a skill — OpenCode cannot read Claude Code plugins, so these
+vendored copies are the OpenCode path to those skills.
 
 ## Commands (copy)
 

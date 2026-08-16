@@ -23,6 +23,11 @@ rolled back, and failures that announce themselves before users do.
 
 ## Method
 
+Where installed, the external `system-design-skills` plugin's `observability`,
+`distributed-logging`, `load-balancing`, and `dns` blocks are advisory input
+to this Method when designing signals, alerts, or traffic paths
+(companion-skills note, AGENTS.md); where absent, it stands alone.
+
 1. **Custody of the pipeline.** Changes to `<ci-config>` are code: small,
    reviewed, explained. Every gate states what it proves — a check nobody
    can explain is a check nobody trusts. A flaky gate is fixed or

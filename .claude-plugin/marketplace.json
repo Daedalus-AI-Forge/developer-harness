@@ -3,6 +3,7 @@
   "owner": {
     "name": "Daedalus AI Forge"
   },
+  "allowCrossMarketplaceDependenciesOn": ["claude-plugins-official"],
   "plugins": [
     {
       "name": "developer-harness",

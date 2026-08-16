@@ -1,0 +1,4 @@
+interface:
+  display_name: "Deep Research"
+  short_description: "Staged research pipeline: decompose into sub-questions, parallel multi-modal evidence sweeps, adversarial verification, loop-until-dry critic, cited synthesis."
+  default_prompt: "Use $deep-research when a question needs multi-source, verified evidence."

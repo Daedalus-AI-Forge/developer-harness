@@ -6,5 +6,9 @@
     "name": "Daedalus AI Forge"
   },
   "homepage": "https://github.com/daedalus-ai-forge/developer-harness",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": [
+    { "name": "frontend-design", "marketplace": "claude-plugins-official" },
+    { "name": "claude-security", "marketplace": "claude-plugins-official" }
+  ]
 }

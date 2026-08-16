@@ -10,16 +10,18 @@ understand.
 
 ```
 developer-harness/
-├── skills/            # 21 Agent Skills (SKILL.md format) + 2 shared-resource dirs
+├── skills/            # 24 Agent Skills (SKILL.md format) + 2 shared-resource dirs
 │   │                  #   language: csharp-developer, java-architect, python-pro,
 │   │                  #     rust-engineer, typescript-pro
 │   │                  #   conventions: python-conventions, python-api-design,
 │   │                  #     rustdoc-conventions, rust-pragmatic, rust-api-checklist
 │   │                  #   docs: contract-docstrings, python-documentation, typescript-docs
 │   │                  #   method/review: tighten-types, architect-design-review,
-│   │                  #     architect-codebase-review, systematic-debugging
+│   │                  #     architect-codebase-review, systematic-debugging,
+│   │                  #     deep-research, grill-me
 │   │                  #   diagrams/planning: mermaid-skill, gantt-roadmap
 │   │                  #   team orchestration: feature-build, define-team
+│   │                  #   meta: skill-creator
 │   │                  #   shared resources (not skills): architect-shared/, contracts/
 ├── commands/          # thin /command wrappers around explicitly-invocable skills
 ├── agents/            # generic subagent role contracts, grouped by team:
@@ -88,6 +90,22 @@ The repo root is a plugin and its own marketplace:
 
 Skills then invoke as `/developer-harness:<skill-name>`, and the
 `secret-scan` guard hook wires up automatically.
+
+Installing the plugin also resolves two recommended companions, declared as
+dependencies on Anthropic's official `claude-plugins-official` marketplace
+(registered by Claude Code by default): `frontend-design` (aesthetic
+direction for the `ux-designer` role) and `claude-security` (deep
+vulnerability scans for the `security-engineer` role). If your Claude Code
+predates plugin dependencies, install them manually:
+
+```
+/plugin install frontend-design@claude-plugins-official
+/plugin install claude-security@claude-plugins-official
+```
+
+Both are Anthropic-proprietary, so they install from Anthropic's own
+marketplace and are referenced here by name only — never redistributed
+(see the companion-skills note in [AGENTS.md](AGENTS.md)).
 
 ### Channel 3 — Codex plugin (skills)
 

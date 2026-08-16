@@ -12,10 +12,10 @@ this repo or selecting a skill *from* it.
 
 ```
 developer-harness/
-├── skills/                  # 21 skills (SKILL.md format), one directory per skill
+├── skills/                  # 24 skills (SKILL.md format), one directory per skill
 │   ├── architect-shared/    #   shared resources for the two architect skills (NOT a skill)
 │   └── contracts/           #   review contracts for the architect skills (NOT a skill)
-├── commands/                # 9 thin /command wrappers around explicitly-invocable skills
+├── commands/                # 12 thin /command wrappers around explicitly-invocable skills
 ├── agents/                  # generic role contracts in five groups (+ _template.md + install guide)
 │   │                        #   root — coordination: product-owner, person-of-contact;
 │   │                        #     shared specialist: researcher
@@ -40,11 +40,12 @@ developer-harness/
 
 Invocation by tool: `/name` in Claude Code (`/developer-harness:name` when installed as the
 plugin) and Cursor; `$name` in Codex; OpenCode loads skills on demand through its native
-`skill` tool when the task matches a skill description. Nine skills are explicitly
+`skill` tool when the task matches a skill description. Twelve skills are explicitly
 invocable and ship both a `commands/` wrapper and a Codex `default_prompt`:
 **tighten-types, contract-docstrings, architect-design-review, architect-codebase-review,
-mermaid-skill, gantt-roadmap, feature-build, define-team, systematic-debugging**. The
-rest are load-before-writing references that tools auto-select by description.
+mermaid-skill, gantt-roadmap, feature-build, define-team, systematic-debugging,
+deep-research, grill-me, skill-creator**. The rest are load-before-writing references
+that tools auto-select by description.
 
 ### Python (6 skills)
 
@@ -93,11 +94,14 @@ precedence over both.
 | Implementing C# / Unity code | `csharp-developer` | Vendored capability reference: async/await, DI, LINQ, records, analyzers, memory. Fit note inside: for non-web projects (Unity, desktop) take the language craft, discard the ASP.NET/EF architecture opinions. |
 | Implementing Java | `java-architect` | Vendored capability reference: modern Java, concurrency, module/service structure, JVM performance. Fit note inside: upstream assumes Maven/Spring; your build tool and framework choices win. |
 
-### Method / review (3 skills)
+### Method / review (6 skills)
 
 | You are doing | Skill | Why / when |
 | --- | --- | --- |
 | Diagnosing any bug, test failure, or unexpected behavior | `systematic-debugging` | Companion to the `debugger` role — load before proposing any fix. Four-phase gate (root cause → pattern → hypothesis → implementation); no fixes without root-cause investigation. Vendored from obra/superpowers. |
+| Answering a research question too big for one search pass | `deep-research` | Companion to the `researcher` role — invoke when a question has multiple contested claims, an unknown landscape, needs more than ~three independent sources, or a decision hangs on it. Staged pipeline (decompose → parallel multi-modal sweeps → adversarial verification → loop-until-dry critic → cited synthesis); runs as the research-to-decision team's researcher stage where that team is declared. |
+| Stress-testing a plan, decision, or idea before acting | `grill-me` | Relentless round-based interview: frontier questions with recommended answers, agent fetches facts, user makes decisions; done when nothing is silently assumed. Vendored from mattpocock/skills. |
+| Creating or updating a skill in this repo | `skill-creator` | Meta-gate and Contributing rule: interviews intent, drafts the SKILL.md, runs evals/benchmarks, tunes description triggering. Vendored from anthropics/skills. Invoke explicitly before writing any SKILL.md by hand. |
 | Gating a design spec BEFORE building | `architect-design-review` | Reads a spec, generates Mermaid architecture diagrams, evaluates against architecture principles, writes an HTML report to `docs/architecture/review/`. Never reviews existing code. |
 | Auditing an EXISTING codebase | `architect-codebase-review` | Explores the code, produces current-state diagrams, evaluates, proposes improvements with revised diagrams, writes an HTML report. Never evaluates design specs. |
 
@@ -131,16 +135,23 @@ and `define-team` scaffolds custom ones.
 
 ### Companion skills (external, not vendored)
 
-Two design-side skills are wired into roles by name but deliberately not copied into
+Four external plugins are wired into roles by name but deliberately not copied into
 `skills/` — install them from their own sources where you want them:
 
 | Skill | Used by | Install | Why not vendored |
 | --- | --- | --- | --- |
-| `frontend-design` | `ux-designer` | Claude Code: `/plugin install frontend-design@claude-code-plugins` (Anthropic's official marketplace, [anthropics/claude-code](https://github.com/anthropics/claude-code)) | Proprietary licence — the source repo's LICENSE.md is "© Anthropic PBC. All rights reserved", Commercial Terms of Service — so it is not redistributable here. |
+| `frontend-design` | `ux-designer` | Claude Code: `/plugin install frontend-design@claude-plugins-official` (Anthropic's official marketplace, [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official)) | Proprietary licence — the source repo's LICENSE.md is "© Anthropic PBC. All rights reserved", Commercial Terms of Service — so it is not redistributable here. |
+| `claude-security` | `security-engineer` (advisory — its `/claude-security` command runs a multi-agent scan-codebase / scan-changes / suggest-patches menu) | Claude Code: `/plugin install claude-security@claude-plugins-official` ([docs](https://code.claude.com/docs/en/claude-security); needs Claude Code ≥ 2.1.154, a paid plan, and `python3` ≥ 3.9.6) | Proprietary licence — the plugin's LICENSE grants a limited internal-use licence "solely with Claude Code" (© Anthropic PBC), so it is not redistributable here. |
 | `ui-ux-pro-max` | `ux-designer`, `frontend-developer`, `design-reviewer` (advisory only) | `/plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill` then `/plugin install ui-ux-pro-max@ui-ux-pro-max-skill` ([repo](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill), MIT) | ~12 MB across ~337 files of searchable design databases — far past this repo's library size budget. |
+| `system-design-skills` | `tech-lead` (gate/conformance vocabulary), `backend-developer`, `data-engineer`, `devops-engineer` (building blocks per concern — all advisory) | Claude Code: `/plugin marketplace add proyecto26/system-design-skills` then `/plugin install system-design-skills` ([repo](https://github.com/proyecto26/system-design-skills), MIT); other tools: `npx skills add proyecto26/system-design-skills` (vendors the 22 skills only — the `/design` command and orchestrator agent ship via the plugin channel) | MIT, but 22 interlinked skills — ~824 KB across 127 files — past the library size budget, and the orchestrator routes among them by name, so the collection only makes sense whole. |
 
-Both are load-before-writing references, not method gates; every role that names them
-degrades gracefully where they are absent.
+All four are load-before-writing references, not method gates; every role that names
+them degrades gracefully where they are absent. In Claude Code, `frontend-design` and
+`claude-security` are also declared as cross-marketplace dependencies in
+`.claude-plugin/plugin.json`, so installing this plugin auto-installs both from
+Anthropic's own marketplace — a pointer, not redistribution, which is what their
+proprietary licences require. `ui-ux-pro-max` and `system-design-skills` live in
+third-party marketplaces and stay manual installs.
 
 ## Guards
 
@@ -281,12 +292,15 @@ Hard rules when editing anything in this repo:
    the `VENDOR-LICENSE-*.txt` files must be preserved.
 4. **OpenAI sidecar per skill.** Every skill directory carries
    `agents/openai.yaml` with `interface.display_name` and `interface.short_description`;
-   add `default_prompt` only for explicitly-invocable skills (the nine listed above),
+   add `default_prompt` only for explicitly-invocable skills (the twelve listed above),
    never for load-before-writing references.
 5. **English only.** All content in this repo is written in English.
 6. **Keep the consumption docs true.** Adding or changing a harness class means updating
    the README consumption matrix and the relevant `docs/consume-<tool>.md`; a new
    explicitly-invocable skill also needs a `commands/` wrapper and a `default_prompt`.
+7. **Skills are authored with skill-creator.** New or updated skills in this repo are
+   authored with the `skill-creator` skill (vendored here) — invoke it before writing a
+   SKILL.md by hand.
 
 ## Consuming this harness
 

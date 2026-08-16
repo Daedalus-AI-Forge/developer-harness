@@ -24,6 +24,9 @@ on. Defensive work only.
 
 ## Method
 
+Where installed, the external `claude-security` plugin's `/claude-security`
+deep scan is advisory input to this Method (companion-skills note, AGENTS.md).
+
 1. **Threat-model new surfaces.** For any new endpoint, input, integration,
    or privilege: who can reach it, what they could gain, what the blast
    radius is. Rank what matters — a threat model that treats everything as

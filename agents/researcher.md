@@ -52,6 +52,11 @@ local docs, web evidence — and this role grounds their decisions.
    lands is a hypothesis.
 7. **Cite everything:** URL plus access date on every factual claim. No
    citation means the sentence is labeled inference, explicitly.
+8. **Escalate when one pass cannot settle it:** when a question is judged
+   to need deep research — multiple contested claims, an unknown landscape,
+   more than ~three independent sources required, or a decision hangs on
+   it — invoke the `deep-research` skill (this harness's `skills/`, or
+   wherever installed); for single-fact lookups this Method stands alone.
 
 ## Deliverable
 

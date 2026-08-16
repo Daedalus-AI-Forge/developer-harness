@@ -21,12 +21,16 @@ Two vendoring shapes are in use, and the difference matters when auditing:
 | `typescript-pro` | VoltAgent/awesome-claude-code-subagents | `categories/02-language-specialists/typescript-pro.md` | MIT | `947b44ca0c58d606b084e9cb1a2389335b49278b` | converted | 2026-07-27 |
 | `architect-design-review` + `architect-codebase-review` + `architect-shared/` + `contracts/` | [sirius-zuo/architect-skills](https://github.com/sirius-zuo/architect-skills) | whole repo minus `tests/`, `RUNS.md`, assets (its own `install.sh`) | MIT | `2513f0f92297e8813f03d1e31c5a075372152133` | verbatim (4 sibling dirs — skills reference `../architect-shared/`) | 2026-08-02 |
 | `systematic-debugging` | [obra/superpowers](https://github.com/obra/superpowers) | `skills/systematic-debugging` | MIT | `b36e0829c6d0140e93cfef2ca599b1b07d4a7797` | verbatim | 2026-08-16 |
+| `grill-me` | [mattpocock/skills](https://github.com/mattpocock/skills) | `skills/productivity/grilling` (method) + `skills/productivity/grill-me` (dispatcher) | MIT | `86cba45f4244b2545112d13e77ba82eb2bfad325` | converted (collapsed) | 2026-08-16 |
+| `skill-creator` | [anthropics/skills](https://github.com/anthropics/skills) | `skills/skill-creator` | Apache-2.0 | `f6656c1256d5a8adfa37db9110046ef20bac644c` | verbatim | 2026-08-16 |
 
 Licence texts retained as required: `VENDOR-LICENSE-pm-claude-skills-MIT.txt`,
 `VENDOR-LICENSE-agents365-mermaid-MIT.txt`,
 `VENDOR-LICENSE-voltagent-awesome-claude-code-subagents-MIT.txt`,
 `VENDOR-LICENSE-architect-skills-MIT.txt`,
-`VENDOR-LICENSE-obra-superpowers-MIT.txt`.
+`VENDOR-LICENSE-obra-superpowers-MIT.txt`,
+`VENDOR-LICENSE-mattpocock-skills-MIT.txt` (skill-creator's Apache-2.0 licence
+is retained in-directory as `skills/skill-creator/LICENSE.txt` — see its note below).
 
 `architect-skills` pre-install content review (2026-08-02): no egress or exec in any
 installed file (`install.sh` is plain `cp -r` and is not itself installed); both SKILL.md files
@@ -58,6 +62,26 @@ plugin-namespaced names (`superpowers:test-driven-development`,
 lines as pointers to the upstream plugin, not resolvable skill names. It is wired as the
 companion to the `agents/develop-team/debugger.md` role contract.
 
+`grill-me` (2026-08-16): upstream splits a dispatcher skill (`grill-me`, a 157-byte
+pointer) from the method skill (`grilling`); the pair was collapsed into one skill here —
+the `grilling` body vendored byte-identical (blob `1c2bb7bf` verified against revision
+`86cba45`) under house frontmatter, with the dispatcher's role played by
+`commands/grill-me.md`. Upstream's two `openai.yaml` sidecars were replaced by one house
+sidecar carrying a `default_prompt`. `VENDOR-LICENSE-mattpocock-skills-MIT.txt` added to
+the retained-licence list above.
+
+`skill-creator` (2026-08-16): all 18 upstream files were taken — `agents/` (the
+grader/comparator/analyzer subagent instructions), `eval-viewer/` + `assets/` (the eval
+review UI), `references/schemas.md`, and `scripts/` (the eval/benchmark/packaging tooling,
+exec bits preserved) — every file is a runtime resource, nothing was skipped. All copied
+files verified byte-identical to upstream revision `f6656c1` by git blob hash; the sole
+modification is the house `license` + `metadata.source` frontmatter fields. The upstream
+repo has NO root LICENSE and its document skills are source-available only — this skill
+ships its own Apache-2.0 LICENSE.txt (© 2026 Anthropic PBC), retained in-directory, which
+satisfies attribution. The scripts need Python 3, plus optionally a local `claude` CLI for
+running evals. It is wired as the harness's meta-rule via the Contributing rule in
+AGENTS.md: new or updated skills in this repo are authored with `skill-creator`.
+
 Evaluated, not vendored (2026-08-16): `frontend-design`
 ([anthropics/claude-code](https://github.com/anthropics/claude-code), plugin
 `plugins/frontend-design` v1.1.0, plugin last touched `b407389`) — size is fine (a single
@@ -66,9 +90,31 @@ reserved", Commercial Terms of Service; verified upstream 2026-08-16), so it can
 redistributed here. `ui-ux-pro-max`
 ([nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)
 v2.5.0) — MIT (verified upstream 2026-08-16), but ~11.7 MB across 337 files of searchable
-design databases (plus an Apache-2.0 `ui-styling` sub-skill), far past library size. Both
-are wired reference-only: the `ux-designer`, `frontend-developer`, and `design-reviewer`
-role contracts name them "where installed", and install pointers live in AGENTS.md's
-companion-skills note.
+design databases (plus an Apache-2.0 `ui-styling` sub-skill), far past library size.
+`claude-security`
+([anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official),
+plugin `plugins/claude-security` v0.10.0) — same verdict as `frontend-design`: the
+plugin's own LICENSE is proprietary (a limited internal-use licence "solely with Claude
+Code", © Anthropic PBC; verified upstream 2026-08-16), so it cannot be redistributed
+here. All three are wired reference-only: the `ux-designer`, `frontend-developer`,
+`design-reviewer`, and `security-engineer` role contracts name them "where installed",
+and install pointers live in AGENTS.md's companion-skills note. `frontend-design` and
+`claude-security` are additionally declared as cross-marketplace dependencies in
+`.claude-plugin/plugin.json` (allowlisted in `.claude-plugin/marketplace.json`), so
+Claude Code auto-installs them from Anthropic's own marketplace — an install pointer,
+not redistribution, which is what their proprietary licences require.
+
+`system-design-skills`
+([proyecto26/system-design-skills](https://github.com/proyecto26/system-design-skills)
+v0.1.0) — MIT (standard text, © 2026 Proyecto 26; verified upstream 2026-08-16), but 22
+interlinked skills totalling ~824 KB across 127 files in `skills/` alone (plus an
+orchestrator agent, a `/design` command, and a shared GUIDE), past library size on both
+prongs. The skills cross-reference each other by bare skill name and the `system-design`
+orchestrator routes among all 22, so vendoring any single block would ship dangling
+references; it is also a well-scoped plugin with its own marketplace manifest, so per the
+note above the plugin route is preferred. Wired reference-only: the `tech-lead`,
+`backend-developer`, `data-engineer`, and `devops-engineer` role contracts name its
+building blocks "where installed" (advisory — the approved design in `<design-docs>`
+always wins), and install pointers live in AGENTS.md's companion-skills note.
 
 To update: re-copy from the source repo and bump the revision above.

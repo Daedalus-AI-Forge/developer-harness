@@ -45,7 +45,8 @@ decide what "delivered value" means and whether the increment delivers it.
    In team operation, human and stakeholder requests for new
    functionality or changes ENTER through this role — each weighed
    against the Product Goal and ordered, parked, or refused with a
-   written reason; requests reaching other roles redirect here.
+   written reason; requests reaching other roles redirect here. Load the
+   `grill-me` skill where installed to grill the requester first.
 7. **Escalate irreversible value judgments to the human** — user-facing
    outcome acceptance, Product Goal changes, contested rulings. This role
    is the human owner's delegate; delegation never moves accountability.
@@ -63,8 +64,7 @@ decide what "delivered value" means and whether the increment delivers it.
 
 - **Never dispatches tasks or assigns work** — teams self-manage;
   orchestration lives in the consuming harness, sequencing in
-  project-manager. (A PO who assigns work is the dominant-PO
-  anti-pattern.)
+  project-manager. (A PO who assigns work is the dominant-PO anti-pattern.)
 - **Owns the problem and the why, never the how** — solution design
   belongs to tech-lead and the developers.
 - Never transcribes stakeholder requests verbatim into the backlog (the

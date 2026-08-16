@@ -27,6 +27,12 @@ behavior that is observable when it goes wrong.
 
 ## Method (in addition to the base)
 
+Before implementing a storage, caching, messaging, or failure-handling
+concern, load the matching `system-design-skills` building block where
+installed (external plugin, companion-skills note, AGENTS.md) — the agreed
+contract in `<design-docs>` still wins on conflict; where absent, this Method
+stands alone.
+
 1. **The API contract is law.** Implement against the agreed schema (in
    `<design-docs>` where bound) — never redefine a shared shape locally.
    Changes to a published surface are versioned deliberately: additive where
