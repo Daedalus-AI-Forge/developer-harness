@@ -18,7 +18,7 @@ developer-harness/
 ├── commands/                # 6 thin /command wrappers around explicitly-invocable skills
 ├── agents/                  # subagent role-contract template + install guide (no concrete roles)
 ├── hooks/                   # guard scripts (scripts/secret-scan.sh) + wiring template (hooks.json)
-├── rules/                   # AGENTS.md/CLAUDE.md section templates (## Roles, ## Guards)
+├── rules/                   # AGENTS.md/CLAUDE.md section templates (## Roles, ## Guards, ## Engineering discipline)
 ├── docs/                    # consume-claude-code.md, consume-codex.md, consume-cursor.md, consume-opencode.md
 ├── .claude-plugin/          # plugin.json + marketplace.json — repo root is a Claude Code plugin
 ├── .codex-plugin/           # plugin.json — repo root is also a Codex plugin

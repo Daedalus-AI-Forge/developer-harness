@@ -23,7 +23,7 @@ developer-harness/
 ├── commands/          # thin /command wrappers around explicitly-invocable skills
 ├── agents/            # generic subagent role contracts (template + install guide)
 ├── hooks/             # tool-neutral guard scripts + wiring template (hooks.json)
-├── rules/             # AGENTS.md / CLAUDE.md section templates (roles, guards)
+├── rules/             # AGENTS.md / CLAUDE.md section templates (roles, guards, engineering discipline)
 ├── docs/              # per-tool consumption guides (consume-<tool>.md)
 └── .claude-plugin/    # plugin.json + marketplace.json (repo root = plugin root)
 ```
