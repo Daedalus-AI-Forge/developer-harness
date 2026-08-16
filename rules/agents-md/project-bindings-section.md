@@ -23,6 +23,8 @@ Each contract's `## Bindings` block declares which placeholders it
 | Placeholder | Meaning | Example value |
 | --- | --- | --- |
 | `<design-docs>` | Where specs and design docs live | `docs/design/` |
+| `<design-system>` | Where the design system's source of truth lives — tokens, component conventions, theme (a tokens directory or theme doc, not the feature specs in `<design-docs>`) | `src/theme/tokens/` |
+| `<design-assets>` | Where source art/asset files live (models, rigs, textures, audio) — distinct from code and docs | `assets/source/` |
 | `<source-root>` | Production source code | `src/` |
 | `<test-command>` | How to run the test suite | `pytest -q` |
 | `<lint-command>` | How to run lint / static checks | `ruff check .` |

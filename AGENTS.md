@@ -16,7 +16,14 @@ developer-harness/
 │   ├── architect-shared/    #   shared resources for the two architect skills (NOT a skill)
 │   └── contracts/           #   review contracts for the architect skills (NOT a skill)
 ├── commands/                # 7 thin /command wrappers around explicitly-invocable skills
-├── agents/                  # generic role contracts: coordination root (product-owner, person-of-contact) + method roles (debugger, qa-reviewer, researcher, legal-reviewer + tech-lead, project-manager, product-manager) + dev roles (developer, frontend-developer, backend-developer, mobile-developer, data-engineer, devops-engineer, security-engineer) + template + install guide
+├── agents/                  # generic role contracts in four groups (+ _template.md + install guide)
+│   │                        #   root — coordination: product-owner, person-of-contact
+│   ├── project-control/     #   product-manager, project-manager, legal-reviewer, researcher
+│   ├── develop-team/        #   tech-lead, developer, frontend-developer, backend-developer,
+│   │                        #     devops-engineer, mobile-developer, data-engineer,
+│   │                        #     security-engineer, qa-reviewer, debugger
+│   └── design-team/         #   ux-designer, design-reviewer, content-designer,
+│                            #     design-system-steward, technical-artist
 ├── hooks/                   # guard scripts (scripts/secret-scan.sh) + wiring template (hooks.json)
 ├── rules/                   # AGENTS.md/CLAUDE.md section templates (## Roles, ## Teams, ## Guards, ## Engineering discipline, ## Project bindings, ## RACI)
 ├── docs/                    # consume-claude-code.md, consume-codex.md, consume-cursor.md, consume-opencode.md
@@ -130,7 +137,8 @@ move it to an ignored env file — never bypass the guard.
 
 ## Roles
 
-`agents/` ships sixteen concrete generic roles in three tiers.
+`agents/` ships twenty-one concrete generic roles in four groups: the coordination pair
+at the directory root, plus `project-control/`, `develop-team/`, and `design-team/`.
 
 **Coordination root.** **product-owner** (owns the Product Goal and the single ordered
 backlog, authors acceptance criteria before work starts, accepts or returns delivered
@@ -140,34 +148,55 @@ outcomes to the Responsible/Accountable parties, brokers cross-component collabo
 — routes and brokers, never decides value or assigns work). Dispatch itself lives in the
 consuming tool's orchestration, not in any role.
 
-**Method roles.** Standalone specialists: **debugger** (root cause with evidence,
-proposes rather than fixes), **qa-reviewer** (adversarial verification with executed
-evidence, never implements), **researcher** (cited primary sources, inference labeled as
-inference), **legal-reviewer** (red-flag ledgers, clause summaries, attorney question
-lists — analysis for human review, never final legal advice; any role may engage it
-before public-facing or license-touching decisions). Management chain: **tech-lead**
-(design gate before build, buy-vs-build, seam pinning, design-conformance review — never
-implements), **project-manager** (goals into sequenced, owned tasks with schedule and
-risk — consumes product direction, never sets it), **product-manager** (problem framing,
+**Project control (`project-control/`).** **product-manager** (problem framing,
 personas, prioritization rationale, success metrics — direction not delivery; legal
-exposure routes to legal-reviewer). The boundary between the trio: product-manager
+exposure routes to legal-reviewer), **project-manager** (goals into sequenced, owned
+tasks with schedule and risk — consumes product direction, never sets it),
+**legal-reviewer** (red-flag ledgers, clause summaries, attorney question lists —
+analysis for human review, never final legal advice; any role may engage it before
+public-facing or license-touching decisions), **researcher** (cited primary sources,
+inference labeled as inference). The boundary in the management trio: product-manager
 answers "are we building the right thing?", product-owner "what is most valuable next —
 and did it deliver?", project-manager "will it ship predictably?".
 
-**Developer roles.** **developer** is the generic base (TDD from a failing test, repo
+**Develop team (`develop-team/`).** **tech-lead** gates (design gate before build,
+buy-vs-build, seam pinning, design-conformance review — never implements);
+**developer** is the generic implementation base (TDD from a failing test, repo
 conventions, small reviewable changes — implements, never approves its own work); the
-rest cover one layer's concerns each: **frontend-developer** (UI state, accessibility,
-responsive/asset budgets, design fidelity, rendering evidence), **backend-developer**
-(API contract discipline, data integrity and migrations, failure modes and idempotency,
-observability hooks), **mobile-developer** (platform lifecycle and background-execution
-constraints, offline-first data, permissions/privacy UX, app-store review discipline,
-device evidence, bundle/battery budgets), **data-engineer** (schema/migration custody,
-idempotent replayable pipelines, data-quality checks as code, PII discipline with
-lineage, cost awareness), **devops-engineer** (pipeline custody, reproducible builds,
-secrets hygiene, release/rollback — never bypasses gates), and **security-engineer**
-(defensive only: threat modeling, secrets hygiene, supply-chain vetting,
-least-privilege and trust-boundary review — reviews and hardens, never builds
-offensive tooling).
+layer roles cover one layer's concerns each: **frontend-developer** (UI state,
+accessibility, responsive/asset budgets, design fidelity, rendering evidence),
+**backend-developer** (API contract discipline, data integrity and migrations, failure
+modes and idempotency, observability hooks), **mobile-developer** (platform lifecycle
+and background-execution constraints, offline-first data, permissions/privacy UX,
+app-store review discipline, device evidence, bundle/battery budgets),
+**data-engineer** (schema/migration custody, idempotent replayable pipelines,
+data-quality checks as code, PII discipline with lineage, cost awareness),
+**devops-engineer** (pipeline custody, reproducible builds, secrets hygiene,
+release/rollback — never bypasses gates), and **security-engineer** (defensive only:
+threat modeling, secrets hygiene, supply-chain vetting, least-privilege and
+trust-boundary review — reviews and hardens, never builds offensive tooling); and two
+verifiers close the loop: **debugger** (root cause with evidence, proposes rather than
+fixes) and **qa-reviewer** (adversarial verification with executed evidence, never
+implements).
+
+**Design team (`design-team/`).** **ux-designer** (buildable design specs: flows,
+per-screen states including empty/loading/error/first-run, verifiable visual intent —
+consumes product direction, never edits production code), **design-reviewer** (verdict
+on whether the built experience matches the designed one: fidelity state-by-state,
+accessibility with executed checks plus labeled judgment, design-system conformance),
+**content-designer** (interface language: one name per concept in a terminology
+glossary, errors and empty states as first-class content, audits of the strings the
+code actually ships; legal-sounding copy routes to legal-reviewer),
+**design-system-steward** (tokens, components, and conventions in one source of truth;
+drift audits with canonical replacements; gated additions — reports drift, never
+patches product code), and **technical-artist** (opt-in, for real-time/3D/character
+products: asset budgets as gates, mechanical asset validation, the source-to-runtime
+pipeline documented — validates and specifies, never authors art). design-reviewer is
+independent of qa-reviewer: the experience verdict and the functional verdict are
+separate, and neither substitutes for the other. The group adds two bindings to the
+vocabulary: `<design-system>` (the design system's source of truth — tokens, component
+conventions, theme) and `<design-assets>` (source art/asset files, distinct from code
+and docs).
 
 **Language lives in skills; layer lives in roles; compose per repo.** A
 language-specific developer is a dev role plus the matching language skills — e.g.

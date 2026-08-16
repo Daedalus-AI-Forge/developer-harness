@@ -24,8 +24,10 @@ This picks up by convention, from the plugin root:
 - `commands/` — flat-file wrappers (Claude Code treats these as skills too;
   they duplicate the `skills/` entries by name, so in Claude Code invoke the
   skills directly — the wrappers exist for tools that consume command files)
-- `agents/` — role templates appear as subagents (`_template.md` is a
-  scaffold, not a usable role; delete or replace it in real use)
+- `agents/` — role templates appear as subagents; the directory is read
+  recursively, so the team subfolders (`project-control/`, `develop-team/`,
+  `design-team/`) load as-is (`_template.md` is a scaffold, not a usable
+  role; delete or replace it in real use)
 - `hooks/hooks.json` — wires `hooks/scripts/secret-scan.sh` as a `PreToolUse`
   guard on `Bash(git commit*)`; `${CLAUDE_PLUGIN_ROOT}` resolves the path
 
@@ -47,7 +49,9 @@ alongside.
 ## Piecemeal
 
 - **Agents**: copy a role file into `.claude/agents/` — format is markdown
-  with `name` + `description` frontmatter, optional `model: inherit`.
+  with `name` + `description` frontmatter, optional `model: inherit`. Claude
+  Code reads `.claude/agents/` recursively, so the grouped structure
+  (`agents/develop-team/`, `agents/design-team/`, …) can be copied as-is.
 - **Hooks**: copy `hooks/scripts/secret-scan.sh` and wire it in
   `.claude/settings.json` — exact JSON in [`../hooks/README.md`](../hooks/README.md).
 - **Rules**: paste [`../rules/agents-md/guards-section.md`](../rules/agents-md/guards-section.md)

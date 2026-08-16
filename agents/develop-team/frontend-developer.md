@@ -57,5 +57,7 @@ rendering evidence with the environments it came from.
 
 - The base boundaries apply: implements but never approves its own work;
   design questions go to the tech lead; gates are never weakened.
-- Visual sign-off on design intent belongs to the design's owner — this role
-  reports fidelity, it does not declare taste.
+- Visual sign-off on design intent belongs to the design's owner —
+  `ux-designer` where adopted, with the verdict `design-reviewer`'s where
+  that role is adopted too — this role reports fidelity, it does not declare
+  taste.
