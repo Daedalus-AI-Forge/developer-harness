@@ -16,9 +16,9 @@ developer-harness/
 │   ├── architect-shared/    #   shared resources for the two architect skills (NOT a skill)
 │   └── contracts/           #   review contracts for the architect skills (NOT a skill)
 ├── commands/                # 6 thin /command wrappers around explicitly-invocable skills
-├── agents/                  # subagent role-contract template + install guide (no concrete roles)
+├── agents/                  # generic role contracts (debugger, qa-reviewer, researcher) + template + install guide
 ├── hooks/                   # guard scripts (scripts/secret-scan.sh) + wiring template (hooks.json)
-├── rules/                   # AGENTS.md/CLAUDE.md section templates (## Roles, ## Guards, ## Engineering discipline)
+├── rules/                   # AGENTS.md/CLAUDE.md section templates (## Roles, ## Guards, ## Engineering discipline, ## Project bindings)
 ├── docs/                    # consume-claude-code.md, consume-codex.md, consume-cursor.md, consume-opencode.md
 ├── .claude-plugin/          # plugin.json + marketplace.json — repo root is a Claude Code plugin
 ├── .codex-plugin/           # plugin.json — repo root is also a Codex plugin
@@ -121,9 +121,17 @@ move it to an ignored env file — never bypass the guard.
 
 ## Roles
 
-`agents/` holds a role-contract **template** (`_template.md`: frontmatter + Mission /
-Method / Deliverable / Boundaries) and an install guide — no concrete roles. Actual role
-contracts belong in consuming repos (e.g. their `.claude/agents/`), routed through an
+`agents/` ships three concrete generic roles — **debugger** (root cause with evidence,
+proposes rather than fixes), **qa-reviewer** (adversarial verification with executed
+evidence, never implements), **researcher** (cited primary sources, inference labeled as
+inference) — plus the role-contract **template** (`_template.md`: frontmatter + Mission /
+Method / Deliverable / Boundaries) for authoring more. The shipped roles reference
+project layout only through `<placeholder>` bindings (`<source-root>`, `<test-command>`,
+…) that a consuming repo resolves in a `## Project bindings` section of its AGENTS.md or
+CLAUDE.md — template in
+[rules/agents-md/project-bindings-section.md](rules/agents-md/project-bindings-section.md);
+a missing binding means the agent asks instead of guessing. Project-specific roles still
+belong in consuming repos (e.g. their `.claude/agents/`), and both kinds route through an
 AGENTS.md `## Roles` section for tools that cannot read markdown agents (Codex, OpenCode).
 See [agents/README.md](agents/README.md) and
 [rules/agents-md/roles-section.md](rules/agents-md/roles-section.md).

@@ -21,9 +21,9 @@ developer-harness/
 │   │                  #   diagrams/planning: mermaid-skill, gantt-roadmap
 │   │                  #   shared resources (not skills): architect-shared/, contracts/
 ├── commands/          # thin /command wrappers around explicitly-invocable skills
-├── agents/            # generic subagent role contracts (template + install guide)
+├── agents/            # generic subagent role contracts (debugger, qa-reviewer, researcher + template)
 ├── hooks/             # tool-neutral guard scripts + wiring template (hooks.json)
-├── rules/             # AGENTS.md / CLAUDE.md section templates (roles, guards, engineering discipline)
+├── rules/             # AGENTS.md / CLAUDE.md section templates (roles, guards, engineering discipline, project bindings)
 ├── docs/              # per-tool consumption guides (consume-<tool>.md)
 └── .claude-plugin/    # plugin.json + marketplace.json (repo root = plugin root)
 ```

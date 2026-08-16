@@ -3,6 +3,25 @@
 Generic, project-agnostic subagent **role contracts**: markdown files with YAML
 frontmatter that define a role's mission, method, deliverable, and boundaries.
 
+## Shipped roles
+
+| Role | Delegate when |
+| --- | --- |
+| [`debugger.md`](debugger.md) | Any bug, regression, flaky test, or unexplained behavior — finds root cause with evidence; proposes fixes, applies them only when explicitly asked. |
+| [`qa-reviewer.md`](qa-reviewer.md) | Adversarial review of a diff, PR, or "done" claim — runs the tests, reads the output, hunts silent failures; never implements. |
+| [`researcher.md`](researcher.md) | Research grounding a decision — cited primary sources with access dates, adversarial verification, inference labeled as inference. |
+
+## Project bindings
+
+The shipped roles stay project-agnostic by referring to a small fixed
+placeholder vocabulary — `<source-root>`, `<test-command>`, `<design-docs>`,
+etc. — instead of hard-coding any layout. A consuming repo resolves them by
+pasting a `## Project bindings` table into its `AGENTS.md` (or `CLAUDE.md`);
+template in
+[`../rules/agents-md/project-bindings-section.md`](../rules/agents-md/project-bindings-section.md).
+If a role needs a binding the repo has not defined, it asks rather than
+guessing a path.
+
 ## What belongs here
 
 - Roles that make sense in *any* codebase (e.g. a reviewer, a test author, a

@@ -5,6 +5,10 @@ placeholder rows with real roles. Each contract file is a markdown role
 definition (see `agents/_template.md` in developer-harness for the
 Mission / Method / Deliverable / Boundaries format).
 
+If any listed contract uses `<placeholder>` bindings (the generic roles in
+developer-harness's `agents/` do), also add a `## Project bindings` section —
+template in [`project-bindings-section.md`](project-bindings-section.md).
+
 ---
 
 ## Roles
