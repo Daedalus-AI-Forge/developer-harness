@@ -12,10 +12,10 @@ this repo or selecting a skill *from* it.
 
 ```
 developer-harness/
-├── skills/                  # 19 skills (SKILL.md format), one directory per skill
+├── skills/                  # 20 skills (SKILL.md format), one directory per skill
 │   ├── architect-shared/    #   shared resources for the two architect skills (NOT a skill)
 │   └── contracts/           #   review contracts for the architect skills (NOT a skill)
-├── commands/                # 7 thin /command wrappers around explicitly-invocable skills
+├── commands/                # 8 thin /command wrappers around explicitly-invocable skills
 ├── agents/                  # generic role contracts in five groups (+ _template.md + install guide)
 │   │                        #   root — coordination: product-owner, person-of-contact
 │   ├── project-control/     #   product-manager, project-manager, legal-reviewer, researcher
@@ -39,11 +39,11 @@ developer-harness/
 
 Invocation by tool: `/name` in Claude Code (`/developer-harness:name` when installed as the
 plugin) and Cursor; `$name` in Codex; OpenCode loads skills on demand through its native
-`skill` tool when the task matches a skill description. Seven skills are explicitly
+`skill` tool when the task matches a skill description. Eight skills are explicitly
 invocable and ship both a `commands/` wrapper and a Codex `default_prompt`:
 **tighten-types, contract-docstrings, architect-design-review, architect-codebase-review,
-mermaid-skill, gantt-roadmap, feature-build**. The rest are load-before-writing references
-that tools auto-select by description.
+mermaid-skill, gantt-roadmap, feature-build, define-team**. The rest are
+load-before-writing references that tools auto-select by description.
 
 ### Python (6 skills)
 
@@ -115,14 +115,17 @@ Mermaid can draw Gantt charts too — prefer `gantt-roadmap` when the point is t
 *schedule* (dates, dependencies, critical path); prefer `mermaid-skill` when the point is
 the *diagram and its export*.
 
-### Team orchestration (1 skill)
+### Team orchestration (2 skills)
 
 | You are doing | Skill | Why / when |
 | --- | --- | --- |
 | Building one scoped feature end-to-end with gates | `feature-build` | Runs the team chain: tech-lead plan gate → TDD implementation → tech-lead design-conformance review → qa-reviewer verdict. One fix round per gate; only the verifier declares done. In tools with subagent support each stage runs as its own subagent with the role contract loaded; elsewhere one agent adopts the roles in sequence. |
+| Declaring a custom multi-role team in a repo | `define-team` | Interviews you (name → members from the harness role library → chain with return paths → handoff record → authority rules → optional team memory), validates the entry (every member resolves, exactly one done-authority, every stage has a return path), then appends it to the repo's `## Teams` section and shows the diff. Invoke explicitly. |
 
 `feature-build` composes the roles in `agents/`; the same chain is declarable per repo as
-a team (template: `rules/agents-md/teams-section.md`).
+a team (template: `rules/agents-md/teams-section.md`). The template ships five predefined
+teams — feature-build, design-review, bug-diagnosis, research-to-decision, legal-vetting —
+and `define-team` scaffolds custom ones.
 
 ## Guards
 
@@ -231,8 +234,10 @@ cannot be established disables the role for the repo — it never proceeds on a 
 path, while optional bindings degrade gracefully. Multi-role chains — members,
 stage order, handoff record, authority rules, optional team memory — are declared per
 repo in a `## Teams` section (template in
-[rules/agents-md/teams-section.md](rules/agents-md/teams-section.md)); the
-`feature-build` skill ships one such chain as an executable process. The
+[rules/agents-md/teams-section.md](rules/agents-md/teams-section.md)); the template
+ships five predefined teams (feature-build, design-review, bug-diagnosis,
+research-to-decision, legal-vetting), the `feature-build` skill ships that chain as an
+executable process, and the `define-team` skill scaffolds custom entries. The
 `person-of-contact` role consumes a per-repo `## RACI` section — component ownership
 rows it routes communication by — template in
 [rules/agents-md/raci-section.md](rules/agents-md/raci-section.md). Project-specific
@@ -257,7 +262,7 @@ Hard rules when editing anything in this repo:
    the `VENDOR-LICENSE-*.txt` files must be preserved.
 4. **OpenAI sidecar per skill.** Every skill directory carries
    `agents/openai.yaml` with `interface.display_name` and `interface.short_description`;
-   add `default_prompt` only for explicitly-invocable skills (the seven listed above),
+   add `default_prompt` only for explicitly-invocable skills (the eight listed above),
    never for load-before-writing references.
 5. **English only.** All content in this repo is written in English.
 6. **Keep the consumption docs true.** Adding or changing a harness class means updating
