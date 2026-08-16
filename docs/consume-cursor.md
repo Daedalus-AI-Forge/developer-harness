@@ -18,6 +18,11 @@ Cursor loads skills from `.agents/skills/` and `.cursor/skills/` (project) and
 as-is. Invoke a skill by typing `/` in Agent chat and picking its name
 (e.g. `/tighten-types`), or let Cursor auto-select by description.
 
+Caveat: the two architect skills depend on the sibling dirs
+`skills/architect-shared/` and `skills/contracts/` (no SKILL.md, so per-skill
+installers may skip them) — when vendoring selectively, copy those two dirs
+alongside.
+
 ## Commands
 
 Current Cursor docs have folded slash commands into skills (a built-in

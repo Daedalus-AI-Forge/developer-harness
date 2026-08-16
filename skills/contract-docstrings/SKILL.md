@@ -21,7 +21,7 @@ $ARGUMENTS
 
 - If the user names specific files or directories, scope your work to those.
 - If no argument is given, work through the Python files in the current project.
-- For large codebases, use `AskUserQuestion` to let the user choose which
+- For large codebases, ask the user (via `AskUserQuestion` where available) which
   modules or packages to start with. Don't try to do everything at once.
 - Skip trivial functions (one-liners, simple property accessors, `__repr__`,
   etc.) unless they have non-obvious failure modes.
@@ -46,8 +46,8 @@ $ARGUMENTS
    configured. Your edits are docstrings only — they shouldn't break anything,
    but confirm.
 
-Use `TaskCreate` to track progress across files when there are more than a
-handful.
+Track progress across files (via `TaskCreate` or your tool's task list, where
+available) when there are more than a handful.
 
 ## Analysis Checklist
 
@@ -278,5 +278,5 @@ These are the findings the user will care about most.
   way you disagree with, document the behaviour without editorialising. The
   reader can form their own opinion.
 - **Ask when uncertain.** If you're unsure whether something is a genuine
-  precondition or just a type constraint already captured by the signature, use
-  `AskUserQuestion`.
+  precondition or just a type constraint already captured by the signature, ask
+  the user (via `AskUserQuestion` where available).

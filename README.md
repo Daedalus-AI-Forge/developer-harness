@@ -32,7 +32,7 @@ developer-harness/
 
 | Harness class | Claude Code | Codex | Cursor | OpenCode |
 | --- | --- | --- | --- | --- |
-| **skills/** | native (plugin or `.agents/skills/`) | native (`.agents/skills/`, invoke `$name`) | native (`.agents/skills/` et al., invoke `/name`) | native (`.agents/skills/` et al., `skill` tool) |
+| **skills/** | native (plugin or `.agents/skills/`) | native (plugin or `.agents/skills/`) | native (`.agents/skills/` et al., invoke `/name`) | native (`.agents/skills/` et al., `skill` tool) |
 | **commands/** | native (plugin; skills already cover it) | routing — no command files, use `$name` | routing — use `/name` skills (legacy copy) | copy → `.opencode/commands/` |
 | **agents/** | native (plugin or `.claude/agents/`) | routing — `## Roles` in AGENTS.md | copy → `.claude/agents/` (read natively) | routing — AGENTS.md (or copy + adapt frontmatter) |
 | **hooks/** | native (plugin `hooks/hooks.json`) | copy → `.codex/hooks.json` | copy → `.cursor/hooks.json` | copy — JS plugin shim |
@@ -75,6 +75,18 @@ The repo root is a plugin and its own marketplace:
 
 Skills then invoke as `/developer-harness:<skill-name>`, and the
 `secret-scan` guard hook wires up automatically.
+
+### Channel 3 — Codex plugin (skills)
+
+The repo root is also a Codex plugin (`.codex-plugin/plugin.json`) with its
+own marketplace (`.agents/plugins/marketplace.json`):
+
+```
+codex plugin marketplace add daedalus-ai-forge/developer-harness
+/plugins   # in the Codex TUI: install developer-harness, then invoke $<skill-name>
+```
+
+Details, invocation syntax, and caveats: [docs/consume-codex.md](docs/consume-codex.md).
 
 ## Skill format
 

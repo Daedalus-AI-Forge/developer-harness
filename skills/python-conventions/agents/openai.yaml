@@ -1,0 +1,3 @@
+interface:
+  display_name: "Python Conventions"
+  short_description: "Python writing conventions: Google-style docstrings, naming, modern 3.12+ idioms, typing policy."

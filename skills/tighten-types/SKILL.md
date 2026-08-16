@@ -14,7 +14,7 @@ $ARGUMENTS
 
 - If the user names specific files or directories, scope your work to those.
 - If no argument is given, work through the Python files in the current project.
-- For large codebases, use `AskUserQuestion` to let the user choose which
+- For large codebases, ask the user (via `AskUserQuestion` where available) which
   modules or packages to start with. Don't try to do everything at once.
 
 ## Workflow
@@ -33,8 +33,8 @@ $ARGUMENTS
    `pyrightconfig.json`, or similar). Report any new errors introduced by your
    changes and fix them before moving on.
 
-Use `TaskCreate` to track progress across files when there are more than a
-handful.
+Track progress across files (via `TaskCreate` or your tool's task list, where
+available) when there are more than a handful.
 
 ## Checklist — What to Look For
 
@@ -113,7 +113,7 @@ an assumed set of keys. These are candidates for a Pydantic `BaseModel` or a
   validated or serialised, and you want to avoid the overhead of model
   instantiation. TypedDict is also appropriate when you need to pass the
   structure to code that expects a plain dict.
-- If unsure, ask the user via `AskUserQuestion`.
+- If unsure, ask the user (via `AskUserQuestion` where available).
 
 When creating a model, place it near the code that uses it — in the same module
 or in a `_types.py` / `models.py` file if it's shared across modules. Don't
@@ -240,5 +240,5 @@ For each file you modify, write a short summary like:
 - **Run the type checker.** If the project has mypy/pyright configured, run it
   after your changes. Don't introduce new type errors.
 - **Ask when uncertain.** If you're unsure whether a dict should become a
-  Pydantic model or TypedDict, or whether an overload is justified, use
-  `AskUserQuestion`.
+  Pydantic model or TypedDict, or whether an overload is justified, ask the
+  user (via `AskUserQuestion` where available).

@@ -1,0 +1,18 @@
+{
+  "name": "developer-harness",
+  "version": "0.1.0",
+  "description": "Language conventions, engineering-method skills, review checklists, diagram skills, command wrappers, agent role templates, and guard hooks for any codebase.",
+  "license": "MIT",
+  "repository": "https://github.com/Daedalus-AI-Forge/developer-harness",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Developer Harness",
+    "shortDescription": "Language conventions, engineering-method skills, review checklists, and diagram skills for any codebase.",
+    "category": "developer-tools",
+    "defaultPrompt": [
+      "Use $tighten-types to tighten type annotations in the given scope.",
+      "Use $architect-design-review to review the design spec at docs/design/spec.md.",
+      "Use $gantt-roadmap to turn this plan into a Gantt-chart roadmap."
+    ]
+  }
+}

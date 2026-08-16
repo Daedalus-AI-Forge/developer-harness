@@ -1,0 +1,3 @@
+interface:
+  display_name: "Python Pro"
+  short_description: "Python language-specialist reference: async patterns, typing depth, performance, packaging."

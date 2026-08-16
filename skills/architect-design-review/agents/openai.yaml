@@ -1,0 +1,4 @@
+interface:
+  display_name: "Architect Design Review"
+  short_description: "Reviews a design spec against architecture principles; produces Mermaid diagrams and an HTML report."
+  default_prompt: "Use $architect-design-review to review the design spec at docs/design/spec.md."

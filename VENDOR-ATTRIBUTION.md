@@ -31,6 +31,7 @@ installed file (`install.sh` is plain `cp -r` and is not itself installed); both
 carry their own content-isolation + non-goals + path-sanitization clauses; generated HTML reports
 load Mermaid.js from the jsdelivr CDN, so VIEWING a report needs internet — the review itself
 runs offline.
+Local modification: `architect-design-review`'s spec-path default was generalized from upstream (ask the user; no fixed location); body otherwise unmodified.
 
 The five VoltAgent skills are **capability references, not contracts**: each carries a
 precedence block stating that project-local conventions (a project's CLAUDE.md and its own

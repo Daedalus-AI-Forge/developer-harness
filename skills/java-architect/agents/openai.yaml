@@ -1,0 +1,3 @@
+interface:
+  display_name: "Java Architect"
+  short_description: "Java language-specialist reference: modern Java, concurrency, module structure, JVM performance."

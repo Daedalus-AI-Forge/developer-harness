@@ -20,6 +20,11 @@ OpenCode discovers skills in `.opencode/skills/`, `.claude/skills/`, and
 loads them on demand through its native `skill` tool when a task matches a
 skill's `description`.
 
+Caveat: the two architect skills depend on the sibling dirs
+`skills/architect-shared/` and `skills/contracts/` (no SKILL.md, so per-skill
+installers may skip them) — when vendoring selectively, copy those two dirs
+alongside.
+
 ## Commands (copy)
 
 For explicit invocation, copy the wrappers into `.opencode/commands/`

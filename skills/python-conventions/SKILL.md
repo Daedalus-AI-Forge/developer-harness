@@ -5,7 +5,8 @@ description: Python writing conventions — docstring rules (Google style + ruff
 
 # Python conventions
 
-Assumed toolchain: uv, pytest, ruff, mypy --strict. This skill covers HOW code is
+Assumed toolchain: uv, pytest, ruff, mypy --strict. If your project uses
+different tools, apply the same rules through them. This skill covers HOW code is
 written. Companion skills, where installed: `contract-docstrings`
 (failure-mode docs on boundary code), `tighten-types` (hardening pass),
 `python-api-design`, `python-documentation`.

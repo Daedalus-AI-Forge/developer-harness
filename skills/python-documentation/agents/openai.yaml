@@ -1,0 +1,3 @@
+interface:
+  display_name: "Python Documentation"
+  short_description: "Python library documentation: Google-style docstrings, Sphinx setup, API references, tutorials."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tighten Types"
+  short_description: "Tightens Python type annotations: attribute types, Pydantic models over loose dicts, overloads."
+  default_prompt: "Use $tighten-types to tighten type annotations in the given scope."

@@ -4,18 +4,6 @@ description: Use when an existing codebase needs an architecture review. Explore
 license: MIT
 metadata:
   source: sirius-zuo/architect-skills
-allowed-tools:
-  - Read
-  - Write
-  - Bash
-  - Glob
-  - Grep
-  - Agent
-  - mcp__codegraph__codegraph_status
-  - mcp__codegraph__codegraph_files
-  - mcp__codegraph__codegraph_context
-  - mcp__codegraph__codegraph_explore
-  - mcp__codegraph__codegraph_impact
 ---
 
 # Architect Codebase Review

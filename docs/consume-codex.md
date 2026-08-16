@@ -1,40 +1,63 @@
 # Consuming developer-harness from Codex
 
-Codex consumes **skills** and **hooks** natively; roles route through
-`AGENTS.md`. Docs verified 2026-08 (developers.openai.com/codex/* now
+Three tiers, by preference. Docs verified 2026-08 (developers.openai.com/codex/*
 redirects to learn.chatgpt.com):
-[skills](https://learn.chatgpt.com/docs/build-skills),
-[AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md),
-[hooks](https://learn.chatgpt.com/docs/hooks),
-[subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents).
+[plugins](https://developers.openai.com/codex/plugins),
+[plugin build](https://developers.openai.com/codex/plugins/build),
+[skills](https://developers.openai.com/codex/skills).
 
-## Skills (native)
+## 1. Plugin install (preferred)
+
+The repo root is a Codex plugin (`.codex-plugin/plugin.json`) and its own
+one-entry marketplace (`.agents/plugins/marketplace.json`):
+
+```
+codex plugin marketplace add daedalus-ai-forge/developer-harness
+```
+
+Then open `/plugins` in the TUI and install `developer-harness` from the
+marketplace entry. Once installed:
+
+- `/plugins` — browse, install, and inspect plugins
+- `@developer-harness` — invoke the plugin (or one of its skills) explicitly
+- `$<skill-name>` — invoke a bundled skill, e.g. `$tighten-types src/models.py`
+
+Every skill ships an OpenAI sidecar (`skills/<name>/agents/openai.yaml`) with
+`display_name` and `short_description` — that is what Codex shows in its skill
+picker — plus a `default_prompt` on the explicitly-invocable skills
+(tighten-types, contract-docstrings, architect-design-review,
+architect-codebase-review, mermaid-skill, gantt-roadmap).
+
+Caveat: our marketplace entry points at the repo root (`"path": "."`); the
+official examples only show `./plugins/<name>` subdirectory paths, so the
+root-path layout is pending a live install test.
+
+The plugin bundles no hooks — the plugin-bundled hook definition format is
+pending verification. Wire `secret-scan.sh` manually per
+[`../hooks/README.md`](../hooks/README.md).
+
+## 2. skills CLI
 
 ```
 npx skills add daedalus-ai-forge/developer-harness --all
 ```
 
 The CLI vendors skills into `.agents/skills/`, which Codex reads natively
-(it searches `.agents/skills` in the cwd, parent directories, and repo root,
-plus `~/.agents/skills`). Invoke explicitly by typing `$` + the skill name:
+(cwd, parent directories, repo root, plus `~/.agents/skills`). Invoke with
+`$` + skill name or the `/skills` selector; Codex also auto-selects skills
+whose `description` matches the task. No plugin machinery involved — use this
+when you want the skills pinned in-repo by content hash (`skills-lock.json`).
 
-```
-$tighten-types src/models.py
-$architect-design-review docs/design/spec.md
-```
+Caveat: the two architect skills depend on the sibling dirs
+`skills/architect-shared/` and `skills/contracts/` (no SKILL.md, so per-skill
+installers may skip them) — when vendoring selectively, copy those two dirs
+alongside.
 
-or pick from the `/skills` selector. Codex also auto-selects skills whose
-`description` matches the task.
+## 3. Agents (routing via AGENTS.md)
 
-## Commands
-
-Codex has no repo-level custom slash commands — skip `commands/` and invoke
-skills with `$name` as above.
-
-## Agents (routing via AGENTS.md)
-
-Codex custom agents are TOML files in `.codex/agents/`, not markdown, so the
-markdown role contracts in `agents/` are not installed directly. Instead:
+Plugins carry no role contracts, and Codex custom agents are TOML files in
+`.codex/agents/`, not markdown — so the role contracts in `agents/` route
+through `AGENTS.md` instead:
 
 1. Copy the role files somewhere in your repo (e.g. `docs/roles/`).
 2. Paste [`../rules/agents-md/roles-section.md`](../rules/agents-md/roles-section.md)
@@ -44,14 +67,10 @@ Codex concatenates `AGENTS.md` files from the repo root down (32 KiB default
 budget), so keep the routing table short and let the contract files carry the
 detail.
 
-## Hooks (native)
+## Hooks and rules
 
-Copy `hooks/scripts/secret-scan.sh` into your repo and wire it in
-`.codex/hooks.json` — same `PreToolUse` schema family as Claude Code, same
-exit-2-blocks convention. Exact JSON, the `[features] hooks` toggle, and the
-`/hooks` trust flow: [`../hooks/README.md`](../hooks/README.md).
-
-## Rules
-
-Paste [`../rules/agents-md/guards-section.md`](../rules/agents-md/guards-section.md)
+Hooks: copy `hooks/scripts/secret-scan.sh` and wire it in `.codex/hooks.json` —
+exact JSON, feature toggle, and trust flow in
+[`../hooks/README.md`](../hooks/README.md). Rules: paste
+[`../rules/agents-md/guards-section.md`](../rules/agents-md/guards-section.md)
 into `AGENTS.md` so the agent knows the guards exist and doesn't fight them.

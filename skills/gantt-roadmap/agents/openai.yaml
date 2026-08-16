@@ -1,0 +1,4 @@
+interface:
+  display_name: "Gantt Roadmap"
+  short_description: "Turns a plan or milestones into a Mermaid Gantt timeline with critical-path notes and .ics export."
+  default_prompt: "Use $gantt-roadmap to turn this plan into a Gantt-chart roadmap."

@@ -1,0 +1,3 @@
+interface:
+  display_name: "Pragmatic Rust Guidelines"
+  short_description: "Microsoft Pragmatic Rust Guidelines (M-* rules) for Rust doc-comments and public API prose."

@@ -1,0 +1,3 @@
+interface:
+  display_name: "C# Developer"
+  short_description: "C# language-specialist reference: async/await, DI reasoning, LINQ, records, analyzers, memory."

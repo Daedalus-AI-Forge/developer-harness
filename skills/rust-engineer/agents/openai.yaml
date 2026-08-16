@@ -1,0 +1,3 @@
+interface:
+  display_name: "Rust Engineer"
+  short_description: "Rust language-specialist reference: ownership, zero-cost abstractions, async, unsafe discipline."

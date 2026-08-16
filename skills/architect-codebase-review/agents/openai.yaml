@@ -1,0 +1,4 @@
+interface:
+  display_name: "Architect Codebase Review"
+  short_description: "Architecture review of an existing codebase: Mermaid diagrams, principles check, HTML report."
+  default_prompt: "Use $architect-codebase-review to review this codebase's architecture."

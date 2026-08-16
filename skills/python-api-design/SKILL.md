@@ -163,11 +163,10 @@ semantics before deciding it failed.
 
 ## Deprecation
 
-Deprecate gracefully: warn now, document the removal version, and remove only in a
-major release. The warning mechanics (including deprecating parameters, classes,
-and modules) and the migration-guide template are owned by the
-`managing-python-releases` skill — see
-**[../release-management/MIGRATION.md](../release-management/MIGRATION.md)**.
+Deprecate gracefully: keep the old API working but emit
+`warnings.warn(..., DeprecationWarning, stacklevel=2)` naming the replacement,
+document the replacement and the planned removal version in the docstring and
+changelog, and remove only in the next major release.
 
 ## Anti-Patterns
 
@@ -180,7 +179,7 @@ process(data, validate=True, cache=False)
 ```
 
 The mutable-default-argument trap (`def f(x: list = [])`) is covered by the
-`improving-python-code-quality` skill.
+`improving-python-code-quality` skill, where installed.
 
 For detailed patterns, see:
 - **[PATTERNS.md](PATTERNS.md)** - Builder, factory, and advanced patterns

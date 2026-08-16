@@ -3,7 +3,7 @@
 Changing a published API without breaking the people who depend on it. This file
 covers the *design* decisions of evolution. For the mechanics of emitting
 deprecation warnings and coordinating them with version bumps, changelogs, and
-release timing, see the `managing-python-releases` skill.
+release timing, see the `managing-python-releases` skill, where installed.
 
 ## Contents
 

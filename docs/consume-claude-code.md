@@ -39,6 +39,11 @@ Vendors the skills into your repo (canonically `.agents/skills/`, linked into
 `.claude/skills/`) so contributors get them with a plain `git clone`. See the
 [skills CLI](https://github.com/vercel-labs/skills).
 
+Caveat: the two architect skills depend on the sibling dirs
+`skills/architect-shared/` and `skills/contracts/` (no SKILL.md, so per-skill
+installers may skip them) — when vendoring selectively, copy those two dirs
+alongside.
+
 ## Piecemeal
 
 - **Agents**: copy a role file into `.claude/agents/` — format is markdown

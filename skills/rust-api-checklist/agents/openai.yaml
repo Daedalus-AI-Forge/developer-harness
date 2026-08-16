@@ -1,0 +1,3 @@
+interface:
+  display_name: "Rust API Checklist"
+  short_description: "Official rust-lang API Guidelines C-* checklist for reviewing public Rust API items."

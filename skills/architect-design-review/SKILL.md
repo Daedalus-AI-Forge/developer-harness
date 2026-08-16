@@ -4,12 +4,6 @@ description: Reviews a design spec, generates architecture diagrams using Mermai
 license: MIT
 metadata:
   source: sirius-zuo/architect-skills
-allowed-tools:
-  - Read
-  - Write
-  - Bash
-  - Glob
-  - Grep
 ---
 
 # Architect Design Review
@@ -34,7 +28,7 @@ This skill:
 ## Invocation
 
 **Arguments:**
-- `[spec-path]` (optional) — path to a specific spec file to review. If omitted, the skill uses the most recently modified `.md` file in `docs/superpowers/specs/`.
+- `[spec-path]` (optional) — path to a specific spec file to review. If omitted, the skill asks the user for the spec path; if the user prefers, it scans common locations (`docs/**/*.md`) and presents candidates for confirmation.
 
 ## Performance
 
@@ -47,15 +41,15 @@ If the spec appears large, summarize rather than read in full, and note this in 
 
 ## Step 1: Read the spec
 
-Find the most recently modified file in `docs/superpowers/specs/`:
-
-**Spec validation:** Before reading, verify:
-1. The directory `docs/superpowers/specs/` exists and contains at least one `.md` file. If not: `ERROR: No spec found in docs/superpowers/specs/. Create a spec file and retry. Stopping.`
-2. The selected spec file is non-empty and readable. If the Read fails or returns empty: `ERROR: Spec file [path] is empty or unreadable. Stopping.`
+If no `[spec-path]` argument was given, ask the user for the path to the spec file. If they prefer, scan common locations and present the candidates for confirmation:
 
 ```bash
-ls -lt docs/superpowers/specs/ | head -5
+ls -lt docs/**/*.md | head -5
 ```
+
+**Spec validation:** Before reading, verify:
+1. The selected spec file exists. If not: `ERROR: Spec file [path] not found. Provide a valid spec path and retry. Stopping.`
+2. The selected spec file is non-empty and readable. If the Read fails or returns empty: `ERROR: Spec file [path] is empty or unreadable. Stopping.`
 
 Read it fully. Read any documents it references.
 

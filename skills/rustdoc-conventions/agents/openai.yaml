@@ -1,0 +1,3 @@
+interface:
+  display_name: "Rustdoc Conventions"
+  short_description: "Rustdoc writing conventions: doc-comment sections, first-sentence rule, Cargo.toml lint table."

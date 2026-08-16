@@ -1,0 +1,3 @@
+interface:
+  display_name: "TypeScript Docs"
+  short_description: "TypeScript documentation with JSDoc and TypeDoc: API docs, ADRs, and framework patterns."

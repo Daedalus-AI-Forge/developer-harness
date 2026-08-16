@@ -48,6 +48,9 @@ Two options ([hooks docs](https://code.claude.com/docs/en/hooks)):
 ```
 
 Exit 2 blocks the tool call; stderr becomes the blocking reason shown to Claude.
+If a Claude Code version ignores the `if` narrowing, the hook simply runs on
+every Bash call — harmless, because the script exits 0 whenever nothing is
+staged.
 
 ## b) Codex
 
@@ -61,7 +64,9 @@ replacing `${CLAUDE_PROJECT_DIR}` with a repo-relative path such as
 Codex docs — drop it and let the script no-op when nothing is staged).
 Hooks are feature-gated in `~/.codex/config.toml` (`[features]` `hooks`), and
 Codex asks you to review and trust each non-managed hook (`/hooks` in the TUI)
-before it runs.
+before it runs. The Codex plugin manifest (`.codex-plugin/plugin.json`)
+deliberately omits a `hooks` entry — the plugin-bundled hook definition format
+is pending verification, so wire the hook manually as above.
 
 ## c) Cursor
 

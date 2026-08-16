@@ -50,7 +50,7 @@ Examples:
 
 The skill takes exactly these filesystem actions, in this order:
 
-1. **Read-only:** Reads the spec file from `docs/superpowers/specs/` (most recent, or specified path)
+1. **Read-only:** Reads the spec file (specified path, or a path the user provides/confirms when none was given)
 2. **Read-only:** Reads up to 3 documents referenced by the spec (depth 1 only)
 3. **Read-only:** Reads `../architect-shared/architecture-principles.md`, `../architect-shared/dynamic-review-framework.md`, `../architect-shared/diagram-selection.md`, and `../architect-shared/html-template.md`
 4. **Write:** `mkdir -p docs/architecture/review`
@@ -62,7 +62,7 @@ The skill takes exactly these filesystem actions, in this order:
 
 | Input | Required | Default | Description |
 |---|---|---|---|
-| `spec-path` | No | Most-recently-modified `.md` in `docs/superpowers/specs/` | Path to the spec file to review |
+| `spec-path` | No | None — the skill asks the user (no fixed default location) | Path to the spec file to review |
 
 ## Known limitations
 

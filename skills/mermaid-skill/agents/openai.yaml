@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mermaid Diagrams"
+  short_description: "Generates Mermaid diagrams (flowchart, sequence, class, ER, state) and exports to PNG/SVG/PDF."
+  default_prompt: "Use $mermaid-skill to diagram this system as a Mermaid diagram and export it to SVG."
