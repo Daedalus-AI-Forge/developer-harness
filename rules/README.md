@@ -4,6 +4,15 @@ Instruction fragments meant to be pasted into a consuming repo's agent
 instruction file — `AGENTS.md` (Codex, OpenCode, and the cross-tool
 [AGENTS.md convention](https://agents.md)) or `CLAUDE.md` (Claude Code).
 
+**Why a single `agents-md/` directory:** this directory is named for its
+delivery mechanism — pasted instruction-file sections, the one rules channel
+every tool reads. Tool-specific rule formats (Cursor `.mdc` files, Claude
+path-scoped `.claude/rules/`) are deliberately not shipped: they reach one
+tool each, and the portable section reaches all four. A second directory
+appears here when a second portable delivery mechanism actually exists —
+never as an empty placeholder. The templates below are grouped into three
+catalogs by theme; the grouping is documentation, the directory stays flat.
+
 These exist for harness classes some tools cannot consume natively:
 
 - **Roles**: Codex defines custom agents in TOML and OpenCode uses its own
@@ -32,18 +41,30 @@ These exist for harness classes some tools cannot consume natively:
   amendments — are per-repo working agreements every tool must load, so they
   live in the instruction file beside the discipline rules.
 
-## Templates
+## Templates — three catalogs
+
+### Organization — who does what, and how work moves
 
 | Template | Produces | Use when |
 | --- | --- | --- |
 | [`agents-md/roles-section.md`](agents-md/roles-section.md) | A `## Roles` routing table: role name → contract file | The consuming tool can't read `.claude/agents/` (Codex, OpenCode) |
 | [`agents-md/teams-section.md`](agents-md/teams-section.md) | A `## Teams` declaration per team: members → chain → handoff record → authority rules → optional team memory — plus five predefined teams ready to copy (feature-build, design-review, bug-diagnosis, research-to-decision, legal-vetting) | The repo runs multi-role chains built from [`../agents/`](../agents/) roles (e.g. the feature-build chain); the `define-team` skill scaffolds custom entries |
-| [`agents-md/project-bindings-section.md`](agents-md/project-bindings-section.md) | A `## Project bindings` table — role-contract placeholders (`<test-command>`, `<design-docs>`, …) → real paths/commands — plus the Resolution protocol for establishing missing bindings (search → ask → persist; a required binding that can't be established disables the role) | The repo adopts any generic role from [`../agents/`](../agents/) |
 | [`agents-md/raci-section.md`](agents-md/raci-section.md) | A `## RACI` table — Component / Responsible / Accountable / Consulted / Informed, with the one-Accountable-per-row rule, the CODEOWNERS/git-shortlog draft protocol for repos that lack one, the Context-handoff format (task reference in `<work-tracker>`, components, R/A/C/I names, spec links, where to report), and the local task-file convention | The repo adopts the `person-of-contact` role from [`../agents/`](../agents/) |
-| [`agents-md/guards-section.md`](agents-md/guards-section.md) | A `## Guards` list of hook scripts and when they run | Any repo that vendors scripts from [`../hooks/`](../hooks/) |
+
+### Configuration — injecting the project's facts
+
+| Template | Produces | Use when |
+| --- | --- | --- |
+| [`agents-md/project-bindings-section.md`](agents-md/project-bindings-section.md) | A `## Project bindings` table — role-contract placeholders (`<test-command>`, `<design-docs>`, …) → real paths/commands — plus the Resolution protocol for establishing missing bindings (search → ask → persist; a required binding that can't be established disables the role) | The repo adopts any generic role from [`../agents/`](../agents/) |
+
+### Method — how work is done, always on
+
+| Template | Produces | Use when |
+| --- | --- | --- |
 | [`agents-md/engineering-discipline-section.md`](agents-md/engineering-discipline-section.md) | A `## Engineering discipline` rule set: TDD, systematic debugging, verification before completion, quality gates, single source of truth, scope/ownership, version-control safety | Any repo where agents write code |
 | [`agents-md/coding-section.md`](agents-md/coding-section.md) | A `## Coding rules` section: conventions-win-over-instinct rule, a language → convention-skill routing table (load BEFORE writing), quality gates via the `<lint-command>`/`<test-command>` bindings | Any repo where agents write code and the conventions ship as skills (e.g. this harness's `python-conventions`, `rustdoc-conventions`) |
 | [`agents-md/design-docs-section.md`](agents-md/design-docs-section.md) | A `## Design docs` doc-shape rule set: status/owner/date headers, stable decision IDs owned by one doc, a root index with reading order, docs updated in the same change as the code they govern, dated in-place amendments | Any repo that keeps design docs under a `<design-docs>` binding |
+| [`agents-md/guards-section.md`](agents-md/guards-section.md) | A `## Guards` list of hook scripts and when they run | Any repo that vendors scripts from [`../hooks/`](../hooks/) |
 
 ## How to use
 
