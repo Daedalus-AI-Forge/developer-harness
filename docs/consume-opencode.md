@@ -8,7 +8,22 @@ JS plugin, roles through `AGENTS.md`. Docs verified 2026-08:
 [agents](https://opencode.ai/docs/agents/),
 [rules](https://opencode.ai/docs/rules/).
 
-## Skills (native)
+## Skills (native — two options)
+
+**Option A — point OpenCode at a clone (recommended).** OpenCode scans
+configured skill paths recursively for `**/SKILL.md`, so a clone needs no
+vendoring at all:
+
+```jsonc
+// opencode.json
+{ "skills": { "paths": ["<path-to-clone>/developer-harness/skills"] } }
+```
+
+This also keeps the architect skills' sibling resource dirs
+(`skills/architect-shared/`, `skills/contracts/`) in place — the selective-
+vendoring caveat below never applies. Update with `git pull`.
+
+**Option B — vendor via the skills CLI:**
 
 ```
 npx skills add daedalus-ai-forge/developer-harness --all
@@ -20,7 +35,7 @@ OpenCode discovers skills in `.opencode/skills/`, `.claude/skills/`, and
 loads them on demand through its native `skill` tool when a task matches a
 skill's `description`.
 
-Caveat: the two architect skills depend on the sibling dirs
+Option-B caveat: the two architect skills depend on the sibling dirs
 `skills/architect-shared/` and `skills/contracts/` (no SKILL.md, so per-skill
 installers may skip them) — when vendoring selectively, copy those two dirs
 alongside.
@@ -56,7 +71,8 @@ OpenCode's native agents use a different frontmatter dialect
 (`description`, `mode: subagent`) in `.opencode/agents/`. Either:
 
 - adapt a role file: keep the body, replace the frontmatter with
-  `description:` + `mode: subagent`, save to `.opencode/agents/<role>.md`; or
+  `description:` + `mode: subagent` (and drop `model: inherit` — it is not a
+  valid OpenCode provider/model id), save to `.opencode/agents/<role>.md`; or
 - route via `AGENTS.md`: copy role files into your repo and paste
   [`../rules/agents-md/roles-section.md`](../rules/agents-md/roles-section.md)
   into `AGENTS.md`.
@@ -65,8 +81,9 @@ OpenCode's native agents use a different frontmatter dialect
 
 OpenCode has no hooks.json; use the plugin shim in
 [`../hooks/README.md`](../hooks/README.md) — a `.opencode/plugins/*.js` file
-that runs `hooks/scripts/secret-scan.sh` in `tool.execute.before` and blocks
-by throwing.
+that runs the guard scripts in `tool.execute.before` and blocks by throwing.
+The shim narrows to `git commit` bash calls in JS before invoking the guards,
+so the expensive quality gates never fire on ordinary commands.
 
 ## Rules
 
