@@ -2,7 +2,9 @@
 
 Instruction fragments meant to be pasted into a consuming repo's agent
 instruction file — `AGENTS.md` (Codex, OpenCode, and the cross-tool
-[AGENTS.md convention](https://agents.md)) or `CLAUDE.md` (Claude Code).
+[AGENTS.md convention](https://agents.md)) or `CLAUDE.md` (Claude Code) —
+plus the role-contract authoring scaffold, which belongs to the same
+copy-don't-load channel (see [Authoring scaffold](#authoring-scaffold)).
 
 **Why a single `agents-md/` directory:** this directory is named for its
 delivery mechanism — pasted instruction-file sections, the one rules channel
@@ -71,6 +73,20 @@ These exist for harness classes some tools cannot consume natively:
 | Note | Content | Referenced by |
 | --- | --- | --- |
 | [`agents-md/size-budget-note.md`](agents-md/size-budget-note.md) | The instruction-file size budget: stay well inside 32 KiB (Codex concatenates and truncates silently from the END), under ~200 lines per file for adherence, `## Roles` and `## Teams` early, copy only the rows a repo runs, move reference-sized material into skills — and run `hooks/scripts/agents-md-budget.sh` before committing | roles · teams · project-bindings · RACI templates |
+
+## Authoring scaffold
+
+| File | Content | Use when |
+| --- | --- | --- |
+| [`role-contract-template.md`](role-contract-template.md) | The role-contract scaffold: frontmatter, `## Bindings`, and the Mission / Method / Handoff / Done-authority shape every contract in [`../agents/`](../agents/) follows | Authoring a new role contract |
+
+It lives here rather than in `agents/` for a mechanical reason: Claude Code
+loads *every* markdown file under a plugin's `agents/` directory as a
+subagent, recursively, with no underscore or README exemption — so a scaffold
+parked there installs into every consumer's role list as a bogus role. `rules/`
+is already the copy-this-into-your-repo tree and is not an auto-discovery
+path, which makes it the correct home for a file meant to be copied rather
+than loaded.
 
 ## How to use
 

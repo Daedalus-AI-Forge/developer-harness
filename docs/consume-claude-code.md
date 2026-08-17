@@ -24,17 +24,27 @@ This picks up by convention, from the plugin root:
 - `commands/` — flat-file wrappers (Claude Code treats these as skills too;
   they duplicate the `skills/` entries by name, so in Claude Code invoke the
   skills directly — the wrappers exist for tools that consume command files)
-- `agents/` — role templates appear as subagents; the directory is read
+- `agents/` — role contracts appear as subagents; the directory is read
   recursively, so the team subfolders (`project-control/`, `develop-team/`,
-  `design-team/`, `research-team/`, `validation-team/`) load as-is
-  (`_template.md` is a scaffold, not a usable role; delete or replace it in
-  real use)
+  `design-team/`, `research-team/`, `validation-team/`) load as-is. Every
+  markdown file in `agents/` installs as a subagent, so the directory holds
+  only real roles: the role-contract scaffold lives in
+  [`../rules/role-contract-template.md`](../rules/role-contract-template.md)
+  rather than here, and `agents/README.md` carries frontmatter that makes it
+  a deliberate read-only `role-catalog` lookup instead of an accidental
+  broken agent
 - hooks — declared via `plugin.json` → `hooks/claude.hooks.json` (no
   auto-discovered `hooks/hooks.json` exists): six guard scripts as
   `PreToolUse` hooks — the two safety guards unnarrowed (and
   `protected-paths-guard` additionally on the file tools), the four commit
   guards narrowed with `if: "Bash(git commit*)"`; `${CLAUDE_PLUGIN_ROOT}`
   resolves the paths. Three more ship unwired — see below
+
+One warning is expected: `claude plugin validate` on the plugin warns that the
+root `CLAUDE.md` is not loaded as plugin context — correct and permanent,
+because that file is an `@AGENTS.md` shim for people working *in* this repo,
+not plugin cargo (plugins ship context through skills, never through
+`CLAUDE.md`), so do not "fix" it by wiring the file into the plugin.
 
 ## Role frontmatter: enforced boundaries
 

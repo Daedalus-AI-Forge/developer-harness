@@ -7,6 +7,14 @@ disallowedTools: Edit, NotebookEdit
 
 # Role Name
 
+<!-- ROLE CONTRACT TEMPLATE. This scaffold lives in rules/ rather than
+     agents/ because every markdown file in a plugin's agents/ directory
+     installs as a live subagent (read recursively, no exemption for
+     underscore-prefixed files) — a template kept there would ship a bogus
+     `role-name` role to every consumer. Copy this file into the target
+     agents directory (this repo's agents/<team>/, or a consuming repo's
+     .claude/agents/), rename it to the role's name, and fill it in. -->
+
 <!-- FRONTMATTER POLICY — read before filling the block above.
 
      `name` — lowercase, hyphens, EQUAL to the filename stem. It is the
@@ -61,7 +69,7 @@ disallowedTools: Edit, NotebookEdit
      plugin namespace is unconfirmed. No contract here sets it — a role that
      wants a companion skill says so in its Method ("load X where installed …
      where absent, this Method stands alone"), which degrades everywhere
-     instead of failing silently in one place. See README.md.
+     instead of failing silently in one place. See agents/README.md.
 
      Delete the `disallowedTools` line entirely if this role implements. -->
 

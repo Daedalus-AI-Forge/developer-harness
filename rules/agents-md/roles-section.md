@@ -3,7 +3,7 @@
 Copy the block below into the consuming repo's `AGENTS.md` (or `CLAUDE.md`),
 then replace the placeholder rows with real roles. Keep only the rows this
 repo actually uses. Each contract file is a markdown role definition — follow
-`agents/_template.md` in developer-harness for the Mission / Method /
+`rules/role-contract-template.md` in developer-harness for the Mission / Method /
 Deliverable / Boundaries format.
 
 Add a `## Project bindings` section whenever a listed contract uses

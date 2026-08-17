@@ -26,7 +26,8 @@
   "hooks": "./hooks/codex.hooks.json",
   "interface": {
     "displayName": "Developer Harness",
-    "shortDescription": "Language conventions, engineering-method skills, review checklists, and diagram skills for any codebase.",
+    "shortDescription": "Coding skills and guard hooks",
+    "longDescription": "A batteries-included harness for coding agents: 26 skills plus nine guard hooks, usable in any codebase. Language skills cover Python, Rust, TypeScript, C#, and Java — conventions, API-design checklists, documentation and docstring standards, and expert developer personas. Method skills cover systematic debugging, multi-source deep research, plan stress-testing, feature builds, and skill authoring. Two architect skills run design-spec and codebase reviews against shared principles and produce diagram-backed HTML reports; mermaid-skill and gantt-roadmap generate diagrams and roadmaps directly. Role and team skills adopt agent role contracts and assemble delegation-first teams. The guard hooks block staged secrets, merge-conflict markers, oversized files, dangerous commands, and invisible-Unicode instruction injection, guard protected paths, and keep AGENTS.md chains inside the size budget agents actually read. Thirteen skills ship starter prompts for explicit $-invocation; review and orchestration pipelines are marked explicit-only so they never start from a description match alone.",
     "developerName": "Daedalus AI Forge",
     "category": "Developer Tools",
     "defaultPrompt": [

@@ -6,7 +6,7 @@ repo actually runs — the five predefined entries are a menu, not a bundle.
 A team is a named chain of roles: who is in it, what order work moves
 through it, how it executes, what each stage hands the next, who holds which
 authority, and where the human re-enters. Role contract files follow
-`agents/_template.md` in developer-harness; routing is driven by the
+`rules/role-contract-template.md` in developer-harness; routing is driven by the
 consuming tool's own delegation — orchestration lives in the harness that
 runs the team, never in a role.
 

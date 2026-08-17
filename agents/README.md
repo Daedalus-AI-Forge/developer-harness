@@ -1,4 +1,24 @@
+---
+name: role-catalog
+description: The catalog of this plugin's shipped role contracts — which roles exist, how they group into teams, and when to delegate to each. Use when deciding which role to adopt or delegate to for a piece of work; never for doing the work itself — route the work to the role this catalog names.
+model: inherit
+disallowedTools: Write, Edit, NotebookEdit
+---
+
 # agents/
+
+<!-- WHY THIS README CARRIES AGENT FRONTMATTER: Claude Code loads every
+     markdown file in a plugin's agents/ directory as a subagent —
+     recursively, with no exemption for READMEs or underscore-prefixed
+     files (https://code.claude.com/docs/en/plugins-reference). Without the
+     block above, this file would still install, as a broken agent named
+     `README`. The frontmatter turns that accident into a deliberate
+     read-only role-catalog lookup; the agent's identity comes from `name`,
+     not the filename, so the file keeps its README.md name and GitHub
+     landing-page role. For the same reason the role-contract scaffold
+     lives in ../rules/role-contract-template.md, not here. Do not remove
+     the frontmatter, and do not add plain documentation files to this
+     directory. -->
 
 Generic, project-agnostic subagent **role contracts**: markdown files with YAML
 frontmatter that define a role's bindings, mission, method, deliverable, and
@@ -193,12 +213,18 @@ proceeding on a guessed path.
 - Roles that make sense in *any* codebase (e.g. a reviewer, a test author, a
   refactoring surgeon) — no project names, no repo-specific paths, no
   product knowledge.
-- One file per role, following [`_template.md`](_template.md): frontmatter
-  (`name`, a trigger-clause `description`, `model: inherit`, and a
+- One file per role, following the template in
+  [`../rules/role-contract-template.md`](../rules/role-contract-template.md):
+  frontmatter (`name`, a trigger-clause `description`, `model: inherit`, and a
   `disallowedTools` denylist where the role's Boundaries forbid touching
   code), a `## Bindings` block, and the four body sections **Mission /
   Method / Deliverable / Boundaries**. New roles go in the team folder they
   belong to.
+- Nothing else. Every markdown file in this directory installs as a live
+  subagent when the repo is consumed as a Claude Code plugin — which is why
+  the role-contract template lives in `rules/`, and why this README carries
+  frontmatter making it a deliberate `role-catalog` lookup rather than an
+  accidental broken agent.
 
 Project-specific agents belong in the consuming repo's own `.claude/agents/`,
 not here.
@@ -225,7 +251,9 @@ disallowedTools: Edit, NotebookEdit         # optional denylist; omit for implem
 
 `name` and `description` are load-bearing in both tools; the other two encode
 this library's enforcement policy. The full rationale lives in the comment
-block of [`_template.md`](_template.md) — the short version:
+block of
+[`../rules/role-contract-template.md`](../rules/role-contract-template.md) —
+the short version:
 
 - **`description` is a router rule, not a summary.** It is the only text a
   dispatching agent reads when choosing among twenty-six roles, so every one

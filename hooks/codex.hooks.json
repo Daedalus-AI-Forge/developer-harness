@@ -1,5 +1,5 @@
 {
-  "description": "developer-harness guard hooks (Codex dialect). Two layers: safety guards on every shell tool call (dangerous shell commands, protected paths), then commit hygiene (secrets, large files, merge markers, quality gate). Codex has no per-command `if` narrowing, so every script no-ops fast when nothing relevant is staged, and quality-gate.sh additionally skips payloads that are not a `git commit`. Declared in .codex-plugin/plugin.json; deliberately NOT named hooks/hooks.json — see hooks/README.md. instruction-scan.sh, agents-md-budget.sh, and done-authority-gate.sh are documented opt-ins and are intentionally absent here.",
+  "description": "developer-harness guard hooks (Codex dialect). Two layers: safety guards on every shell tool call (dangerous shell commands, protected paths) plus a protected-paths pass on apply_patch payloads (Codex file edits arrive as v4a patches in tool_input.command, tool_name `apply_patch` — https://learn.chatgpt.com/docs/hooks), then commit hygiene (secrets, large files, merge markers, quality gate). Codex has no per-hook `if` narrowing, so all four commit guards read the payload themselves via hooks/scripts/lib/commit-payload.sh and pass immediately unless the command is an actual `git commit` invocation; a payload with no extractable command still scans, so git pre-commit use keeps working. Declared in .codex-plugin/plugin.json; deliberately NOT named hooks/hooks.json — see hooks/README.md. instruction-scan.sh, agents-md-budget.sh, and done-authority-gate.sh are documented opt-ins and are intentionally absent here.",
   "hooks": {
     "PreToolUse": [
       {
@@ -34,6 +34,16 @@
             "type": "command",
             "command": "${PLUGIN_ROOT}/hooks/scripts/quality-gate.sh",
             "statusMessage": "quality-gate: running fast checks on staged languages"
+          }
+        ]
+      },
+      {
+        "matcher": "apply_patch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${PLUGIN_ROOT}/hooks/scripts/protected-paths-guard.sh",
+            "statusMessage": "protected-paths-guard: checking patch paths"
           }
         ]
       }

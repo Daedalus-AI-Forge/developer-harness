@@ -32,13 +32,15 @@ Two failure modes, kept distinct on purpose:
 | Commit | `scripts/check-large-files.sh` | Measures every staged blob (`git cat-file -s`); LFS-tracked files pass naturally because their staged blob is the pointer | A staged file exceeds 1 MB (override: `LARGE_FILE_KB=<kb>`) |
 | Commit | `scripts/check-merge-markers.sh` | Scans staged additions for `<<<<<<<` / `>>>>>>>` conflict markers at line start; a bare `=======` is deliberately ignored (setext/rst underlines), which is safe because every real conflict contains the other two markers | A conflict marker is being committed |
 | Commit | `scripts/quality-gate.sh` | Detects the repo's language lanes (pyproject.toml → Python, package.json → JS/TS, Cargo.toml → Rust) and runs the canonical fast checks over staged files: `ruff format --check` + `ruff check` (via `uv run`/`uvx`), pyright/mypy **if configured**, biome **or** prettier `--check` + eslint **if configured**, `tsc --noEmit` if tsconfig.json, `cargo fmt --check` + `cargo clippy` | A configured check fails; a tool that is missing or unconfigured is skipped **with a notice on stderr**, never silently |
+| Commit *(library)* | `scripts/lib/commit-payload.sh` | Sourced (never executed) by the four commit guards: quote-aware payload narrowing that decides scan vs skip — an actual `git commit` invocation scans, any other command skips, and empty/absent/unparseable stdin still scans, preserving git pre-commit mode | Never blocks by itself — it only decides whether the commit guards run |
 | Repo hygiene *(opt-in)* | `scripts/instruction-scan.sh` | Scans instruction-bearing files (`skills/`, `rules/`, `agents/`, `commands/`, root Markdown) for invisible-Unicode injection vectors — Unicode Tag characters, zero-width characters, bidi overrides and isolates — as UTF-8 byte sequences under `LC_ALL=C` | Any invisible character is found in scope |
 | Repo hygiene *(opt-in)* | `scripts/agents-md-budget.sh` | Computes the largest AGENTS.md **chain** a working directory would be handed (root file plus every nested one on the path), using staged sizes inside a git repo | The chain exceeds 32768 bytes; warns from 24576 |
 | Team *(opt-in)* | `scripts/done-authority-gate.sh` | Stop-event gate: refuses "done" unless the team's declared done-authority has appended `verdict: <role>: accepted - …` to the team status file | No verdict, a stale verdict, or a `rejected`/`blocked` one |
 
-The first six are wired by default in
-[`claude.hooks.json`](claude.hooks.json) and
-[`codex.hooks.json`](codex.hooks.json). The last three are **not** — they are
+The two safety guards and the four commit guards are wired by default in
+[`claude.hooks.json`](claude.hooks.json), [`codex.hooks.json`](codex.hooks.json),
+and the OpenCode plugin shim [`opencode.guards.js`](opencode.guards.js).
+The last three are **not** — they are
 opt-ins with their own wiring section below, because a repo-hygiene scan
 belongs in CI and a team gate belongs only where a team is declared.
 
@@ -154,13 +156,13 @@ string disables it — explicit configuration, not a bypass.
 Set a var to a command string to replace the default entirely (runs via
 `sh -c` from the repo root; the staged file list is not appended).
 
-## Wiring files: why two dialects
+## Wiring files: why not one
 
 There is deliberately **no `hooks/hooks.json`** in this repo. Both Claude
 Code and Codex auto-discover that exact path inside a plugin and parse it
 with their own schema (Claude supports an `if` narrowing field; Codex does
 not), so a single shared file at the magnet path would be wrong for one of
-them. Instead:
+them. Instead, one wiring file per dialect:
 
 - [`claude.hooks.json`](claude.hooks.json) — Claude dialect
   (`${CLAUDE_PLUGIN_ROOT}`, `if: "Bash(git commit*)"` narrowing, a second
@@ -168,12 +170,16 @@ them. Instead:
   field in `.claude-plugin/plugin.json`
   ([plugins reference](https://code.claude.com/docs/en/plugins-reference)).
 - [`codex.hooks.json`](codex.hooks.json) — Codex dialect (`${PLUGIN_ROOT}`,
-  no `if`; the scripts' own no-op guards and quality-gate's stdin narrowing
-  replace it), declared via the `"hooks"` field in
+  no `if`; the commit guards' shared payload narrowing in
+  `scripts/lib/commit-payload.sh` replaces it), declared via the `"hooks"` field in
   `.codex-plugin/plugin.json`
   ([Codex plugin docs](https://developers.openai.com/codex/plugins/build)).
+- [`opencode.guards.js`](opencode.guards.js) — OpenCode, which has no
+  hooks.json dialect at all: its extension point is a JS plugin that blocks
+  by throwing ([plugins docs](https://opencode.ai/docs/plugins/)). The shim
+  wires the same guards in code; see [d) OpenCode](#d-opencode).
 
-Both files wire the same six default guards, safety layer first. The safety
+All three wire the same six default guards, safety layer first. The safety
 guards are **not** narrowed to `git commit` — they exist to see every call.
 
 ## a) Claude Code
@@ -240,11 +246,11 @@ Two options ([hooks docs](https://code.claude.com/docs/en/hooks)):
 ```
 
 Exit 2 blocks the tool call; stderr becomes the blocking reason shown to Claude.
-If a Claude Code version ignores the `if` narrowing, the commit guards simply
-run on every Bash call — harmless, because each exits 0 whenever nothing is
-staged, and quality-gate additionally passes straight through on payloads
-that are not a `git commit`. Tool names in a `matcher` that this version does
-not have never match, which costs nothing.
+If a Claude Code version ignores the `if` narrowing, nothing changes: all
+four commit guards read the payload themselves (shared logic in
+`scripts/lib/commit-payload.sh`) and pass straight through unless the
+command is an actual `git commit` invocation. Tool names in a `matcher` that
+this version does not have never match, which costs nothing.
 
 ## b) Codex
 
@@ -255,17 +261,28 @@ same `hooks` → `PreToolUse` → `matcher` → `hooks[]` nesting, same
 exit-2-plus-stderr blocking. For standalone (non-plugin) use, copy the shape
 of [`codex.hooks.json`](codex.hooks.json) into `.codex/hooks.json`, replacing
 `${PLUGIN_ROOT}` with a repo-relative path such as
-`hooks/scripts/secret-scan.sh`. Codex has no `if` field — the scripts no-op
-when nothing is staged, and quality-gate skips non-commit payloads on its
-own. Hooks are feature-gated in `~/.codex/config.toml` (`[features]`
-`hooks`), and Codex asks you to review and trust each non-managed hook
-(`/hooks` in the TUI) before it runs. When installed as a plugin, Codex
-would also auto-discover a `hooks/hooks.json`; this repo intentionally
-ships none (see "Wiring files" above) and declares
-`hooks/codex.hooks.json` in `.codex-plugin/plugin.json` instead.
+`hooks/scripts/secret-scan.sh`. Codex has no `if` field — instead all four
+commit guards parse the hook payload themselves via
+`scripts/lib/commit-payload.sh` and pass immediately unless the command is
+an actual `git commit`; a payload with no extractable command still scans,
+so nothing changes for git pre-commit use (and a staged secret can no longer
+wedge the session by blocking `git status` or the `git restore --staged` the
+guard itself recommends). Hooks are enabled by default; `[features] hooks = false` in
+`~/.codex/config.toml` disables them (`hooks` is the canonical feature key,
+`codex_hooks` a deprecated alias). Codex asks you to review and trust each
+non-managed hook (`/hooks` in the TUI) before it runs, and trust is recorded
+against the hook's hash, so any edit forces re-review.
 
-Only the shell-tool matcher is wired for Codex here, because that is the
-payload shape this repo has verified. Before relying on the two safety
+Two matchers are wired for Codex here: the shell tool (`Bash`) and
+`apply_patch`, whose PreToolUse payload reports `tool_name: "apply_patch"`
+and carries the v4a patch text in `tool_input.command`
+([hooks docs](https://learn.chatgpt.com/docs/hooks)). protected-paths-guard
+reads the `*** Add/Update/Delete File:` / `*** Move to:` envelope lines from
+patch payloads — `*** Delete File:` targets also pass the no-delete tier —
+so `.env` access and test deletion are caught for patch-based edits, not
+just shell commands. Codex reads files through the shell, so the zero-access
+tier's read protection rides the `Bash` matcher; there is no separate
+documented Read tool to wire. Before relying on the two safety
 guards under Codex, run the probe in
 [Verify that a wiring actually blocks](#verify-that-a-wiring-actually-blocks)
 against a real payload from your version: if the guard cannot find a command
@@ -303,50 +320,31 @@ shape protected-paths-guard reads:
 ## d) OpenCode
 
 OpenCode has no hooks.json; it uses JS plugins in `.opencode/plugins/`
-([plugins docs](https://opencode.ai/docs/plugins/)). The shim below runs the
-safety guards on every bash call, the commit guards only on `git commit`, and
-the path guard on file tools — blocking by throwing:
+([plugins docs](https://opencode.ai/docs/plugins/)), which block a tool call
+by throwing. The shim ships as a reviewable file —
+[`opencode.guards.js`](opencode.guards.js) — wired like the other dialects:
+safety guards on every bash call, commit guards only on `git commit`, the
+path guard on path-carrying tools, and the blocking guard's stderr surfaced
+in the thrown error so the refusal arrives with its reason:
 
-```js
-// .opencode/plugins/guards.js
-const SAFETY = [
-  "hooks/scripts/dangerous-command-guard.sh",
-  "hooks/scripts/protected-paths-guard.sh",
-]
-const COMMIT = [
-  "hooks/scripts/secret-scan.sh",
-  "hooks/scripts/check-large-files.sh",
-  "hooks/scripts/check-merge-markers.sh",
-  "hooks/scripts/quality-gate.sh",
-]
-
-export const Guards = async ({ $ }) => ({
-  "tool.execute.before": async (input, output) => {
-    const fail = (r) => { if (r.exitCode !== 0) throw new Error(r.stderr.toString()) }
-
-    if (input.tool === "bash") {
-      const cmd = output.args?.command ?? ""
-      for (const g of SAFETY) fail(await $`bash ${g} ${cmd}`.nothrow().quiet())
-      if (!/git\s+commit/.test(cmd)) return
-      for (const g of COMMIT) fail(await $`bash ${g} < /dev/null`.nothrow().quiet())
-      return
-    }
-
-    // File tools: pass whichever path field this version uses.
-    const p = output.args?.filePath ?? output.args?.file_path ?? output.args?.path
-    if (!p) return
-    fail(await $`bash hooks/scripts/protected-paths-guard.sh ${p}`.nothrow().quiet())
-  },
-})
+```bash
+mkdir -p .opencode/plugins
+cp hooks/opencode.guards.js .opencode/plugins/guards.js
 ```
 
-Two details matter here. The safety guards are given the command **as an
-argument** rather than on stdin — they accept either, and OpenCode has no
-hook payload to hand them. The `git commit` narrowing must live in the JS
-because OpenCode has no declarative matcher, and the commit guards are fed
-`< /dev/null`: empty stdin is exactly the case where quality-gate fail-closes
-toward running its toolchains, so without the regex every bash call would pay
-for a full lint/type-check pass.
+Two details matter, both spelled out in the file's header comments. The
+safety guards are given the command **as an argument** (`--command` for
+protected-paths-guard, whose bare arguments mean paths) rather than on stdin
+— they accept either, and OpenCode hands a plugin tool arguments, not a hook
+payload. And the `git commit` narrowing must live in the JS because OpenCode
+has no declarative matcher; the commit guards are then fed a synthesized
+PreToolUse-shaped payload on stdin so their own narrowing
+(`scripts/lib/commit-payload.sh`) still sees the real command. Without the
+JS narrowing, every bash call would pay
+quality-gate's full lint/type-check pass. The shim looks for the scripts in
+`hooks/scripts/` under the project root; set `GUARD_SCRIPTS_DIR` when they
+are vendored elsewhere (a global install at `~/.config/opencode/plugins/`
+always needs it).
 
 ## e) Plain git (no agent)
 
@@ -445,8 +443,13 @@ previous round satisfies the gate.
 
 ## Verify that a wiring actually blocks
 
-A guard you have not seen block is a guard you are guessing about. Each
-script is callable by hand with the payload shape it expects:
+A guard you have not seen block is a guard you are guessing about. The
+scripted form of this section is
+[`tests/guard-selftest.sh`](tests/guard-selftest.sh): a 45-case regression
+suite that stages real content in a disposable repo under `$TMPDIR`, prints
+a per-case PASS/FAIL table, and exits 1 on any failure — run it after
+touching any guard. Each script is also callable by hand with the payload
+shape it expects:
 
 ```bash
 # should print a reason and exit 2

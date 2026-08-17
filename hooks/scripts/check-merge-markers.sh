@@ -10,7 +10,7 @@
 # (Same reasoning covers the diff3 `|||||||` base marker: it only ever
 # appears between `<<<<<<<` and `>>>>>>>`.)
 #
-# Dependency-free: bash + git + awk (POSIX awk only; no jq).
+# Dependency-free: bash + git + awk + grep + sed + tr (POSIX awk only; no jq).
 #
 # Two ways to run it (same dual-use wiring as secret-scan.sh):
 #
@@ -18,16 +18,26 @@
 #      Any non-zero exit aborts the commit.
 #
 #   2. PreToolUse-style agent hook (Claude Code / Codex / Cursor):
-#      The agent pipes the hook event JSON to stdin. This script does not
-#      parse it — it just drains stdin and scans the staged diff.
-#      Exit 2 + stderr = block.
+#      The agent pipes the hook event JSON to stdin. The script reads it just
+#      far enough for one narrowing decision (shared logic in
+#      lib/commit-payload.sh): a payload whose command is not an actual
+#      `git commit` invocation passes immediately, instead of blocking
+#      unrelated shell calls on an already-staged conflict marker. No
+#      payload, an empty payload, or a payload with no extractable command
+#      still scans the staged diff — fail-closed toward checking, which is
+#      also what keeps mode 1 working. Exit 2 + stderr = block.
 #
 # Exit codes: 0 = clean, 2 = conflict markers staged (blocking).
 
 set -u
 
-# Drain stdin when piped (agent hooks send JSON); never hang on a terminal.
-if [ ! -t 0 ]; then
+# Narrow to `git commit` payloads via the shared helper (it reads stdin and
+# never hangs on a terminal). If the helper is missing — e.g. this file was
+# symlinked into .git/hooks/ or copied out alone — fall back to the old
+# drain-and-scan: wrong only in the noisy direction, never the unsafe one.
+if . "${BASH_SOURCE[0]%/*}/lib/commit-payload.sh" 2>/dev/null; then
+  commit_payload_wants_scan || exit 0
+elif [ ! -t 0 ]; then
   cat > /dev/null || true
 fi
 

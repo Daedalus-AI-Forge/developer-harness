@@ -42,9 +42,19 @@
 # Dependency-free: bash + grep + sed + tr (no jq).
 #
 # Wiring: PreToolUse-style agent hook on BOTH the shell tool and the
-# file-touching tools (Read/Write/Edit/NotebookEdit). The agent pipes the hook
-# event JSON to stdin; paths are extracted with grep/sed rather than a JSON
-# parser. Direct invocation for scripts and tests:
+# file-touching tools — Read/Write/Edit/NotebookEdit in Claude Code, and
+# apply_patch in Codex (matchable as `apply_patch`, `Edit`, or `Write`; the
+# payload always reports tool_name "apply_patch" and carries the v4a patch
+# text in tool_input.command, the same key a shell call uses —
+# https://learn.chatgpt.com/docs/hooks). The agent pipes the hook event JSON
+# to stdin; paths are extracted with grep/sed rather than a JSON parser. For
+# patch payloads the JSON-escaped \n sequences are restored and paths are
+# read from the envelope lines only (`*** Add File:`, `*** Update File:`,
+# `*** Delete File:`, `*** Move to:`): every envelope path gets tier 1, and
+# `*** Delete File:` targets additionally get tier 2 — deleting a failing
+# test via a patch is exactly the bypass this closes. Hunk BODY lines are
+# never token-scanned: a diff that merely mentions `.env` in added text is
+# content, not access. Direct invocation for scripts and tests:
 #     protected-paths-guard.sh <path>...
 #     protected-paths-guard.sh --command '<shell command>'
 #
@@ -193,6 +203,7 @@ extract_json_strings() { # $1 = payload, $2 = ERE alternation of key names
 
 paths=""
 command_string=""
+tool_name=""
 
 if [ "$#" -gt 0 ]; then
   case "$1" in
@@ -203,8 +214,24 @@ if [ "$#" -gt 0 ]; then
 elif [ ! -t 0 ]; then
   payload="$(cat 2>/dev/null || true)"
   [ -n "$payload" ] || exit 0
+  tool_name="$(extract_json_strings "$payload" 'tool_name|toolName|tool' | head -1)"
   command_string="$(extract_json_strings "$payload" 'command|cmd|shell_command' | head -1)"
   paths="$(extract_json_strings "$payload" 'file_path|filePath|notebook_path|notebookPath|target_file|absolute_path|path')"
+fi
+
+# extract_json_strings leaves \n / \r / \t escapes intact (a file path never
+# legitimately contains them); a patch body is all newlines, so restore them
+# here before any per-line work on the command. \r\n collapses first so CRLF
+# payloads do not leave a stray escape behind.
+command_text=""
+if [ -n "$command_string" ]; then
+  command_text="$(
+    printf '%s\n' "$command_string" | sed \
+      -e 's/\\r\\n/\\n/g' \
+      -e 's/\\[nr]/\
+/g' \
+      -e 's/\\t/ /g'
+  )"
 fi
 
 # --- file-tool paths -------------------------------------------------------
@@ -216,13 +243,68 @@ done <<EOF
 $paths
 EOF
 
+# --- patch payloads (apply_patch) ------------------------------------------
+
+# The v4a envelope names every file a patch touches, so the envelope — not
+# the hunk bodies — is the ground truth for what this tool call accesses.
+# This runs for tool_name "apply_patch" AND for a patch smuggled through the
+# shell tool as a heredoc (`apply_patch <<'EOF' ...`): the sed patterns only
+# ever match envelope-shaped lines, so running them over any command text is
+# additive and cannot misread ordinary shell.
+if [ -n "$command_text" ]; then
+  patch_paths="$(
+    printf '%s\n' "$command_text" | sed -n \
+      -e 's/^\*\*\* Add File:[[:space:]]*//p' \
+      -e 's/^\*\*\* Update File:[[:space:]]*//p' \
+      -e 's/^\*\*\* Delete File:[[:space:]]*//p' \
+      -e 's/^\*\*\* Move to:[[:space:]]*//p' \
+      | sed -e 's/[[:space:]]*$//'
+  )"
+  while IFS= read -r p; do
+    [ -n "$p" ] || continue
+    check_zero_access "$p" "patch touches"
+  done <<EOF
+$patch_paths
+EOF
+
+  patch_deletes="$(
+    printf '%s\n' "$command_text" \
+      | sed -n 's/^\*\*\* Delete File:[[:space:]]*//p' \
+      | sed -e 's/[[:space:]]*$//'
+  )"
+  while IFS= read -r p; do
+    [ -n "$p" ] || continue
+    check_no_delete "$p" "patch deletes"
+  done <<EOF
+$patch_deletes
+EOF
+fi
+
+# What the ordinary shell-token walk below gets to see: for an apply_patch
+# payload, nothing — the whole command IS the patch, and token-scanning hunk
+# bodies would false-block a diff whose added text merely mentions `.env`.
+# For a shell command, everything except `*** Begin Patch`..`*** End Patch`
+# regions (sed deletes to EOF when the end marker is missing), so a heredoc
+# patch cannot false-block on its content while the rest of the command line
+# is still scanned normally.
+shell_text=""
+if [ -n "$command_text" ]; then
+  case "$tool_name" in
+    apply_patch) ;;
+    *) shell_text="$(
+         printf '%s\n' "$command_text" \
+           | sed -e '/^\*\*\* Begin Patch/,/^\*\*\* End Patch/d'
+       )" ;;
+  esac
+fi
+
 # --- shell command ---------------------------------------------------------
 
-if [ -n "$command_string" ]; then
+if [ -n "$shell_text" ]; then
   # Drop quoted regions that contain whitespace: prose in a commit message or
   # an echo is not a path reference. Path-shaped quoted tokens survive.
   cleaned="$(
-    printf '%s' "$command_string" | tr '\n\t' '  ' \
+    printf '%s' "$shell_text" | tr '\n\t' '  ' \
       | sed -e 's/"[^"]*[[:space:]][^"]*"/ /g' -e "s/'[^']*[[:space:]][^']*'/ /g"
   )"
 

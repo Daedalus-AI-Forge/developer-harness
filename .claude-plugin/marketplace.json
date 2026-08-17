@@ -1,5 +1,6 @@
 {
   "name": "developer-harness",
+  "description": "Self-hosted marketplace for the developer-harness plugin: language conventions, engineering-method skills, review checklists, diagram skills, command wrappers, agent role contracts, and guard hooks for any codebase.",
   "owner": {
     "name": "Daedalus AI Forge"
   },

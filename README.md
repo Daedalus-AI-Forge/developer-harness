@@ -26,7 +26,7 @@ developer-harness/
 ├── commands/          # thin /command wrappers around explicitly-invocable skills
 ├── agents/            # generic subagent role contracts, grouped by team:
 │                      #   root — coordination: product-owner (value execution),
-│                      #     person-of-contact (communication/RACI routing)  (+ _template.md)
+│                      #     person-of-contact (communication/RACI routing)
 │                      #   project-control/: product-manager, project-manager,
 │                      #     legal-reviewer
 │                      #   develop-team/: tech-lead, developer (base), frontend-developer,
@@ -39,10 +39,17 @@ developer-harness/
 │                      #     integration-validator, performance-validator,
 │                      #     release-validator, evidence-validator
 ├── hooks/             # 9 tool-neutral guard scripts (6 wired by default, 3 opt-in)
-│                      #   + per-tool wiring dialects (claude.hooks.json /
-│                      #   codex.hooks.json — deliberately no hooks.json)
+│                      #   + scripts/lib/ (shared git-commit payload narrowing)
+│                      #   + tests/guard-selftest.sh (run after touching a guard)
+│                      #   + per-tool wiring: claude.hooks.json / codex.hooks.json /
+│                      #     opencode.guards.js — deliberately no hooks.json
 ├── rules/             # AGENTS.md / CLAUDE.md section templates (roles, teams incl. five predefined teams, guards, engineering discipline, coding rules, design docs, project bindings, raci)
+│                      #   + role-contract-template.md (scaffold: kept out of agents/,
+│                      #     where every .md installs as a subagent)
+├── scripts/           # converters into tool-native formats (agents-to-opencode.sh)
 ├── docs/              # per-tool consumption guides (consume-<tool>.md)
+├── opencode.json      # repo-local OpenCode config — points skill discovery at
+│                      #   skills/ so this repo's own skills load for contributors
 └── .claude-plugin/    # plugin.json + marketplace.json (repo root = plugin root)
 ```
 
@@ -50,10 +57,10 @@ developer-harness/
 
 | Harness class | Claude Code | Codex | Cursor | OpenCode |
 | --- | --- | --- | --- | --- |
-| **skills/** | native (plugin or `.agents/skills/`) | native (plugin or `.agents/skills/`) | native (`.agents/skills/` et al., invoke `/name`) | native (`.agents/skills/` et al., `skill` tool) |
+| **skills/** | native (plugin or `.agents/skills/`) | native (plugin or `.agents/skills/`) | native (`.agents/skills/` et al., invoke `/name`) | native (`.agents/skills/` et al., `skill` tool; point `skills.paths` at the directory — this repo's `opencode.json` is the example) |
 | **commands/** | native (plugin; skills already cover it) | routing — no command files, use `$name` | routing — use `/name` skills (legacy copy) | copy → `.opencode/commands/` |
-| **agents/** | native (plugin or `.claude/agents/`; `disallowedTools` enforced) | routing — `## Roles` in AGENTS.md, or convert → `.codex/agents/*.toml` (`sandbox_mode` per role) | copy → `.claude/agents/` (read natively; `disallowedTools` honoring unverified) | convert → `.opencode/agents/` (`permission: edit: deny`), or routing — AGENTS.md |
-| **hooks/** | native (plugin → `hooks/claude.hooks.json`) | native (plugin → `hooks/codex.hooks.json`) or copy → `.codex/hooks.json` | copy → `.cursor/hooks.json` | copy — JS plugin shim |
+| **agents/** | native (plugin or `.claude/agents/`; `disallowedTools` enforced) | routing — `## Roles` in AGENTS.md, or convert → `.codex/agents/*.toml` (`sandbox_mode` per role) | copy → `.claude/agents/` (read natively; `disallowedTools` honoring unverified) | convert → `.opencode/agents/` with `scripts/agents-to-opencode.sh` (`permission: edit: deny`), or routing — AGENTS.md |
+| **hooks/** | native (plugin → `hooks/claude.hooks.json`) | native (plugin → `hooks/codex.hooks.json`) or copy → `.codex/hooks.json` | copy → `.cursor/hooks.json` | copy `hooks/opencode.guards.js` → `.opencode/plugins/` |
 | **rules/** | copy — paste into CLAUDE.md | copy — paste into AGENTS.md (32 KiB budget, truncated silently) | copy — paste into AGENTS.md (verify it loaded) | copy — paste into AGENTS.md, or `instructions` globs in `opencode.json` (file references are not followed) |
 
 Per-tool step-by-step guides with doc citations: [docs/consume-claude-code.md](docs/consume-claude-code.md)
@@ -155,12 +162,19 @@ in favor of the skills CLI, which pulls no dependencies at all.
 **Review hook wiring like executable code, because it is.** Every guard in
 `hooks/` is a shell script that runs on your machine before a tool call —
 six of the nine wired by default when you install the plugin, three shipped
-unwired. Read the scripts and the dialect file (`hooks/claude.hooks.json`,
-`hooks/codex.hooks.json`) before trusting them; they are short, dependency-free
-bash by design, precisely so that reading them is realistic. Each tool has a
-trust gate for exactly this: Codex feature-gates hooks and asks you to review
-each non-managed one under `/hooks`; Cursor and Claude Code surface hook
-configuration on install. Treat a hook you have not read the way you would
+unwired. Read the scripts and the wiring file for your tool
+(`hooks/claude.hooks.json`, `hooks/codex.hooks.json`,
+`hooks/opencode.guards.js`) before trusting them; they are short,
+dependency-free bash by design — plus one small JS shim where OpenCode's
+plugin API leaves no choice — precisely so that reading them is realistic.
+`hooks/tests/guard-selftest.sh` is there to be run, not just read: it
+exercises every wired guard against real payloads in a disposable repo, so
+you can confirm the blocking behaviour on your own machine rather than taking
+this README's word for it. Each tool has a trust gate for exactly this: Codex
+enables hooks by default (`[features] hooks = false` in `~/.codex/config.toml`
+disables them) and asks you to review and trust each non-managed one under
+`/hooks`, re-reviewing whenever a hook's hash changes; Cursor and Claude Code
+surface hook configuration on install. Treat a hook you have not read the way you would
 treat a `postinstall` script you have not read — and note that this cuts both
 ways: a guard you disable because it was inconvenient is a guard that will
 not be there on the commit that needed it.

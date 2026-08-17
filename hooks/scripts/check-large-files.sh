@@ -5,7 +5,8 @@
 # file, so files tracked by Git LFS pass naturally: their staged blob is the
 # tiny LFS pointer, not the asset.
 #
-# Dependency-free: bash + git (no jq, no stat — `stat` flags differ BSD/GNU).
+# Dependency-free: bash + git + grep + sed + tr (no jq, no stat — `stat`
+# flags differ BSD/GNU).
 #
 # Env overrides:
 #   LARGE_FILE_KB   threshold in KB (default 1024 = 1 MB)
@@ -16,16 +17,26 @@
 #      Any non-zero exit aborts the commit.
 #
 #   2. PreToolUse-style agent hook (Claude Code / Codex / Cursor):
-#      The agent pipes the hook event JSON to stdin. This script does not
-#      parse it — it just drains stdin and inspects the index directly.
-#      Exit 2 + stderr = block.
+#      The agent pipes the hook event JSON to stdin. The script reads it just
+#      far enough for one narrowing decision (shared logic in
+#      lib/commit-payload.sh): a payload whose command is not an actual
+#      `git commit` invocation passes immediately, instead of blocking
+#      unrelated shell calls on an already-staged large file. No payload, an
+#      empty payload, or a payload with no extractable command still inspects
+#      the index — fail-closed toward checking, which is also what keeps
+#      mode 1 working. Exit 2 + stderr = block.
 #
 # Exit codes: 0 = clean, 2 = a staged file exceeds the threshold (blocking).
 
 set -u
 
-# Drain stdin when piped (agent hooks send JSON); never hang on a terminal.
-if [ ! -t 0 ]; then
+# Narrow to `git commit` payloads via the shared helper (it reads stdin and
+# never hangs on a terminal). If the helper is missing — e.g. this file was
+# symlinked into .git/hooks/ or copied out alone — fall back to the old
+# drain-and-scan: wrong only in the noisy direction, never the unsafe one.
+if . "${BASH_SOURCE[0]%/*}/lib/commit-payload.sh" 2>/dev/null; then
+  commit_payload_wants_scan || exit 0
+elif [ ! -t 0 ]; then
   cat > /dev/null || true
 fi
 

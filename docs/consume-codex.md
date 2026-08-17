@@ -36,6 +36,15 @@ marketplace entry. Once installed:
 - `$<skill-name>` — invoke a bundled skill explicitly, e.g.
   `$tighten-types src/models.py`
 
+Two surface caveats, both from the official
+[plugins](https://developers.openai.com/codex/plugins) doc. First, where
+plugins run: Codex CLI and Codex in the ChatGPT desktop app (plus ChatGPT
+Chat and Work on web, desktop, and mobile) — **the Codex IDE extension does
+not support plugins**, so nothing above applies there. Second, installation
+is not live in the installing session: bundled skills become available when
+you start a new chat or CLI session after installing, so restart before
+concluding a skill or hook failed to arrive.
+
 Every skill ships an OpenAI sidecar (`skills/<name>/agents/openai.yaml`) with
 `display_name` and `short_description` — that is what Codex shows in its skill
 picker — plus a `default_prompt` on the explicitly-invocable skills
@@ -86,9 +95,12 @@ schema — but that schema is asserted from documentation here, not smoke-tested
 against a live Codex install in this repo, and the event names and payload
 shape are the part most likely to drift. Treat `hooks/codex.hooks.json` as
 *candidate* configuration until you have watched it fire: install the plugin,
-open `/hooks` in the TUI to review and trust the hooks (they are feature-gated
-behind `[features] hooks` in `~/.codex/config.toml` and never run untrusted),
-then stage a file with an obvious fake credential and attempt a commit. If the
+open `/hooks` in the TUI to review and trust the hooks (hooks are enabled by
+default and never run untrusted — trust is recorded against each hook's hash,
+so any change forces re-review; `[features] hooks = false` in
+`~/.codex/config.toml` is the off switch, per the
+[hooks](https://developers.openai.com/codex/hooks) doc), then stage a file
+with an obvious fake credential and attempt a commit. If the
 guards do not fire, nothing silently degrades — the scripts are dual-use, so
 fall back to the plain-git driver in
 [`../hooks/README.md`](../hooks/README.md), which needs no agent at all. Report
@@ -106,10 +118,38 @@ The CLI vendors skills into `.agents/skills/`, which Codex reads natively
 whose `description` matches the task. No plugin machinery involved — use this
 when you want the skills pinned in-repo by content hash (`skills-lock.json`).
 
+**Mind the skill-catalog context budget before installing all 26.** Codex's
+initial skills list uses at most 2% of the model's context window, or 8,000
+characters when the window is unknown; past that, Codex shortens skill
+descriptions first and, for large sets, may omit skills from the list with a
+warning ([skills](https://developers.openai.com/codex/skills)). This repo's
+26 skill descriptions total roughly 7.8K characters before names and paths
+are counted, so a full install sits at that fallback budget — expect
+shortened entries, and possibly omitted ones, in sessions where the window
+is unknown or small. The budget governs only that initial list — Codex still
+reads the full `SKILL.md` of any skill it selects — but a skill omitted from
+the list is invisible to auto-selection, and whether `$name` still reaches it
+is not stated in the doc (verify against a live install before relying on
+it). If that bites, install the subset you use instead of `--all`: drop the
+flag for an interactive picker, or name skills directly —
+
+```
+npx skills add daedalus-ai-forge/developer-harness \
+  --skill tighten-types --skill systematic-debugging
+```
+
 Caveat: the two architect skills depend on the sibling dirs
 `skills/architect-shared/` and `skills/contracts/` (no SKILL.md, so per-skill
 installers may skip them) — when vendoring selectively, copy those two dirs
-alongside.
+alongside. A second consequence of the missing `SKILL.md`, for anyone
+repackaging this repo for the **public plugin directory**: submission
+validation requires every immediate child of `skills/` to contain one
+(`skill_manifest_missing`,
+[submission-errors](https://developers.openai.com/plugins/deploy/submission-errors)),
+and no manifest-level exclude exists, so those two shared dirs would have to
+move out of `skills/` first. Marketplace and skills-CLI installs document no
+such check; treat local tolerance as documentation-sourced — verify against
+a live install.
 
 ## 3. Agents — two paths
 

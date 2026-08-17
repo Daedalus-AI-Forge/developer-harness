@@ -59,7 +59,7 @@ mkdir -p .claude/agents
 cp path/to/developer-harness/agents/<group>/<role>.md .claude/agents/
 ```
 
-Format matches `agents/_template.md`: markdown with `name`, `description`,
+Format matches `rules/role-contract-template.md`: markdown with `name`, `description`,
 optional `model: inherit` frontmatter. The harness groups roles in team
 subfolders (`project-control/`, `develop-team/`, `design-team/`); Cursor's
 support for nested agent folders is unverified — if grouped copies don't

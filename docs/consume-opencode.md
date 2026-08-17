@@ -6,18 +6,38 @@ JS plugin, roles through `AGENTS.md`. Docs verified 2026-08:
 [commands](https://opencode.ai/docs/commands/),
 [plugins](https://opencode.ai/docs/plugins/),
 [agents](https://opencode.ai/docs/agents/),
-[rules](https://opencode.ai/docs/rules/).
+[rules](https://opencode.ai/docs/rules/),
+[config](https://opencode.ai/docs/config/) and the published
+[config schema](https://opencode.ai/config.json). Where a shape below says
+"verified live", it was exercised against opencode 1.18.15.
 
 ## Skills (native — two options)
 
 **Option A — point OpenCode at a clone (recommended).** OpenCode scans
-configured skill paths recursively for `**/SKILL.md`, so a clone needs no
-vendoring at all:
+configured skill paths recursively for `**/SKILL.md`. This repo ships that
+config at its root — [`opencode.json`](../opencode.json) — so working inside
+a clone needs no setup at all:
 
-```jsonc
-// opencode.json
-{ "skills": { "paths": ["<path-to-clone>/developer-harness/skills"] } }
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "skills": {
+    "paths": ["skills"]
+  }
+}
 ```
+
+From any other project, use the same shape with the path to the clone
+(`"paths": ["<path-to-clone>/developer-harness/skills"]`). The `skills.paths`
+key comes from the published [config schema](https://opencode.ai/config.json)
+("Additional paths to skill folders" — the
+[config docs page](https://opencode.ai/docs/config/) does not list it), and
+it is verified live: with this file at the repo root, `opencode debug skill`
+finds the whole `skills/` tree; without it, none of it. Two notes from that
+run: config is read at startup, so restart OpenCode after adding the file;
+and skills deduplicate by name, so a same-named skill in a global directory
+(`~/.claude/skills/`, `~/.config/opencode/skills/`) shadows the repo copy —
+`skill-creator` is the likely collision.
 
 This also keeps the architect skills' sibling resource dirs
 (`skills/architect-shared/`, `skills/contracts/`) in place — the selective-
@@ -89,11 +109,30 @@ permission:
 <body of agents/validation-team/qa-reviewer.md, unchanged>
 ```
 
+That mapping ships as a script —
+[`../scripts/agents-to-opencode.sh`](../scripts/agents-to-opencode.sh)
+(bash, dependency-free, like every other executable in this repo):
+
+```bash
+path/to/developer-harness/scripts/agents-to-opencode.sh .opencode/agents
+```
+
+It converts every role contract in `agents/` (skipping READMEs and any
+scaffolding file starting with `_`): `description` verbatim, `mode: subagent`
+added, `model: inherit` dropped, any `disallowedTools` denylist containing
+`Edit` mapped to `permission: edit: deny`, body untouched. It prints every
+file it writes, refuses to overwrite without `--force`, never writes outside
+the target directory, and is idempotent — re-run it after a `git pull`.
+Verified live: all converted roles register as subagents in
+`opencode agent list`.
+
 **`permission: edit: deny` is why conversion beats routing.** Every judging
 role in the harness says "reviews, never implements" — as prose, that is a
 request the model can rationalize past under pressure. Under OpenCode it can
-be enforced (the `permission` mapping is documentation-sourced — verify
-against a live install before relying on it). The mapping is mechanical:
+be enforced — verified live at the config layer: `opencode debug agent
+qa-reviewer` on a converted contract resolves `edit → deny` (the tool-call
+refusal itself is OpenCode's own permission system, not re-tested here).
+The mapping is mechanical:
 every role that carries a `disallowedTools` line in the harness gets
 `edit: deny` here — the whole `validation-team/` group, plus `tech-lead` and
 the authoring roles (`product-owner`, `person-of-contact`, `product-manager`,
@@ -119,11 +158,29 @@ consult and conversion for roles you delegate to.
 
 ## Hooks (JS plugin shim)
 
-OpenCode has no hooks.json; use the plugin shim in
-[`../hooks/README.md`](../hooks/README.md) — a `.opencode/plugins/*.js` file
-that runs the guard scripts in `tool.execute.before` and blocks by throwing.
-The shim narrows to `git commit` bash calls in JS before invoking the guards,
-so the expensive quality gates never fire on ordinary commands.
+OpenCode has no hooks.json; its hook surface is a JS plugin
+([plugins docs](https://opencode.ai/docs/plugins/)). The shim ships as a
+reviewable file — [`../hooks/opencode.guards.js`](../hooks/opencode.guards.js)
+— that runs the guard scripts in `tool.execute.before` and blocks by
+throwing, with the blocking guard's stderr as the error message, so the
+refusal arrives with its reason. Install by copying:
+
+```bash
+mkdir -p .opencode/plugins
+cp path/to/developer-harness/hooks/opencode.guards.js .opencode/plugins/guards.js
+```
+
+The shim narrows to `git commit` bash calls in JS before invoking the commit
+guards, so the expensive quality gates never fire on ordinary commands; the
+full wiring notes are in [`../hooks/README.md`](../hooks/README.md). The
+install is a deliberate copy step, not part of the shipped `opencode.json`:
+a plugin is executable code, and hook wiring arriving inside a cloned
+repository is exactly the thing to read before it runs (hooks/README.md,
+"Three things to know"). The shim expects the guard scripts in
+`hooks/scripts/` under the project root — set `GUARD_SCRIPTS_DIR` when they
+are vendored elsewhere. Verified live: the plugin loads cleanly from
+`.opencode/plugins/` (and a plugin whose initializer throws is reported as
+`failed to load plugin`, so a broken install fails loudly, not silently).
 
 ## Rules — and the file-reference trap
 

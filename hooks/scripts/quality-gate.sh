@@ -55,27 +55,29 @@
 #      Any non-zero exit aborts the commit.
 #
 #   2. PreToolUse-style agent hook (Claude Code / Codex / Cursor): the agent
-#      pipes the hook event JSON to stdin. Unlike the cheap guards, this
-#      gate may invoke real toolchains, so it makes one narrowing decision
-#      without a JSON parser: if the payload names a `"command"` and that
-#      payload nowhere contains `commit`, this is not a commit attempt —
-#      pass immediately. Empty stdin or an unrecognized payload always runs
-#      the gate (fail-closed toward checking). Exit 2 + stderr = block.
+#      pipes the hook event JSON to stdin. This gate may invoke real
+#      toolchains, so it narrows first — via the shared quote-aware helper in
+#      lib/commit-payload.sh, the same one the cheap commit guards use: a
+#      payload whose command is not an actual `git commit` invocation passes
+#      immediately (a bare `commit` in quoted prose no longer runs the
+#      toolchains, and a `git commit` never slips past as prose). Empty
+#      stdin or an unrecognized payload always runs the gate (fail-closed
+#      toward checking). Exit 2 + stderr = block.
 #
 # Exit codes: 0 = all checks passed or were skipped-with-notice,
 #             2 = at least one configured check failed (blocking).
 
 set -u
 
-# Drain stdin when piped (agent hooks send JSON); never hang on a terminal.
-stdin_payload=""
-if [ ! -t 0 ]; then
-  stdin_payload="$(cat 2>/dev/null || true)"
-fi
-# Narrowing: a tool-call payload that has a "command" but never mentions
-# `commit` is some other Bash call — do not run toolchains for it.
-if [ -n "$stdin_payload" ] && printf '%s' "$stdin_payload" | grep -q '"command"'; then
-  printf '%s' "$stdin_payload" | grep -q 'commit' || exit 0
+# Narrow to `git commit` payloads via the shared helper (it reads stdin and
+# never hangs on a terminal); see lib/commit-payload.sh for the decision
+# table. If the helper is missing — e.g. this file was symlinked into
+# .git/hooks/ or copied out alone — fall back to drain-and-run: wrong only
+# in the slow direction, never the unsafe one.
+if . "${BASH_SOURCE[0]%/*}/lib/commit-payload.sh" 2>/dev/null; then
+  commit_payload_wants_scan || exit 0
+elif [ ! -t 0 ]; then
+  cat > /dev/null || true
 fi
 
 # Outside a git repo, or nothing staged: nothing to gate.
