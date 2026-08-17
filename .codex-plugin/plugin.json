@@ -17,6 +17,7 @@
     "agent-roles"
   ],
   "skills": "./skills/",
+  "hooks": "./hooks/codex.hooks.json",
   "interface": {
     "displayName": "Developer Harness",
     "shortDescription": "Language conventions, engineering-method skills, review checklists, and diagram skills for any codebase.",

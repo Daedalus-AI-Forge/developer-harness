@@ -27,7 +27,9 @@ developer-harness/
 │   ├── research-team/       #   researcher, analyst
 │   └── validation-team/     #   qa-reviewer, design-reviewer, integration-validator,
 │                            #     performance-validator, release-validator, evidence-validator
-├── hooks/                   # guard scripts (scripts/secret-scan.sh) + wiring template (hooks.json)
+├── hooks/                   # 4 guard scripts (secret-scan · quality-gate · large-files ·
+│                            #   merge-markers) + per-tool declared hook files
+│                            #   (claude.hooks.json / codex.hooks.json — no auto-discovered hooks.json)
 ├── rules/                   # AGENTS.md/CLAUDE.md section templates (## Roles, ## Teams, ## Guards, ## Engineering discipline, ## Coding rules, ## Design docs, ## Project bindings, ## RACI)
 ├── docs/                    # consume-claude-code.md, consume-codex.md, consume-cursor.md, consume-opencode.md
 ├── .claude-plugin/          # plugin.json + marketplace.json — repo root is a Claude Code plugin
@@ -156,16 +158,28 @@ third-party marketplaces and stay manual installs.
 
 ## Guards
 
-`hooks/scripts/secret-scan.sh` scans staged additions (`git diff --cached`) for credential
-patterns — AWS `AKIA...` keys, `sk-...` keys, GitHub `ghp_...` tokens, PEM private-key
-headers, hardcoded `password=` assignments — and blocks with exit code 2 plus a reason on
-stderr. It is dependency-free (bash + git + grep) and exits 0 when nothing is staged.
+Four guard scripts under `hooks/scripts/` run before `git commit`, each dual-use
+(git pre-commit hook and agent PreToolUse-style hook), dependency-free, exit 2 +
+stderr reason to block, exit 0 when nothing is staged:
 
-Wire it per [hooks/README.md](hooks/README.md): as a git pre-commit hook and/or an agent
-PreToolUse-style hook (Claude Code wires it automatically via the plugin's
-`hooks/hooks.json`; Codex uses `.codex/hooks.json`; Cursor `.cursor/hooks.json`; OpenCode
-a JS plugin shim). When a guard blocks, fix the underlying issue — unstage the secret or
-move it to an ignored env file — never bypass the guard.
+- `secret-scan.sh` — credential patterns in staged additions (AWS `AKIA...`,
+  `sk-...`, GitHub `ghp_...`, PEM private-key headers, `password=` assignments).
+- `quality-gate.sh` — auto-detects project lanes (Python → `ruff format --check`
+  + `ruff check` + configured pyright/mypy via `uv run`/`uvx`; JS/TS →
+  biome or prettier/eslint + `tsc --noEmit` via `npx --no-install`; Rust →
+  `cargo fmt --check` + `clippy -D warnings`). Configured-but-failing blocks;
+  unconfigured tools skip with a notice, never silently. `QG_*` env overrides
+  align it with the repo's `<lint-command>` bindings.
+- `check-large-files.sh` — staged blobs over 1 MB (`LARGE_FILE_KB` override).
+- `check-merge-markers.sh` — conflict markers in added lines.
+
+Wire them per [hooks/README.md](hooks/README.md). The plugin ships **no
+auto-discovered `hooks/hooks.json`**: each tool's manifest declares its own
+dialect file — `.claude-plugin/plugin.json` → `hooks/claude.hooks.json`,
+`.codex-plugin/plugin.json` → `hooks/codex.hooks.json`; Cursor uses
+`.cursor/hooks.json`, OpenCode a narrowed JS plugin shim (both in the README).
+When a guard blocks, fix the underlying issue — never bypass the guard, and fix
+quality-gate failures at the source, never by disabling the check.
 
 ## Roles
 

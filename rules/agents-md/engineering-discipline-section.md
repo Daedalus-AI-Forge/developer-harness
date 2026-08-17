@@ -34,7 +34,10 @@ actual formatter / linter / type checker.
 ### Quality gates
 
 - Conventions are enforced by tooling wired into hooks/CI — e.g.
-  `<format --check>` · `<lint>` · `<type-check>` — never by memory.
+  `<format --check>` · `<lint>` · `<type-check>`, which today canonically
+  means `uv run ruff format --check` · `uv run ruff check` · `uvx pyright`
+  in Python, or `npx prettier --check .` · `npx eslint .` ·
+  `npx tsc --noEmit` in JS/TS — never by memory.
 - NEVER bypass a gate (`--no-verify` or equivalent). Fix the underlying issue.
 
 ### One source of truth

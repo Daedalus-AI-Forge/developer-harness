@@ -53,7 +53,8 @@ into `.claude/agents/`).
 
 ## Hooks (native)
 
-Copy `hooks/scripts/secret-scan.sh` into your repo and wire it in
+Copy the four scripts under `hooks/scripts/` (secret-scan, quality-gate,
+check-large-files, check-merge-markers) into your repo and wire them in
 `.cursor/hooks.json` (`"version": 1`, `beforeShellExecution` event; exit 2
 blocks). Exact JSON: [`../hooks/README.md`](../hooks/README.md).
 

@@ -1,0 +1,32 @@
+{
+  "description": "developer-harness guard hooks (Codex dialect): secrets, large files, merge markers, and the quality gate run before shell tool calls. Codex has no per-command `if` narrowing, so every script no-ops fast when nothing relevant is staged, and quality-gate.sh additionally skips payloads that are not a `git commit`. Declared in .codex-plugin/plugin.json; deliberately NOT named hooks/hooks.json — see hooks/README.md.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${PLUGIN_ROOT}/hooks/scripts/secret-scan.sh",
+            "statusMessage": "secret-scan: checking staged diff"
+          },
+          {
+            "type": "command",
+            "command": "${PLUGIN_ROOT}/hooks/scripts/check-large-files.sh",
+            "statusMessage": "check-large-files: checking staged blobs"
+          },
+          {
+            "type": "command",
+            "command": "${PLUGIN_ROOT}/hooks/scripts/check-merge-markers.sh",
+            "statusMessage": "check-merge-markers: checking staged diff"
+          },
+          {
+            "type": "command",
+            "command": "${PLUGIN_ROOT}/hooks/scripts/quality-gate.sh",
+            "statusMessage": "quality-gate: running fast checks on staged languages"
+          }
+        ]
+      }
+    ]
+  }
+}

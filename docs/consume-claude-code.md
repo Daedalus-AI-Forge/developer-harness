@@ -28,8 +28,11 @@ This picks up by convention, from the plugin root:
   recursively, so the team subfolders (`project-control/`, `develop-team/`,
   `design-team/`) load as-is (`_template.md` is a scaffold, not a usable
   role; delete or replace it in real use)
-- `hooks/hooks.json` — wires `hooks/scripts/secret-scan.sh` as a `PreToolUse`
-  guard on `Bash(git commit*)`; `${CLAUDE_PLUGIN_ROOT}` resolves the path
+- hooks — declared via `plugin.json` → `hooks/claude.hooks.json` (no
+  auto-discovered `hooks/hooks.json` exists): all four guard scripts
+  (secret-scan, quality-gate, check-large-files, check-merge-markers) as
+  `PreToolUse` guards on `Bash(git commit*)`; `${CLAUDE_PLUGIN_ROOT}`
+  resolves the paths
 
 ## Channel 2: skills only, vendored
 
@@ -52,7 +55,7 @@ alongside.
   with `name` + `description` frontmatter, optional `model: inherit`. Claude
   Code reads `.claude/agents/` recursively, so the grouped structure
   (`agents/develop-team/`, `agents/design-team/`, …) can be copied as-is.
-- **Hooks**: copy `hooks/scripts/secret-scan.sh` and wire it in
+- **Hooks**: copy the four scripts under `hooks/scripts/` and wire them in
   `.claude/settings.json` — exact JSON in [`../hooks/README.md`](../hooks/README.md).
 - **Rules**: paste [`../rules/agents-md/guards-section.md`](../rules/agents-md/guards-section.md)
   into your `CLAUDE.md`.

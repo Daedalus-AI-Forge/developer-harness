@@ -58,8 +58,10 @@ stage, and never move work forward on an incomplete handoff.
   re-verifies against the original findings plus a full rerun. Approve
   ends the chain. Executable step-by-step via the `feature-build` skill.
 - **Handoff record:** task record path + design reference + approved plan
-  from the gate; files changed + test command + full test output from the
-  implementer; pass/fail with reason from the conformance review; verdict +
+  from the gate; files changed + test command + full test output + the
+  quality-gate output (or its skip notices) for the staged diff from the
+  implementer — a reviewer starts from evidence the fast gates passed, not
+  from a claim; pass/fail with reason from the conformance review; verdict +
   ranked findings from verification.
 - **Authority rules:** only qa-reviewer declares done; tech-lead's
   conformance fail returns the work with instructions, never patches it;
