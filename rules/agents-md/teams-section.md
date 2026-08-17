@@ -78,8 +78,8 @@ Add open questions with a named owner whenever any remain.
 ### Economics — when to declare a team at all
 
 Declare a team for high-value work with genuinely parallelizable stages. A
-multi-agent run costs on the order of 15× the tokens of one agent doing the
-same task. For sequential, dependency-heavy work choose `subagents` or
+multi-agent run costs an order of magnitude more tokens than one agent doing
+the same task. For sequential, dependency-heavy work choose `subagents` or
 `single-session` and skip the team overhead.
 
 ### Team: `<team-name>`

@@ -92,12 +92,15 @@ permission:
 **`permission: edit: deny` is why conversion beats routing.** Every judging
 role in the harness says "reviews, never implements" — as prose, that is a
 request the model can rationalize past under pressure. Under OpenCode it can
-be enforced. The mapping is mechanical: every role that carries a
-`disallowedTools` line in the harness gets `edit: deny` here — the whole
-`validation-team/` group and `debugger`, plus `tech-lead` and the authoring
-roles (`product-owner`, `person-of-contact`, `product-manager`,
+be enforced (the `permission` mapping is documentation-sourced — verify
+against a live install before relying on it). The mapping is mechanical:
+every role that carries a `disallowedTools` line in the harness gets
+`edit: deny` here — the whole `validation-team/` group, plus `tech-lead` and
+the authoring roles (`product-owner`, `person-of-contact`, `product-manager`,
 `project-manager`, `legal-reviewer`, `ux-designer`, `content-designer`,
-`design-system-steward`, `technical-artist`, `researcher`, `analyst`). The
+`design-system-steward`, `technical-artist`, `researcher`, `analyst`).
+`debugger` ships no denylist — its contract's explicitly-authorized-fix path
+governs; add `edit: deny` locally for hard read-only. The
 harness's two tiers collapse into one here, since OpenCode's `permission`
 block has no separate write/edit split; the roles that file their own
 documents lose a little reach in exchange for a boundary the runtime holds.

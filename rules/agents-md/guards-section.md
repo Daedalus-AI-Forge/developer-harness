@@ -18,6 +18,8 @@ underlying issue instead, or ask the user how to proceed.
 | `<relative/path/to/check-large-files.sh>` | Before `git commit` | A staged blob exceeds the size limit (default 1 MB; `LARGE_FILE_KB` overrides) — use Git LFS for big assets |
 | `<relative/path/to/check-merge-markers.sh>` | Before `git commit` | Staged additions contain `<<<<<<<` / `>>>>>>>` conflict markers |
 | `<relative/path/to/quality-gate.sh>` | Before `git commit` | A configured format/lint/type check fails for the staged files' languages (ruff · pyright/mypy · biome/prettier+eslint · tsc · cargo fmt/clippy); missing tools are skipped with a notice, never silently |
+| `<relative/path/to/dangerous-command-guard.sh>` | PreToolUse on every shell call | The command matches the destructive set (`rm -r` on `/` `~` `.` `..` or root-depth wildcards, `--no-preserve-root`, `sudo rm`, recursive `chmod 777`, `mkfs`, `dd` onto a device, fork bombs, curl-piped-to-shell); extend via `DCG_EXTRA_PATTERNS` |
+| `<relative/path/to/protected-paths-guard.sh>` | PreToolUse on file-touching and shell calls | A zero-access path is touched or a no-delete path is deleted — tier lists are env-bound (`PPG_ZERO_ACCESS` / `PPG_NO_DELETE` / `PPG_ALLOW`), so declare what this repo actually protects |
 | `<relative/path/to/guard.sh>` | `<when it runs>` | `<what it blocks>` |
 
 Before committing, assume these guards will run; keep secrets in ignored env

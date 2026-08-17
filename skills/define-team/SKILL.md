@@ -17,8 +17,8 @@ design-review, bug-diagnosis, research-to-decision, legal-vetting. If one
 fits, copy it instead of defining a new team.
 
 Before starting, say the cost out loud: a declared team is for high-value,
-parallelizable work. A multi-agent run costs on the order of fifteen times
-the tokens of a single agent doing the same work, so for sequential,
+parallelizable work. A multi-agent run costs an order of magnitude more
+tokens than a single agent doing the same work, so for sequential,
 dependency-heavy work a `subagents` chain or a single session is the
 better answer — and that is a legitimate outcome of this interview.
 
@@ -152,9 +152,9 @@ Report every collision with both sources and ask which definition the
 team means. This is worth a step rather than a footnote because duplicate
 agent names do not error — the loser is silently overwritten at load
 time, so a team naming `qa-reviewer` can quietly get a different
-`qa-reviewer` than the one interviewed. The largest published role
-library shipped thirty duplicated names, so collisions are the normal
-case in a repo with more than one library installed.
+`qa-reviewer` than the one interviewed. Published role libraries have
+shipped dozens of duplicated names, so collisions are the normal case in
+a repo with more than one library installed.
 
 A collision is a warning, not a refusal: once the user confirms which one
 they mean, write that member as an explicit contract path rather than a

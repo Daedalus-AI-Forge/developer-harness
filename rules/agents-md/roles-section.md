@@ -14,6 +14,12 @@ does) — template in
 Apply the shared [`size-budget-note.md`](size-budget-note.md) before
 pasting: put `## Roles` near the top of the file.
 
+A contract's `disallowedTools` denylist does not travel through this table:
+tools that route roles through AGENTS.md prose (Codex, OpenCode) never read
+agent frontmatter, so there the contract's Boundaries prose is the only
+enforcement — restate a hard boundary in the row's scope column if it must
+hold.
+
 ---
 
 ## Roles
