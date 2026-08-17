@@ -19,8 +19,8 @@ Then open `/plugins` in the TUI and install `developer-harness` from the
 marketplace entry. Once installed:
 
 - `/plugins` — browse, install, and inspect plugins
-- `@developer-harness` — invoke the plugin (or one of its skills) explicitly
-- `$<skill-name>` — invoke a bundled skill, e.g. `$tighten-types src/models.py`
+- `$<skill-name>` — invoke a bundled skill explicitly, e.g.
+  `$tighten-types src/models.py`
 
 Every skill ships an OpenAI sidecar (`skills/<name>/agents/openai.yaml`) with
 `display_name` and `short_description` — that is what Codex shows in its skill
@@ -38,12 +38,13 @@ stress-test a plan; `skill-creator` (from anthropics/skills, Apache-2.0) —
 `$` invocation. Codex cannot read Claude Code plugins, so these vendored
 copies are the Codex path to those skills.
 
-Caveat: our marketplace entry points at the repo root (`"path": "."`); the
-official examples only show `./plugins/<name>` subdirectory paths, so the
-root-path layout is pending a live install test.
+Note on `skill-creator` in Codex: its authoring guidance and schemas work
+as-is, but its bundled eval/benchmark and description-tuning scripts invoke
+the `claude` CLI (`claude -p`) and write `.claude/commands/`, so that
+workflow needs Claude Code alongside (details in
+[`../VENDOR-ATTRIBUTION.md`](../VENDOR-ATTRIBUTION.md)).
 
-The plugin bundles no hooks — the plugin-bundled hook definition format is
-pending verification. Wire `secret-scan.sh` manually per
+Hook wiring for Codex is described in
 [`../hooks/README.md`](../hooks/README.md).
 
 ## 2. skills CLI

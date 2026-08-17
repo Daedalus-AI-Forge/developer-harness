@@ -1,16 +1,20 @@
 {
   "name": "developer-harness",
+  "interface": {
+    "displayName": "Developer Harness"
+  },
   "plugins": [
     {
       "name": "developer-harness",
       "source": {
         "source": "local",
-        "path": "."
+        "path": "./"
       },
       "policy": {
-        "installation": "AVAILABLE"
+        "installation": "AVAILABLE",
+        "authentication": "ON_FIRST_USE"
       },
-      "category": "developer-tools"
+      "category": "Developer Tools"
     }
   ]
 }

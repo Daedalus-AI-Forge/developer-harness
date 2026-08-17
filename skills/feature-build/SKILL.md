@@ -14,7 +14,9 @@ the way in or the adversarial verification on the way out.
 
 ## Roles and execution modes
 
-Four role contracts drive the pipeline (see `agents/` in this harness):
+Four role contracts drive the pipeline (see `agents/` under this harness's
+root — the plugin root when installed as a plugin; tools without
+custom-agent support adopt a contract by reading its file):
 `develop-team/tech-lead.md` (stages 1 and 3), the implementing agent
 (stage 2 — the default agent, under the repo's `## Engineering
 discipline`), `validation-team/qa-reviewer.md` (stage 4), and

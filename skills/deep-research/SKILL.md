@@ -8,7 +8,9 @@ license: MIT
 
 An orchestration recipe for research questions a single search pass cannot
 settle. It scales the researcher role's single-pass method
-(`agents/research-team/researcher.md` in this harness) into a staged
+(`agents/research-team/researcher.md` — paths here are relative to this
+harness's root, the plugin root when installed as a plugin; tools without
+custom-agent support adopt the role contract by reading that file) into a staged
 pipeline: decompose, sweep in parallel from genuinely different angles,
 verify adversarially, critique for completeness, loop until dry,
 synthesize. For a single-fact

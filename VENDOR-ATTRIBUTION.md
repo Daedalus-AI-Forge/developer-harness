@@ -41,6 +41,9 @@ load Mermaid.js from the jsdelivr CDN, so VIEWING a report needs internet — th
 runs offline.
 Local modification: `architect-design-review`'s spec-path default was generalized from upstream (ask the user; no fixed location); body otherwise unmodified.
 
+`mermaid-skill` local modification (2026-08-16): the top-level `homepage:` frontmatter
+field was relocated under `metadata:` for Agent Skills spec portability; body unmodified.
+
 The five VoltAgent skills are **capability references, not contracts**: each carries a
 precedence block stating that project-local conventions (a project's CLAUDE.md and its own
 convention skills) override the upstream text wherever they conflict. Only the languages in
@@ -81,7 +84,13 @@ modification is the house `license` + `metadata.source` frontmatter fields. The 
 repo has NO root LICENSE and its document skills are source-available only — this skill
 ships its own Apache-2.0 LICENSE.txt (© 2026 Anthropic PBC), retained in-directory, which
 satisfies attribution. The scripts need Python 3, plus optionally a local `claude` CLI for
-running evals. It is wired as the harness's meta-rule via the Contributing rule in
+running evals. Codex-native limits, precisely: the eval and description-tuning scripts
+(`run_eval.py`, `improve_description.py`, and their `run_loop.py` driver) invoke the
+`claude` CLI as a subprocess (`claude -p`), `run_eval.py` writes command files into
+`.claude/commands/` (and `aggregate_benchmark.py` summarizes those eval runs' output), and
+`quick_validate.py` imports PyYAML, which is not vendored — so in Codex the authoring
+guidance and `references/schemas.md` work as-is, while the advertised eval/benchmark
+workflow is Claude-CLI-dependent; the scripts are unmodified per the verbatim policy. It is wired as the harness's meta-rule via the Contributing rule in
 AGENTS.md: new or updated skills in this repo are authored with `skill-creator`.
 
 Evaluated, not vendored (2026-08-16): `frontend-design`
