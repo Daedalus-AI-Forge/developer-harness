@@ -8,9 +8,10 @@ license: MIT
 
 An orchestration recipe for research questions a single search pass cannot
 settle. It scales the researcher role's single-pass method
-(`agents/researcher.md` in this harness) into a staged pipeline: decompose,
-sweep in parallel from genuinely different angles, verify adversarially,
-critique for completeness, loop until dry, synthesize. For a single-fact
+(`agents/research-team/researcher.md` in this harness) into a staged
+pipeline: decompose, sweep in parallel from genuinely different angles,
+verify adversarially, critique for completeness, loop until dry,
+synthesize. For a single-fact
 lookup the single-pass method stands alone — reach for this skill when the
 question carries contested claims, an unknown landscape, more than about
 three independent sources, or a decision that hangs on the answer.
@@ -27,8 +28,8 @@ three independent sources, or a decision that hangs on the answer.
 
 If the repo declares the `research-to-decision` team (template:
 `rules/agents-md/teams-section.md`), this pipeline runs as that team's
-researcher stage: the decision-owner's scope record seeds Stage 1, and the
-qa-reviewer's independent fact-check remains downstream of Stage 6.
+researcher stage: the decision-owner's scope record seeds Stage 1, and
+evidence-validator's independent fact-check remains downstream of Stage 6.
 
 ## Stage 1 — Decompose
 

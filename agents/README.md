@@ -2,28 +2,24 @@
 
 Generic, project-agnostic subagent **role contracts**: markdown files with YAML
 frontmatter that define a role's bindings, mission, method, deliverable, and
-boundaries. Roles are grouped by team: the coordination pair and the shared
-`researcher` specialist stay at this root, and the rest live in
-`project-control/`, `develop-team/`, `design-team/`, and
-`validation-team/`.
+boundaries. Roles are grouped by team: the coordination pair stays at this
+root, and the rest live in `project-control/`, `develop-team/`,
+`design-team/`, `research-team/`, and `validation-team/`.
 
 ## Shipped roles
 
-### Coordination root + shared specialist
+### Coordination root
 
 The pair at the root of multi-role work — value and communication; dispatch
 itself lives in the consuming tool's orchestration. In team operation the
 human has two doors into the team: requests to add or change functionality
 enter through `product-owner`, and handoff communication flows through
 `person-of-contact` — standalone use of a single role is unaffected.
-`researcher` sits here too as a shared specialist serving develop-team and
-design-team, whose work its research requests originate from.
 
 | Role | Delegate when |
 | --- | --- |
 | [`product-owner.md`](product-owner.md) | Value execution against the product blueprint: one Product Goal, a single ordered backlog with acceptance criteria authored before work starts, accept/return calls on delivered increments — judges value, never dispatches work or designs solutions. |
 | [`person-of-contact.md`](person-of-contact.md) | Communication routing after work completes or a decision lands: resolves the affected components in the repo's `## RACI` table, hands outcomes to the Responsible/Accountable parties, brokers cross-component collaborations — routes and brokers, never decides value or assigns work. |
-| [`researcher.md`](researcher.md) | Research grounding a decision — cited primary sources with access dates, adversarial verification, inference labeled as inference. Shared specialist serving develop-team and design-team. |
 
 ### project-control/
 
@@ -73,11 +69,23 @@ visual/brand/motion/3d-craft roles have no honest text-agent deliverable —
 their reviewable fragments live in `ux-designer`, `design-reviewer`, and
 `technical-artist`.
 
+### research-team/
+
+The shared research specialists serving develop-team and design-team —
+research requests originate from those teams' work, and these roles ground
+their decisions without making them. The soundness verdict on a research
+deliverable lives in `validation-team/`.
+
+| Role | Delegate when |
+| --- | --- |
+| [`researcher.md`](research-team/researcher.md) | Research grounding a decision — cited primary sources with access dates, adversarial verification, inference labeled as inference. |
+| [`analyst.md`](research-team/analyst.md) | Decision-grade numbers — estimates with stated assumptions and shown arithmetic, metric interpretation against product-manager's definitions, sensitivity notes naming the conclusion-flipping inputs; predicts, never measures. |
+
 ### validation-team/
 
 The roles that judge finished work — verdicts with executed evidence, never
-fixes. Validators live OUTSIDE the teams they judge, and the five verdicts
-(functional, experience, integration, performance, readiness) are
+fixes. Validators live OUTSIDE the teams they judge, and the six verdicts
+(functional, experience, integration, performance, readiness, evidence) are
 independent — none substitutes for another. Across the group, a check that
 could not run yields unverified — never a pass: a missing or broken
 verifier is reported with the reason, not silently converted into approval.
@@ -89,18 +97,18 @@ verifier is reported with the reason, not silently converted into approval.
 | [`integration-validator.md`](validation-team/integration-validator.md) | A verdict on whether independently built parts work as one system — the contract under test identified, the real seam exercised end-to-end (never mocked), contract-corpus drift and seam failure modes probed; judges the seam, never patches either side. |
 | [`performance-validator.md`](validation-team/performance-validator.md) | Performance verdicts against explicit budgets — reproducible measurements (medians and tails) compared to budget and baseline; no budget or no measurement means no verdict; proposes optimization targets, never implementations. |
 | [`release-validator.md`](validation-team/release-validator.md) | Ship-readiness of the actual release artifact — built and smoke-tested, checklist walked, every claim traced to a merged change and its passing test, rollback path known before ship; judges readiness, never cuts, deploys, or times the release. |
+| [`evidence-validator.md`](validation-team/evidence-validator.md) | A verdict on whether a research deliverable's claims survive independent re-derivation — citations re-fetched, quotes re-verified verbatim, absences re-tested with a looser net, inference labeling checked; judges evidence quality, never the decision. |
 
 ## Standalone vs team use
 
 The groups map to how the roles compose:
 
-- **Coordination root + shared specialist** — `product-owner` (value: the
-  Product Goal, the single ordered backlog, accept/return on delivered
-  increments) · `person-of-contact` (communication: RACI routing, brokered
-  cross-component collaborations) · `researcher` (complete standalone;
-  in team operation the shared specialist serving develop-team and
-  design-team). The pair at the root of multi-role work. Dispatch itself
-  lives in the consuming tool's orchestration, not in any role.
+- **Coordination root** — `product-owner` (value: the Product Goal, the
+  single ordered backlog, accept/return on delivered increments) ·
+  `person-of-contact` (communication: RACI routing, brokered
+  cross-component collaborations). The pair at the root of multi-role
+  work. Dispatch itself lives in the consuming tool's orchestration, not
+  in any role.
 - **project-control/** — the standalone specialist `legal-reviewer` is
   complete on its own: delegate one task, get one deliverable back — and
   it is nobody's exclusive: any role may engage it before a public-facing
@@ -124,13 +132,17 @@ The groups map to how the roles compose:
   verdict on the built UI comes from `validation-team/`'s
   `design-reviewer`. They hand specs and findings to develop-team roles
   rather than editing code.
-- **validation-team/** — the five independent verdicts: `qa-reviewer`
+- **research-team/** — the shared specialists serving develop-team and
+  design-team: `researcher` (sourced claims) and `analyst` (decision-grade
+  numbers), each complete standalone; the soundness verdict on a research
+  deliverable comes from `validation-team/`'s `evidence-validator`.
+- **validation-team/** — the six independent verdicts: `qa-reviewer`
   (functional), `design-reviewer` (experience), `integration-validator`
-  (integration), `performance-validator` (performance), and
-  `release-validator` (readiness). Each is complete standalone — delegate
-  one artifact, get one verdict back — and all five sit outside the teams
-  they judge, so no builder approves its own work and no verdict
-  substitutes for another.
+  (integration), `performance-validator` (performance),
+  `release-validator` (readiness), and `evidence-validator` (evidence).
+  Each is complete standalone — delegate one artifact, get one verdict
+  back — and all six sit outside the teams they judge, so no builder
+  approves its own work and no verdict substitutes for another.
 
 Teams — which roles form a chain, what each stage hands the next, and who
 holds which authority — are declared per repo in a `## Teams` section

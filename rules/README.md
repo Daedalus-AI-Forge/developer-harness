@@ -24,6 +24,13 @@ These exist for harness classes some tools cannot consume natively:
 - **Discipline**: always-on engineering method (TDD, debugging before fixes,
   verification before completion) belongs in the instruction file itself so
   every tool loads it on every turn.
+- **Coding rules**: always-on one-line-per-rule conventions live in the
+  instruction file; reference-sized rule sets ship as skills (e.g.
+  `python-conventions`, `rustdoc-conventions`), so the section is the router
+  that says which convention skills to load per language before writing.
+- **Design docs**: doc-shape rules — headers, decision IDs, index, dated
+  amendments — are per-repo working agreements every tool must load, so they
+  live in the instruction file beside the discipline rules.
 
 ## Templates
 
@@ -35,6 +42,8 @@ These exist for harness classes some tools cannot consume natively:
 | [`agents-md/raci-section.md`](agents-md/raci-section.md) | A `## RACI` table — Component / Responsible / Accountable / Consulted / Informed, with the one-Accountable-per-row rule, the CODEOWNERS/git-shortlog draft protocol for repos that lack one, the Context-handoff format (task reference in `<work-tracker>`, components, R/A/C/I names, spec links, where to report), and the local task-file convention | The repo adopts the `person-of-contact` role from [`../agents/`](../agents/) |
 | [`agents-md/guards-section.md`](agents-md/guards-section.md) | A `## Guards` list of hook scripts and when they run | Any repo that vendors scripts from [`../hooks/`](../hooks/) |
 | [`agents-md/engineering-discipline-section.md`](agents-md/engineering-discipline-section.md) | A `## Engineering discipline` rule set: TDD, systematic debugging, verification before completion, quality gates, single source of truth, scope/ownership, version-control safety | Any repo where agents write code |
+| [`agents-md/coding-section.md`](agents-md/coding-section.md) | A `## Coding rules` section: conventions-win-over-instinct rule, a language → convention-skill routing table (load BEFORE writing), quality gates via the `<lint-command>`/`<test-command>` bindings | Any repo where agents write code and the conventions ship as skills (e.g. this harness's `python-conventions`, `rustdoc-conventions`) |
+| [`agents-md/design-docs-section.md`](agents-md/design-docs-section.md) | A `## Design docs` doc-shape rule set: status/owner/date headers, stable decision IDs owned by one doc, a root index with reading order, docs updated in the same change as the code they govern, dated in-place amendments | Any repo that keeps design docs under a `<design-docs>` binding |
 
 ## How to use
 

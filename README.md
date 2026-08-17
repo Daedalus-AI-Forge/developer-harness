@@ -26,8 +26,7 @@ developer-harness/
 ├── commands/          # thin /command wrappers around explicitly-invocable skills
 ├── agents/            # generic subagent role contracts, grouped by team:
 │                      #   root — coordination: product-owner (value execution),
-│                      #     person-of-contact (communication/RACI routing),
-│                      #     researcher (shared specialist)  (+ _template.md)
+│                      #     person-of-contact (communication/RACI routing)  (+ _template.md)
 │                      #   project-control/: product-manager, project-manager,
 │                      #     legal-reviewer
 │                      #   develop-team/: tech-lead, developer (base), frontend-developer,
@@ -35,10 +34,12 @@ developer-harness/
 │                      #     data-engineer, security-engineer, debugger
 │                      #   design-team/: ux-designer, content-designer,
 │                      #     design-system-steward, technical-artist
+│                      #   research-team/: researcher, analyst (shared specialists)
 │                      #   validation-team/: qa-reviewer, design-reviewer,
-│                      #     integration-validator, performance-validator, release-validator
+│                      #     integration-validator, performance-validator,
+│                      #     release-validator, evidence-validator
 ├── hooks/             # tool-neutral guard scripts + wiring template (hooks.json)
-├── rules/             # AGENTS.md / CLAUDE.md section templates (roles, teams incl. five predefined teams, guards, engineering discipline, project bindings, raci)
+├── rules/             # AGENTS.md / CLAUDE.md section templates (roles, teams incl. five predefined teams, guards, engineering discipline, coding rules, design docs, project bindings, raci)
 ├── docs/              # per-tool consumption guides (consume-<tool>.md)
 └── .claude-plugin/    # plugin.json + marketplace.json (repo root = plugin root)
 ```

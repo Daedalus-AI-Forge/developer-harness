@@ -127,13 +127,14 @@ stage, and never move work forward on an incomplete handoff.
 
 - **Members:** decision-owner (tech-lead →
   `agents/develop-team/tech-lead.md` or product-owner →
-  `agents/product-owner.md`) · researcher →
-  `agents/researcher.md` · qa-reviewer →
-  `agents/validation-team/qa-reviewer.md` (fact-checker).
+  `agents/product-owner.md`, as declared per repo) · researcher →
+  `agents/research-team/researcher.md` · evidence-validator →
+  `agents/validation-team/evidence-validator.md` (the independent
+  re-derivation stage).
 - **Chain:** decision-owner authors the scope record with explicit
   acceptance criteria and constraints → researcher delivers a cited
   document: per-finding confirmed/corrected verdicts, a self-refutation
-  pass, unknowns and coverage gaps honestly flagged → qa-reviewer
+  pass, unknowns and coverage gaps honestly flagged → evidence-validator
   independently re-derives the load-bearing citations at source,
   checking against the acceptance criteria → decision-owner rules.
   Research is evidence, never the decision.
@@ -141,9 +142,10 @@ stage, and never move work forward on an incomplete handoff.
   the verification spec (a code-conformance stage is N/A here, and its
   waiver is logged with the reason); the deliverable doc with dated
   citations; the fact-checker's per-criterion verdict.
-- **Authority rules:** the researcher never edits decision records; a
-  disclosed source-availability gap with a resolution recipe is a
-  coverage gap, not a defect; a stand-in who performs the research
+- **Authority rules:** only evidence-validator (or another validator)
+  renders the soundness verdict; the researcher never edits decision
+  records; a disclosed source-availability gap with a resolution recipe
+  is a coverage gap, not a defect; a stand-in who performs the research
   labels the deliverable reduced-rigor rather than passing it off.
 - **Team memory:** per-topic researcher notes in `<research-notes>`; an
   index of delivered documents.
