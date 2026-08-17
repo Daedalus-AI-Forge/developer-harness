@@ -44,8 +44,13 @@ the `claude` CLI (`claude -p`) and write `.claude/commands/`, so that
 workflow needs Claude Code alongside (details in
 [`../VENDOR-ATTRIBUTION.md`](../VENDOR-ATTRIBUTION.md)).
 
-Hook wiring for Codex is described in
-[`../hooks/README.md`](../hooks/README.md).
+Guard hooks are bundled and declared per tool — there is deliberately no
+auto-discovered `hooks/hooks.json`. `.codex-plugin/plugin.json` declares
+`"hooks": "./hooks/codex.hooks.json"` (Codex dialect: `${PLUGIN_ROOT}`, no
+`if`, statusMessages), wiring all four guard scripts (secret-scan,
+quality-gate, check-large-files, check-merge-markers); the Claude dialect
+lives separately in `hooks/claude.hooks.json`. Authoritative wiring
+reference: [`../hooks/README.md`](../hooks/README.md).
 
 ## 2. skills CLI
 
@@ -80,8 +85,9 @@ detail.
 
 ## Hooks and rules
 
-Hooks: copy `hooks/scripts/secret-scan.sh` and wire it in `.codex/hooks.json` —
-exact JSON, feature toggle, and trust flow in
+Hooks: plugin installs get all four guards automatically via
+`hooks/codex.hooks.json`; standalone (non-plugin) repos copy that file's
+shape into `.codex/hooks.json` — feature toggle and trust flow in
 [`../hooks/README.md`](../hooks/README.md). Rules: paste
 [`../rules/agents-md/guards-section.md`](../rules/agents-md/guards-section.md)
 into `AGENTS.md` so the agent knows the guards exist and doesn't fight them.
