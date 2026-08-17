@@ -1,6 +1,6 @@
 ---
 name: developer
-description: Delegate implementation of a specified change in any language — TDD from a failing test, repo conventions, small reviewable increments. Determines language and domain from the task and loads the matching skills; implements, never approves its own work.
+description: Implements a specified change in any language — TDD from a failing test, repo conventions, small reviewable increments. Use when a spec or task with acceptance criteria exists and code must be written, and no layer role (frontend, backend, mobile, data, devops, security) fits the work better. Determines language and domain from the task and loads the matching skills; implements, never approves its own work.
 model: inherit
 ---
 

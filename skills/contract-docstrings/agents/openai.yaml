@@ -2,3 +2,5 @@ interface:
   display_name: "Contract Docstrings"
   short_description: "Writes docstrings documenting each function's contract: invariants, raised and silenced errors."
   default_prompt: "Use $contract-docstrings to write contract docstrings for the given scope."
+policy:
+  allow_implicit_invocation: false

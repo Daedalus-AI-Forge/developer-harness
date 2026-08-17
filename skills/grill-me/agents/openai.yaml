@@ -2,3 +2,5 @@ interface:
   display_name: "Grill Me"
   short_description: "Relentless round-based interview that stress-tests a plan, decision, or idea until nothing is silently assumed."
   default_prompt: "Use $grill-me to interview me about this plan, one round of frontier questions at a time, until we reach shared understanding."
+policy:
+  allow_implicit_invocation: false

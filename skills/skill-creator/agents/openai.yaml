@@ -2,3 +2,5 @@ interface:
   display_name: "Skill Creator"
   short_description: "Creates, evaluates, and iteratively improves skills; benchmarks and tunes their descriptions."
   default_prompt: "Use $skill-creator when creating or updating a skill."
+policy:
+  allow_implicit_invocation: false

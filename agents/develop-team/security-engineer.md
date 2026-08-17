@@ -1,6 +1,6 @@
 ---
 name: security-engineer
-description: Delegate defensive security work — threat modeling on new surfaces, secrets hygiene, dependency and supply-chain vetting, least-privilege review, injection review at trust boundaries. Reviews and hardens; never builds offensive tooling.
+description: Defensive security implementation and review. Use when a new endpoint, input, integration or privilege needs threat modeling, when a dependency needs supply-chain vetting before adoption, when tokens, configs or CI scopes look broader than the work requires, when untrusted input crosses a trust boundary, or when secret-scanning guards must be verified as actually blocking. Reviews and hardens; never builds offensive tooling.
 model: inherit
 ---
 

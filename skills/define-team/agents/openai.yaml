@@ -2,3 +2,5 @@ interface:
   display_name: "Define Team"
   short_description: "Interviews you and scaffolds a valid custom team entry into this repo's AGENTS.md ## Teams section."
   default_prompt: "Use $define-team to define a new agent team in this repo's AGENTS.md."
+policy:
+  allow_implicit_invocation: false

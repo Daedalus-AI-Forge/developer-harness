@@ -59,23 +59,60 @@ mkdir -p .opencode/commands
 cp path/to/developer-harness/commands/*.md .opencode/commands/
 ```
 
-Then run e.g. `/tighten-types src/models.py`. Dialect notes: OpenCode
+Then run e.g. `/tighten-types src/models.py` — or `/role tech-lead` to adopt
+a shipped role contract for the session: the `role` skill resolves the
+contract from the role files copied into the repo (or the `## Roles` table —
+see Agents below) and delegates out-of-lane work rather than absorbing it.
+Dialect notes: OpenCode
 documents `description`, `agent`, `model`, and `subtask` frontmatter and
 supports `$ARGUMENTS` (plus positional `$1`, `$2`, ...) — all compatible with
 these wrappers. The `argument-hint` field is a Claude Code extension; OpenCode
 doesn't document it, so drop it if your version complains.
 
-## Agents (routing via AGENTS.md)
+## Agents — convert, don't just route
 
-OpenCode's native agents use a different frontmatter dialect
-(`description`, `mode: subagent`) in `.opencode/agents/`. Either:
+OpenCode's native agents live in `.opencode/agents/<role>.md` (project) or
+`~/.config/opencode/agents/` (global) and the frontmatter maps nearly 1:1
+onto a harness role contract — `description` carries over verbatim, `model:
+inherit` is dropped (not a valid OpenCode provider/model id), `mode:
+subagent` is added, and the whole body (Bindings / Mission / Method /
+Deliverable / Boundaries) stays untouched:
 
-- adapt a role file: keep the body, replace the frontmatter with
-  `description:` + `mode: subagent` (and drop `model: inherit` — it is not a
-  valid OpenCode provider/model id), save to `.opencode/agents/<role>.md`; or
-- route via `AGENTS.md`: copy role files into your repo and paste
-  [`../rules/agents-md/roles-section.md`](../rules/agents-md/roles-section.md)
-  into `AGENTS.md`.
+```markdown
+---
+description: Delegate adversarial review of a diff, PR, or "done" claim. Verifies with executed evidence, never a summary.
+mode: subagent
+permission:
+  edit: deny
+---
+
+<body of agents/validation-team/qa-reviewer.md, unchanged>
+```
+
+**`permission: edit: deny` is why conversion beats routing.** Every judging
+role in the harness says "reviews, never implements" — as prose, that is a
+request the model can rationalize past under pressure. Under OpenCode it can
+be enforced. The mapping is mechanical: every role that carries a
+`disallowedTools` line in the harness gets `edit: deny` here — the whole
+`validation-team/` group and `debugger`, plus `tech-lead` and the authoring
+roles (`product-owner`, `person-of-contact`, `product-manager`,
+`project-manager`, `legal-reviewer`, `ux-designer`, `content-designer`,
+`design-system-steward`, `technical-artist`, `researcher`, `analyst`). The
+harness's two tiers collapse into one here, since OpenCode's `permission`
+block has no separate write/edit split; the roles that file their own
+documents lose a little reach in exchange for a boundary the runtime holds.
+The seven implementation roles keep edit rights, obviously — restrict by
+boundary, never by default. Leave `bash` permitted throughout: a verdict
+without executed evidence is worthless.
+
+The full denylist table, with each role's own override note, is in
+[`../agents/README.md`](../agents/README.md).
+
+Routing via `AGENTS.md` — copy role files into the repo and paste
+[`../rules/agents-md/roles-section.md`](../rules/agents-md/roles-section.md)
+— still works and costs nothing, but it buys description-level awareness
+only: no spawnable subagent, no enforced boundary. Use it for roles you
+consult and conversion for roles you delegate to.
 
 ## Hooks (JS plugin shim)
 
@@ -85,8 +122,47 @@ that runs the guard scripts in `tool.execute.before` and blocks by throwing.
 The shim narrows to `git commit` bash calls in JS before invoking the guards,
 so the expensive quality gates never fire on ordinary commands.
 
-## Rules
+## Rules — and the file-reference trap
 
 OpenCode reads `AGENTS.md` at the project root (and
-`~/.config/opencode/AGENTS.md` globally). Paste the guards/roles templates
-from [`../rules/agents-md/`](../rules/agents-md/) there.
+`~/.config/opencode/AGENTS.md` globally), and prefers it: where both exist,
+`AGENTS.md` takes priority over `CLAUDE.md`, so a repo carrying both should
+treat `AGENTS.md` as the real file and `CLAUDE.md` as the `@AGENTS.md`
+pointer.
+
+The trap: **OpenCode does not follow file references inside AGENTS.md.** A
+`## Roles` table whose rows link to `docs/roles/qa-reviewer.md` puts the
+names in context and nothing else — the linked contracts are not pulled in,
+and nothing announces the difference. The agent may still open the file with
+its read tool, but "may" is not what a gate is built on, and a role whose
+Boundaries section never loaded is a role in name only. Two fixes, and the
+first is the one to use:
+
+**Load the contracts as instruction files.** OpenCode's config takes an
+`instructions` array of paths and globs, each loaded into context alongside
+`AGENTS.md`:
+
+```jsonc
+// opencode.json — at the project root
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "docs/roles/*.md",
+    "docs/rules/*.md"
+  ]
+}
+```
+
+Point the globs at wherever you copied the role contracts and the pasted
+`rules/agents-md/` fragments. Everything matched is loaded, so glob narrowly
+— a directory of twenty-six role contracts in every session is a context
+budget spent on roles the task will never use. The usual shape is a small
+`docs/roles/` holding only the roles that repo actually delegates to, with
+the rest reachable by conversion into `.opencode/agents/` (loaded on demand
+when spawned, not up front).
+
+**Or inline the content.** Paste the guards/roles templates from
+[`../rules/agents-md/`](../rules/agents-md/) into `AGENTS.md` bodily rather
+than linking to them. Cheap and reliable; it just grows the always-loaded
+file, so reserve it for the short fragments — the guards section, the
+bindings table — and let the instruction globs carry the long ones.

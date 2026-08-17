@@ -11,10 +11,16 @@
   "repository": "https://github.com/Daedalus-AI-Forge/developer-harness",
   "keywords": [
     "skills",
+    "agent-skills",
     "conventions",
     "code-review",
     "diagrams",
-    "agent-roles"
+    "agent-roles",
+    "subagents",
+    "guard-hooks",
+    "python",
+    "rust",
+    "typescript"
   ],
   "skills": "./skills/",
   "hooks": "./hooks/codex.hooks.json",

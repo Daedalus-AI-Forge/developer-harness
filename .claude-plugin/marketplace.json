@@ -8,7 +8,20 @@
     {
       "name": "developer-harness",
       "source": "./",
-      "description": "Language conventions, engineering-method skills, review checklists, diagram skills, command wrappers, agent role templates, and guard hooks for any codebase."
+      "description": "Language conventions, engineering-method skills, review checklists, diagram skills, command wrappers, agent role templates, and guard hooks for any codebase.",
+      "category": "development",
+      "keywords": [
+        "agent-skills",
+        "conventions",
+        "code-review",
+        "agent-roles",
+        "subagents",
+        "guard-hooks",
+        "diagrams",
+        "python",
+        "rust",
+        "typescript"
+      ]
     }
   ]
 }

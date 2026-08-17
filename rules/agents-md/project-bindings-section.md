@@ -3,22 +3,26 @@
 Copy the block below into the consuming repo's `AGENTS.md` (or `CLAUDE.md`),
 then replace the example values with that repo's real paths and commands.
 Generic role contracts (see `agents/` in developer-harness) refer to these
-`<placeholder>` names instead of hard-coding any project layout; this section
-is the one place they resolve.
+`<placeholder>` names instead of hard-coding any project layout; resolve them
+here and nowhere else.
 
 Keep the vocabulary small: keep only the rows the roles you adopt actually
-use, and add a new placeholder only when a role contract needs it. Paths are
-relative to the repo root; commands run from the repo root.
+use, and add a new placeholder only when a role contract needs one. Write
+paths relative to the repo root; write commands so they run from the repo
+root.
+
+Apply the shared [`size-budget-note.md`](size-budget-note.md) before pasting.
 
 ---
 
 ## Project bindings
 
-Role contracts use `<placeholder>` names for project-specific locations and
-commands. They resolve here and only here: a contract never guesses a value.
-Each contract's `## Bindings` block declares which placeholders it
-**requires** (it cannot operate without them) and which are **optional**
-(they enrich the role; it degrades gracefully without them).
+Resolve every `<placeholder>` a role contract names against the table below
+before acting on that contract. Never guess a value, and never hard-code a
+path inside a contract. Read each contract's `## Bindings` block first: it
+declares which placeholders it **requires** (it cannot operate without them)
+and which are **optional** (they enrich the role; it degrades gracefully
+without them).
 
 | Placeholder | Meaning | Example value |
 | --- | --- | --- |
@@ -37,8 +41,19 @@ Each contract's `## Bindings` block declares which placeholders it
 | `<team-log>` | Append-only team log: product-owner's decision/acceptance records, project-manager's delivery status records, person-of-contact's routing records (see the `## Teams` template) | `docs/team-log.md` |
 | `<work-tracker>` | The one authoritative place tasks live — person-of-contact handoffs and task pickups resolve against it. A type plus location; three supported forms, documented below | `github` |
 
-`<work-tracker>` takes one of three forms — each readable by both humans
-and agents:
+### Delegation
+
+When work is delegated to a role, a team stage, or a subagent, resolve that
+stage's bindings first and copy the resolved **values** into the handoff
+record — `pytest -q`, not `<test-command>`. Never assume this instruction
+file reaches the delegate: inheritance across delegation is unreliable, and a
+delegate holding an unresolved placeholder either guesses or stalls. A
+delegate that receives a placeholder instead of a value stops and asks for
+the value rather than inferring one.
+
+### `<work-tracker>` forms
+
+Declare one of three forms — each readable by both humans and agents:
 
 - `github` — GitHub Issues/Projects. Agents access via the `gh` CLI
   (`gh issue view <n>`, `gh project item-list`); humans via the web board.
@@ -61,9 +76,10 @@ and agents:
   Code's `.claude/settings.local.json` (auto-gitignored).
 - `local:<path>` — no auth.
 
-**Token values never enter tracked files — configs reference environment
-variables by name; the harness's secret-scan hook blocks common token
-patterns at commit time, by design.**
+**Never put a token value in a tracked file — reference environment
+variables by NAME in every committed config; the harness's secret-scan hook
+blocks common token patterns at commit time, and a block means fix the
+source, never bypass the guard.**
 
 ### Resolution protocol
 
@@ -79,9 +95,8 @@ When a role needs a binding that has no row in the table above:
    path?".
 3. **Set.** On confirmation, persist the binding: add the row to this
    `## Project bindings` table so it is never asked again.
-4. **Disable.** If a REQUIRED binding cannot be established — the user
-   declines, or nothing suitable exists — the role declares itself
-   unavailable for this repo: it states exactly which binding is missing and
-   what it is for, and stops. It never proceeds degraded on a guessed path.
-   Optional bindings degrade gracefully: the role notes the gap and
-   continues.
+4. **Disable.** When a REQUIRED binding cannot be established — the user
+   declines, or nothing suitable exists — declare the role unavailable for
+   this repo: state exactly which binding is missing and what it is for, and
+   stop. Never proceed degraded on a guessed path. Degrade gracefully on an
+   optional binding instead: note the gap and continue.

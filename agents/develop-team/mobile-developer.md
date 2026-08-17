@@ -1,6 +1,6 @@
 ---
 name: mobile-developer
-description: Delegate mobile app implementation — the developer base contract plus the mobile platform's concerns: lifecycle and background-execution constraints, offline-first data, permissions and privacy UX, app-store review discipline, device evidence, bundle and battery budgets.
+description: The developer base contract plus the mobile platform. Use when the change must survive backgrounding, termination and relaunch, work without a network, request or be denied a permission, respect bundle and battery budgets, or pass app-store review. Implements with device or simulator evidence; the done-verdict stays with qa-reviewer.
 model: inherit
 ---
 

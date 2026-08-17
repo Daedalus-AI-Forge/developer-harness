@@ -18,6 +18,14 @@ lookup the single-pass method stands alone — reach for this skill when the
 question carries contested claims, an unknown landscape, more than about
 three independent sources, or a decision that hangs on the answer.
 
+Some tools now ship a built-in deep-research capability of their own. This
+skill is the harness's *portable* pipeline — the same stages in any of the
+four tools, with the `evidence-validator` role as its independent
+downstream check and the `research-to-decision` team as its declared
+chain. Where a native equivalent exists, a consuming tool may reasonably
+prefer it for a standalone question and keep this pipeline for research
+that has to hand a verdict to another stage.
+
 ## Execution modes
 
 - **Tools with subagent support:** run each Stage 2 sweep as its own
@@ -40,6 +48,25 @@ criteria: what evidence would settle it, and what answer would change the
 motivating decision. A sub-question without a criterion is not ready to
 research. Record the decomposition — it is the checklist every later stage
 reports against.
+
+Then scale the effort to the question class, and record the choice
+alongside the decomposition:
+
+- **One contested claim** — two or three sweeps and a verification pass;
+  Stage 5's critic runs once, not to exhaustion.
+- **A handful of sub-questions with known sources** — one sweep per
+  modality per sub-question, full verification, critic until dry.
+- **An unknown landscape** — the full pipeline, and expect several critic
+  rounds before it goes quiet.
+
+Set a tool-call budget for the stage before starting it and report against
+it. The documented runaway mode for this kind of orchestration is an agent
+fanning out dozens of sub-agents at a simple question and returning an
+answer a single search would have produced — expensive, slower, and no
+better verified. The pipeline earns its cost on breadth and contested
+evidence; on a narrow question the honest move is to run fewer stages and
+say which ones were skipped and why, exactly as Stage 2 requires for a
+skipped modality.
 
 ## Stage 2 — Parallel sweeps
 

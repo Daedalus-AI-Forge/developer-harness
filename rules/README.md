@@ -48,7 +48,7 @@ These exist for harness classes some tools cannot consume natively:
 | Template | Produces | Use when |
 | --- | --- | --- |
 | [`agents-md/roles-section.md`](agents-md/roles-section.md) | A `## Roles` routing table: role name → contract file | The consuming tool can't read `.claude/agents/` (Codex, OpenCode) |
-| [`agents-md/teams-section.md`](agents-md/teams-section.md) | A `## Teams` declaration per team: members → chain → handoff record → authority rules → optional team memory — plus five predefined teams ready to copy (feature-build, design-review, bug-diagnosis, research-to-decision, legal-vetting) | The repo runs multi-role chains built from [`../agents/`](../agents/) roles (e.g. the feature-build chain); the `define-team` skill scaffolds custom entries |
+| [`agents-md/teams-section.md`](agents-md/teams-section.md) | A `## Teams` declaration per team: members → chain → execution-mode → fix-rounds → handoff record (six required elements) → optional artifact edges → authority rules → human checkpoints → optional budget → optional team memory; plus the invariants (one done-authority, a return path per stage, validators see only the handoff and the artifact, parallel stages own disjoint artifacts) and the economics note — and five predefined teams ready to copy (feature-build, design-review, bug-diagnosis, research-to-decision, legal-vetting) | The repo runs multi-role chains built from [`../agents/`](../agents/) roles (e.g. the feature-build chain); the `define-team` skill scaffolds and validates custom entries |
 | [`agents-md/raci-section.md`](agents-md/raci-section.md) | A `## RACI` table — Component / Responsible / Accountable / Consulted / Informed, with the one-Accountable-per-row rule, the CODEOWNERS/git-shortlog draft protocol for repos that lack one, the Context-handoff format (task reference in `<work-tracker>`, components, R/A/C/I names, spec links, where to report), and the local task-file convention | The repo adopts the `person-of-contact` role from [`../agents/`](../agents/) |
 
 ### Configuration — injecting the project's facts
@@ -66,6 +66,12 @@ These exist for harness classes some tools cannot consume natively:
 | [`agents-md/design-docs-section.md`](agents-md/design-docs-section.md) | A `## Design docs` doc-shape rule set: status/owner/date headers, stable decision IDs owned by one doc, a root index with reading order, docs updated in the same change as the code they govern, dated in-place amendments | Any repo that keeps design docs under a `<design-docs>` binding |
 | [`agents-md/guards-section.md`](agents-md/guards-section.md) | A `## Guards` list of hook scripts and when they run | Any repo that vendors scripts from [`../hooks/`](../hooks/) |
 
+### Shared notes
+
+| Note | Content | Referenced by |
+| --- | --- | --- |
+| [`agents-md/size-budget-note.md`](agents-md/size-budget-note.md) | The instruction-file size budget: stay well inside 32 KiB (Codex concatenates and truncates silently from the END), under ~200 lines per file for adherence, `## Roles` and `## Teams` early, copy only the rows a repo runs, move reference-sized material into skills — and run `hooks/scripts/agents-md-budget.sh` before committing | roles · teams · project-bindings · RACI templates |
+
 ## How to use
 
 1. Copy the template body into the consuming repo's `AGENTS.md` (or
@@ -73,5 +79,9 @@ These exist for harness classes some tools cannot consume natively:
 2. Replace the placeholders with that repo's actual roles, guards, or
    quality-gate commands.
 3. Keep paths relative to the consuming repo's root.
+4. Check the result against
+   [`agents-md/size-budget-note.md`](agents-md/size-budget-note.md) — copy
+   only the rows and teams the repo runs, and keep the routing sections at
+   the top of the file.
 
 Keep fragments generic: no project names, no machine-specific paths.

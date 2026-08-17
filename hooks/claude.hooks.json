@@ -1,10 +1,18 @@
 {
-  "description": "developer-harness guard hooks (Claude Code dialect): secrets, large files, merge markers, and the quality gate run before git commit. Declared explicitly in .claude-plugin/plugin.json; deliberately NOT named hooks/hooks.json, which other tools (Codex) auto-discover and parse with their own schema — see hooks/codex.hooks.json and hooks/README.md.",
+  "description": "developer-harness guard hooks (Claude Code dialect). Two layers: safety guards that see every tool call (dangerous shell commands, protected paths), and commit hygiene guards narrowed to `git commit` (secrets, large files, merge markers, quality gate). Declared explicitly in .claude-plugin/plugin.json; deliberately NOT named hooks/hooks.json, which other tools (Codex) auto-discover and parse with their own schema — see hooks/codex.hooks.json and hooks/README.md. instruction-scan.sh, agents-md-budget.sh, and done-authority-gate.sh are documented opt-ins and are intentionally absent here.",
   "hooks": {
     "PreToolUse": [
       {
         "matcher": "Bash",
         "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/dangerous-command-guard.sh"
+          },
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/protected-paths-guard.sh"
+          },
           {
             "type": "command",
             "if": "Bash(git commit*)",
@@ -24,6 +32,15 @@
             "type": "command",
             "if": "Bash(git commit*)",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/quality-gate.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit|Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/protected-paths-guard.sh"
           }
         ]
       }

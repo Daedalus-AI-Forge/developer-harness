@@ -32,8 +32,21 @@ verdict).
   code, and the verifier reruns the tests rather than trusting stage 2's
   output.
 
+**Validator context (stages 3 and 4, both modes).** A review stage is given
+the handoff record and the artifact under review — nothing else. Not the
+implementer's session, not its reasoning, not the transcript of how the code
+came to look this way. A reviewer that can read the build conversation stops
+judging the artifact and starts re-running the implementer's argument, which
+is how a review ends up approving its own thinking. In subagent mode this is
+a fresh context per stage; in sequential mode it is a discipline — state the
+findings from what the record and the files show, and cite them by path and
+line rather than by memory of writing them.
+
 Placeholders like `<design-docs>` and `<test-command>` resolve from the
-repo's `## Project bindings` section (AGENTS.md/CLAUDE.md). If the repo also
+repo's `## Project bindings` section (AGENTS.md/CLAUDE.md) — and each handoff
+carries the RESOLVED values, not the placeholder names: instruction-file
+inheritance across delegation is unreliable, so a stage must be able to run
+`<test-command>` from the record without re-deriving it. If the repo also
 declares this chain in a `## Teams` section, that declaration binds.
 
 ## Inputs
@@ -69,8 +82,10 @@ Rejected ends the run.
    This is conformance, not correctness — stage 4 owns correctness.
 2. Verdict `pass` or `fail` with the reason, logged in the task record.
 3. On `fail`: return the work with concrete change instructions — never
-   patch it in review. The implementer gets **one fix round** scoped to the
-   fail reasons, then one re-review that first checks those exact reasons.
+   patch it in review. The implementer gets the gate's fix-round budget
+   (`fix-rounds: 1` unless the repo's `## Teams` entry declares otherwise)
+   scoped to the fail reasons, then one re-review that first checks those
+   exact reasons.
 4. Still failing → **abort**: report the reason and the task record; do not
    proceed to verification.
 
@@ -81,8 +96,8 @@ Rejected ends the run.
 2. Probe adversarially: edge cases, silent failures, untested paths.
 3. Verdict `approved` or `needs-work`, with findings ranked by severity,
    each with a concrete failure scenario.
-4. On `needs-work`: enter the needs-work loop (stage 5) — **one round
-   only**.
+4. On `needs-work`: enter the needs-work loop (stage 5), within the same
+   `fix-rounds` budget — **one round** by default.
 5. Only this stage declares the feature done. A missing or failed verdict
    is `needs-work`, never a silent pass.
 
@@ -100,8 +115,9 @@ Runs only on a `needs-work` verdict from stage 4.
    diagnosed cause, then the code that makes it pass.
 3. Rerun stage 4: the original findings checked first, then a full
    rerun.
-4. Loop guard: a second `needs-work` on the same finding escalates to
-   tech-lead — and to the human if contested — never a second loop.
+4. Loop guard: a repeat `needs-work` on the same finding exhausts the
+   `fix-rounds` budget and escalates to tech-lead — and to the human if
+   contested — rather than opening another round.
 
 ## Result
 
@@ -112,9 +128,14 @@ stages run, verdicts, and what remains open.
 
 ## Rules that hold at every stage
 
-- One fix round per gate — a second failure aborts with the evidence, it
-  does not loop.
-- Every handoff is complete: the next stage starts from artifacts and the
-  task record, not from a summary of them.
+- **`fix-rounds: 1`** — the teams-schema default this chain runs on: one fix
+  round per gate, and a second failure aborts with the evidence rather than
+  looping. A repo may raise it in its `## Teams` entry; the budget exists
+  because a reviewer and an implementer will otherwise trade rounds on
+  re-reported findings until something else stops them.
+- Every handoff is complete: the next stage starts from artifacts, the task
+  record, and the resolved binding values — not from a summary of them.
+- Review stages see the record and the artifact, never the session that
+  produced it.
 - No stage does another's work: the gate does not design, the reviewer does
   not patch, the implementer does not self-approve.

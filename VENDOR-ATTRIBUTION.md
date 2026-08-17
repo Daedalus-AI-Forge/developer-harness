@@ -146,4 +146,11 @@ wrapper) wired into the `agents/develop-team/developer.md` role contract; it com
 with `systematic-debugging` rather than competing — it governs behavior while writing
 code, and on any bug or test failure systematic-debugging is the governing method.
 
+Sidecars are house files, not upstream ones: every skill's `agents/openai.yaml` is
+harness-authored, vendored skills included, so editing one is not a body modification.
+Recorded for auditability (2026-08-16): the explicitly-invocable-only skills' sidecars
+now carry `policy.allow_implicit_invocation: false`, which for the four vendored ones —
+`skill-creator`, `grill-me`, `architect-design-review`, `architect-codebase-review` — is
+a sidecar-only change; no vendored body and no SKILL.md frontmatter was touched.
+
 To update: re-copy from the source repo and bump the revision above.

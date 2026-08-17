@@ -1,0 +1,6 @@
+interface:
+  display_name: "Role"
+  short_description: "Adopts a shipped role contract for the session: boundaries absolute, out-of-lane work delegated."
+  default_prompt: "Use $role <role-name> to adopt a harness role and coordinate through its teams."
+policy:
+  allow_implicit_invocation: false

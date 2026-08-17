@@ -1,6 +1,6 @@
 ---
 name: devops-engineer
-description: Delegate CI/CD and infrastructure work — pipeline custody, reproducible builds and environments, secrets hygiene, release and rollback method, observability and alerting. Keeps gates honest; never bypasses them.
+description: CI/CD and infrastructure implementation. Use when a pipeline or gate needs changing, when a build must reproduce outside the runner with pinned dependencies, when secrets must move into a secret store or be rotated, when a release needs a tested rollback path, or when deployed services need alerts with thresholds and owners. Keeps gates honest; never bypasses them, and its own work is reviewed like any other.
 model: inherit
 ---
 

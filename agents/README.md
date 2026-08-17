@@ -6,6 +6,27 @@ boundaries. Roles are grouped by team: the coordination pair stays at this
 root, and the rest live in `project-control/`, `develop-team/`,
 `design-team/`, `research-team/`, and `validation-team/`.
 
+## Start small
+
+Adopt four roles first, not twenty-six: **tech-lead**, **developer**,
+**qa-reviewer**, **debugger** — the chain the `feature-build` skill already
+ships as an executable process (plan gate → TDD implementation →
+design-conformance review → functional verdict), with `debugger` on the
+failure path. It is the smallest set that still closes the loop, because no
+role in it approves its own work.
+
+The reason is empirical rather than aesthetic. The one first-hand account of
+a large personal role library that the evidence base turned up is negative —
+a hundred roles authored, roughly three used daily — while the accounts of
+libraries people keep using cluster at three to five roles. A role
+nobody delegates to is not neutral: it is another entry the dispatcher has to
+read past, which is exactly what degrades routing for the roles that matter.
+
+Add the other twenty-two when the repo's own work demands them — a
+`design-reviewer` when UI fidelity starts drifting, `legal-reviewer` before
+the first license-touching decision, `data-engineer` when the first migration
+lands. Each addition should be traceable to a job that went badly without it.
+
 ## Shipped roles
 
 ### Coordination root
@@ -173,9 +194,11 @@ proceeding on a guessed path.
   refactoring surgeon) — no project names, no repo-specific paths, no
   product knowledge.
 - One file per role, following [`_template.md`](_template.md): frontmatter
-  (`name`, `description`, optional `model: inherit`), a `## Bindings` block,
-  and the four body sections **Mission / Method / Deliverable / Boundaries**.
-  New roles go in the team folder they belong to.
+  (`name`, a trigger-clause `description`, `model: inherit`, and a
+  `disallowedTools` denylist where the role's Boundaries forbid touching
+  code), a `## Bindings` block, and the four body sections **Mission /
+  Method / Deliverable / Boundaries**. New roles go in the team folder they
+  belong to.
 
 Project-specific agents belong in the consuming repo's own `.claude/agents/`,
 not here.
@@ -193,11 +216,85 @@ not here.
 
 ```yaml
 ---
-name: role-name            # lowercase, hyphens
-description: When to delegate to this role.
-model: inherit             # optional; inherit is the default
+name: role-name                             # lowercase, hyphens; equals the filename stem
+description: Lane. Use when <situations>.   # router rule, under 500 characters
+model: inherit                              # every shipped role; never a pinned tier
+disallowedTools: Edit, NotebookEdit         # optional denylist; omit for implementation roles
 ---
 ```
 
-`name` and `description` are the load-bearing fields in both tools; everything
-else is optional.
+`name` and `description` are load-bearing in both tools; the other two encode
+this library's enforcement policy. The full rationale lives in the comment
+block of [`_template.md`](_template.md) — the short version:
+
+- **`description` is a router rule, not a summary.** It is the only text a
+  dispatching agent reads when choosing among twenty-six roles, so every one
+  of them names situations (`Use when …`) rather than qualities. Three roles
+  that must be engaged *before* a decision rather than after — `tech-lead`'s
+  gate, `legal-reviewer`, `debugger`'s pre-fix diagnosis — say
+  `Use PROACTIVELY when …`.
+- **`model: inherit` everywhere; never a pinned tier.** A pinned model
+  outlives the tier names it was written against and silently overrides the
+  consumer's own choice — a known failure mode in published role libraries.
+
+### Mechanical boundary enforcement
+
+Every role whose Boundaries forbid touching code carries a `disallowedTools`
+**denylist** derived from its own Boundaries and Deliverable text:
+
+| Group | Line | Why |
+| --- | --- | --- |
+| The six validation-team roles | `Write, Edit, NotebookEdit` | Their deliverable is a verdict returned to the caller; where a contract binds an optional `<team-log>`, the denied Write degrades to its documented inline fallback. |
+| `debugger` | *(none — deliberate)* | Its contract permits an explicitly-authorized fix once the root cause is proven, and the bug-diagnosis team makes diagnose-vs-fix a per-run decision — so the prose governs; a repo wanting hard read-only adds `Write, Edit, NotebookEdit` locally. |
+| `tech-lead` | `Edit, NotebookEdit` | Same gate discipline, but the Deliverable files buy-vs-build calls and the decomposition into `<design-docs>`, so Write stays. |
+| The authoring roles — `product-owner`, `person-of-contact`, `product-manager`, `project-manager`, `legal-reviewer`, `ux-designer`, `content-designer`, `design-system-steward`, `technical-artist`, `researcher`, `analyst` | `Edit, NotebookEdit` | Each files its own document (spec, ledger, plan, research note); none may patch code. |
+| The seven implementation roles — `developer`, `frontend-`, `backend-`, `mobile-`, `data-`, `devops-`, `security-engineer` | *(none)* | Writing code is the job. |
+
+Two rules hold across the table. **Bash is never denied** — a verdict without
+executed evidence is worthless, and it is the Boundaries prose, not the tool
+list, that governs what Bash is used for. And **there is never a `tools:`
+allowlist**: an allowlist must enumerate every tool the role will ever need,
+including the team-communication tools a multi-agent harness injects, and
+omitting one silently breaks the role inside a team — a bug both major
+published role libraries shipped.
+
+**Overriding per repo.** The deny lists are defaults, not verdicts on your
+workflow. Copy the contract into your own `.claude/agents/` (or the tool's
+equivalent) and adjust the line — a repo-local file wins over the plugin's.
+`debugger` is the shipped example of the judgment call in the other
+direction: its authorized-fix path is exactly the restriction users of
+another library pushed back on, so it ships with no denylist and its
+contract names the hard read-only line a repo can add. Each restricted
+contract carries a Boundaries bullet naming its own override.
+
+**Fields that are ignored.** When these contracts ship through a plugin, the
+consuming tool honors `tools`, `disallowedTools`, and `model`, but **ignores**
+`permissionMode`, `hooks`, and `mcpServers` in agent frontmatter. Never encode
+a guarantee in a field that will not be read — wire hooks at the harness level
+([`../hooks/`](../hooks/)) instead.
+
+### Cross-tool equivalents
+
+`disallowedTools` is the Claude Code / Cursor dialect. Elsewhere the same
+boundary is expressed differently: **OpenCode** agents take a `permission`
+block (`edit: deny` is the closest analogue, alongside `bash` and `webfetch`
+rules); **Codex** has no per-agent tool denylist but does have a session-level
+`sandbox_mode` (`read-only` being the restrictive end); **Cursor**'s subagent
+controls are coarse — a read-only mode, not a per-tool list — so for
+fine-grained boundaries there, the Boundaries prose remains the enforcement.
+Per-tool wiring and its verification status live in
+[`../docs/`](../docs/) — `consume-claude-code.md`, `consume-codex.md`,
+`consume-cursor.md`, `consume-opencode.md`.
+
+### Candidate, not shipped: `skills:` preload
+
+Claude Code's agent frontmatter has a `skills:` field that preloads named
+skills into the subagent's context — the obvious use here being
+`systematic-debugging` into `debugger`, `deep-research` into `researcher`, or
+the language conventions into `developer`. **No shipped contract sets it**,
+and none should until one thing is verified: how a skill name resolves when
+the skill arrives through a plugin namespace rather than sitting in the
+project's own skills directory. Until a consumer confirms that resolution in
+their own install, the roles that want a companion skill say so in prose
+(`load the X skill where installed … where absent, this Method stands alone`),
+which degrades correctly everywhere instead of failing silently in one place.

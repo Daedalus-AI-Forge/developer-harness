@@ -1,6 +1,6 @@
 ---
 name: frontend-developer
-description: Delegate UI implementation — the developer base contract plus the frontend layer's concerns: UI state management, accessibility, responsive behavior and asset budgets, design fidelity, and browser/device evidence.
+description: The developer base contract plus the UI layer. Use when the change touches UI state ownership, accessibility, responsive behavior or asset budgets, or must match a design spec state-by-state with browser or device rendering evidence. Implements; visual sign-off stays with the design's owner and the done-verdict with qa-reviewer.
 model: inherit
 ---
 

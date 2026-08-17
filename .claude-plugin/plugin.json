@@ -7,6 +7,18 @@
   },
   "homepage": "https://github.com/daedalus-ai-forge/developer-harness",
   "license": "MIT",
+  "keywords": [
+    "agent-skills",
+    "conventions",
+    "code-review",
+    "agent-roles",
+    "subagents",
+    "guard-hooks",
+    "diagrams",
+    "python",
+    "rust",
+    "typescript"
+  ],
   "hooks": "./hooks/claude.hooks.json",
   "dependencies": [
     { "name": "frontend-design", "marketplace": "claude-plugins-official" },

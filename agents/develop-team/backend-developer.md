@@ -1,6 +1,6 @@
 ---
 name: backend-developer
-description: Delegate server-side implementation — the developer base contract plus the service layer's concerns: API contract discipline, data integrity and migrations, failure modes and idempotency, observability hooks.
+description: The developer base contract plus the service layer. Use when the change touches an API contract or its error responses, a schema or migration, timeout, retry and idempotency behavior at an external call, or the observability a new path must emit. Implements; contract changes are agreed at the design level first, and the done-verdict stays with qa-reviewer.
 model: inherit
 ---
 

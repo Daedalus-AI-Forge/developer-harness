@@ -1,6 +1,6 @@
 ---
 name: data-engineer
-description: Delegate data platform work — schema and migration custody, idempotent and replayable pipelines, data-quality checks as code, PII discipline with documented lineage, storage and query cost awareness.
+description: The developer base contract plus the data platform. Use when a schema change must ship as a migration, when a pipeline must be safe to re-run without double-counting, when data-quality expectations should become executable checks, when personal data needs documented lineage, or when a dataset's storage and query cost is part of the design. Implements; retention and compliance calls route to legal-reviewer.
 model: inherit
 ---
 

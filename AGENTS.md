@@ -12,10 +12,10 @@ this repo or selecting a skill *from* it.
 
 ```
 developer-harness/
-├── skills/                  # 25 skills (SKILL.md format), one directory per skill
+├── skills/                  # 26 skills (SKILL.md format), one directory per skill
 │   ├── architect-shared/    #   shared resources for the two architect skills (NOT a skill)
 │   └── contracts/           #   review contracts for the architect skills (NOT a skill)
-├── commands/                # 12 thin /command wrappers around explicitly-invocable skills
+├── commands/                # 13 thin /command wrappers around explicitly-invocable skills
 ├── agents/                  # generic role contracts in six groups (+ _template.md + install guide)
 │   │                        #   root — coordination: product-owner, person-of-contact
 │   ├── project-control/     #   product-manager, project-manager, legal-reviewer
@@ -27,8 +27,10 @@ developer-harness/
 │   ├── research-team/       #   researcher, analyst
 │   └── validation-team/     #   qa-reviewer, design-reviewer, integration-validator,
 │                            #     performance-validator, release-validator, evidence-validator
-├── hooks/                   # 4 guard scripts (secret-scan · quality-gate · large-files ·
-│                            #   merge-markers) + per-tool declared hook files
+├── hooks/                   # 9 guard scripts — 6 wired by default (dangerous-command ·
+│                            #   protected-paths · secret-scan · quality-gate · large-files ·
+│                            #   merge-markers), 3 opt-in (instruction-scan · agents-md-budget ·
+│                            #   done-authority-gate) — + per-tool declared hook files
 │                            #   (claude.hooks.json / codex.hooks.json — no auto-discovered hooks.json)
 ├── rules/                   # AGENTS.md/CLAUDE.md section templates (## Roles, ## Teams, ## Guards, ## Engineering discipline, ## Coding rules, ## Design docs, ## Project bindings, ## RACI)
 ├── docs/                    # consume-claude-code.md, consume-codex.md, consume-cursor.md, consume-opencode.md
@@ -42,10 +44,10 @@ developer-harness/
 
 Invocation by tool: `/name` in Claude Code (`/developer-harness:name` when installed as the
 plugin) and Cursor; `$name` in Codex; OpenCode loads skills on demand through its native
-`skill` tool when the task matches a skill description. Twelve skills are explicitly
+`skill` tool when the task matches a skill description. Thirteen skills are explicitly
 invocable and ship both a `commands/` wrapper and a Codex `default_prompt`:
 **tighten-types, contract-docstrings, architect-design-review, architect-codebase-review,
-mermaid-skill, gantt-roadmap, feature-build, define-team, systematic-debugging,
+mermaid-skill, gantt-roadmap, feature-build, define-team, role, systematic-debugging,
 deep-research, grill-me, skill-creator**. The rest are load-before-writing references
 that tools auto-select by description.
 
@@ -102,7 +104,7 @@ precedence over both.
 | --- | --- | --- |
 | Diagnosing any bug, test failure, or unexpected behavior | `systematic-debugging` | Companion to the `debugger` role — load before proposing any fix. Four-phase gate (root cause → pattern → hypothesis → implementation); no fixes without root-cause investigation. Vendored from obra/superpowers. |
 | Writing, reviewing, or refactoring any code (behavioral discipline) | `karpathy-guidelines` | Always-on behavioral reference against LLM coding pitfalls: surface assumptions before implementing, simplicity first (no speculative abstraction), surgical changes (every changed line traces to the request), imperative tasks recast as verifiable goals. Companion to the `developer` role; auto-selected, never `$`-invoked. Composes with `systematic-debugging`: this governs behavior while writing — the moment a bug appears, systematic-debugging is the governing method. Vendored from multica-ai/andrej-karpathy-skills. |
-| Answering a research question too big for one search pass | `deep-research` | Companion to the `researcher` role — invoke when a question has multiple contested claims, an unknown landscape, needs more than ~three independent sources, or a decision hangs on it. Staged pipeline (decompose → parallel multi-modal sweeps → adversarial verification → loop-until-dry critic → cited synthesis); runs as the research-to-decision team's researcher stage where that team is declared. |
+| Answering a research question too big for one search pass | `deep-research` | Companion to the `researcher` role — invoke when a question has multiple contested claims, an unknown landscape, needs more than ~three independent sources, or a decision hangs on it. Staged pipeline (decompose → parallel multi-modal sweeps → adversarial verification → loop-until-dry critic → cited synthesis); Stage 1 scales sweep count and tool-call budget to the question class. Runs as the research-to-decision team's researcher stage where that team is declared — the harness-portable pipeline with evidence-validator integration; a tool's native deep-research may serve standalone questions. |
 | Stress-testing a plan, decision, or idea before acting | `grill-me` | Relentless round-based interview: frontier questions with recommended answers, agent fetches facts, user makes decisions; done when nothing is silently assumed. Vendored from mattpocock/skills. |
 | Creating or updating a skill in this repo | `skill-creator` | Meta-gate and Contributing rule: interviews intent, drafts the SKILL.md, runs evals/benchmarks, tunes description triggering. Vendored from anthropics/skills. Invoke explicitly before writing any SKILL.md by hand. |
 | Gating a design spec BEFORE building | `architect-design-review` | Reads a spec, generates Mermaid architecture diagrams, evaluates against architecture principles, writes an HTML report to `docs/architecture/review/`. Never reviews existing code. |
@@ -124,12 +126,13 @@ Mermaid can draw Gantt charts too — prefer `gantt-roadmap` when the point is t
 *schedule* (dates, dependencies, critical path); prefer `mermaid-skill` when the point is
 the *diagram and its export*.
 
-### Team orchestration (2 skills)
+### Team orchestration (3 skills)
 
 | You are doing | Skill | Why / when |
 | --- | --- | --- |
-| Building one scoped feature end-to-end with gates | `feature-build` | Runs the team chain: tech-lead plan gate → TDD implementation → tech-lead design-conformance review → qa-reviewer verdict. One fix round per gate; only the verifier declares done. In tools with subagent support each stage runs as its own subagent with the role contract loaded; elsewhere one agent adopts the roles in sequence. |
-| Declaring a custom multi-role team in a repo | `define-team` | Interviews you (name → members from the harness role library → chain with return paths → handoff record → authority rules → optional team memory), validates the entry (every member resolves, exactly one done-authority, every stage has a return path), then appends it to the repo's `## Teams` section and shows the diff. Invoke explicitly. |
+| Building one scoped feature end-to-end with gates | `feature-build` | Runs the team chain: tech-lead plan gate → TDD implementation → tech-lead design-conformance review → qa-reviewer verdict. Fix-rounds: 1 per gate (raisable per repo); review stages see only the handoff record plus the artifact under review — never the build session; only the verifier declares done. Each stage runs as its own subagent where supported; elsewhere one agent adopts the roles in sequence. |
+| Declaring a custom multi-role team in a repo | `define-team` | Interviews you through the full team schema (members → chain with return paths and parallel-stage artifact ownership → per-stage expected output → six-element handoff record → fix-rounds → execution-mode → human checkpoints → authority rules → optional budget and team memory), validates the entry (every member resolves, exactly one done-authority, every return path declared, agent-name collisions checked, AGENTS.md size budget checked), then appends it to the repo's `## Teams` section and shows the diff. Invoke explicitly. |
+| Adopting a role for the session (delegation-first coordination) | `role` | Loads a shipped role contract and binds it to the session: boundaries absolute, out-of-lane work delegated to the right role or team, never absorbed. `/role tech-lead` (Claude) · `$role tech-lead` (Codex). |
 
 `feature-build` composes the roles in `agents/`; the same chain is declarable per repo as
 a team (template: `rules/agents-md/teams-section.md`). The template ships five predefined
@@ -158,26 +161,40 @@ third-party marketplaces and stay manual installs.
 
 ## Guards
 
-Four guard scripts under `hooks/scripts/` run before `git commit`, each dual-use
-(git pre-commit hook and agent PreToolUse-style hook), dependency-free, exit 2 +
-stderr reason to block, exit 0 when nothing is staged:
+Nine guard scripts under `hooks/scripts/`, dependency-free, exit 2 + a stderr
+reason to block, in two wiring classes plus an opt-in set:
 
-- `secret-scan.sh` — credential patterns in staged additions (AWS `AKIA...`,
-  `sk-...`, GitHub `ghp_...`, PEM private-key headers, `password=` assignments).
-- `quality-gate.sh` — auto-detects project lanes (Python → `ruff format --check`
-  + `ruff check` + configured pyright/mypy via `uv run`/`uvx`; JS/TS →
-  biome or prettier/eslint + `tsc --noEmit` via `npx --no-install`; Rust →
-  `cargo fmt --check` + `clippy -D warnings`). Configured-but-failing blocks;
-  unconfigured tools skip with a notice, never silently. `QG_*` env overrides
-  align it with the repo's `<lint-command>` bindings.
-- `check-large-files.sh` — staged blobs over 1 MB (`LARGE_FILE_KB` override).
-- `check-merge-markers.sh` — conflict markers in added lines.
+**Safety (PreToolUse on every call, wired by default in both dialect files):**
+`dangerous-command-guard.sh` — the destructive-command set in shell tool calls
+(`rm -r` against `/` `~` `.` `..` bare `*` or top-level system dirs,
+`--no-preserve-root`, `sudo rm`, recursive `chmod 777`, `mkfs`, `dd` onto a
+device, fork bombs, curl-piped-to-shell; extend via `DCG_EXTRA_PATTERNS`); and
+`protected-paths-guard.sh` — zero-access tier (`.ssh` `.aws` `.gnupg` `.kube`
+`.env*`) plus no-delete tier (test/spec dirs), `PPG_*` overrides.
+
+**Commit (git pre-commit + PreToolUse on `git commit`):** `secret-scan.sh`
+(credential patterns in staged additions), `quality-gate.sh` (auto-detected
+format/lint/typecheck lanes per language; configured-but-failing blocks,
+unconfigured skips with a notice; `QG_*` overrides align with `<lint-command>`
+bindings), `check-large-files.sh` (staged blobs over 1 MB), and
+`check-merge-markers.sh` (conflict markers in added lines).
+
+**Opt-in (shipped, not wired):** `instruction-scan.sh` — invisible-Unicode
+injection vectors (Tag characters, zero-width, bidi overrides) in instruction
+files, staged or `--all` for CI; `agents-md-budget.sh` — the AGENTS.md chain
+against the 32 KiB Codex silent-truncation cap (warn at 24 KiB); and
+`done-authority-gate.sh` — blocks task completion until the team's declared
+done-authority has recorded its `verdict:` line in the team status file.
 
 Wire them per [hooks/README.md](hooks/README.md). The plugin ships **no
 auto-discovered `hooks/hooks.json`**: each tool's manifest declares its own
 dialect file — `.claude-plugin/plugin.json` → `hooks/claude.hooks.json`,
 `.codex-plugin/plugin.json` → `hooks/codex.hooks.json`; Cursor uses
 `.cursor/hooks.json`, OpenCode a narrowed JS plugin shim (both in the README).
+Two facts govern the directory: hooks are a POLICY layer, not an access
+boundary — filters are best-effort and fail open on unparseable input, so hard
+allow/deny belongs in each tool's permission system; and checked-in hook config
+executes with user privileges, so review hook wiring like any executable code.
 When a guard blocks, fix the underlying issue — never bypass the guard, and fix
 quality-gate failures at the source, never by disabling the check.
 
@@ -279,7 +296,12 @@ language-specific developer is a dev role plus the matching language skills — 
 repo's `## Roles` section, not shipped here.
 
 The role-contract **template** (`_template.md`: frontmatter + `## Bindings` +
-Mission / Method / Deliverable / Boundaries) is for authoring more. The shipped roles
+Mission / Method / Deliverable / Boundaries) is for authoring more. Non-implementing
+contracts carry two-tier `disallowedTools` denylists (validation-team:
+`Write, Edit, NotebookEdit`; tech-lead and the authoring roles:
+`Edit, NotebookEdit`) — never a `tools:` allowlist, Bash never denied, repo-local
+copies override; enforcement details and cross-tool equivalents in
+[agents/README.md](agents/README.md). The shipped roles
 reference project layout only through `<placeholder>` bindings (`<source-root>`,
 `<test-command>`, …) that a consuming repo resolves in a `## Project bindings` section
 of its AGENTS.md or CLAUDE.md — template in
@@ -288,13 +310,22 @@ Each contract declares which bindings it **requires** and which are **optional**
 missing binding is handled by that section's Resolution protocol (infer candidates from
 the repo → confirm with the user → persist the row), and a *required* binding that
 cannot be established disables the role for the repo — it never proceeds on a guessed
-path, while optional bindings degrade gracefully. Multi-role chains — members,
-stage order, handoff record, authority rules, optional team memory — are declared per
+path, while optional bindings degrade gracefully. Multi-role chains are declared per
 repo in a `## Teams` section (template in
-[rules/agents-md/teams-section.md](rules/agents-md/teams-section.md)); the template
-ships five predefined teams (feature-build, design-review, bug-diagnosis,
-research-to-decision, legal-vetting), the `feature-build` skill ships that chain as an
-executable process, and the `define-team` skill scaffolds custom entries. The
+[rules/agents-md/teams-section.md](rules/agents-md/teams-section.md)) whose entries
+carry: members, chain with return paths, execution-mode (fallback
+agent-team → subagents → single-session; single-session role adoption is
+first-class), fix-rounds per gate (default 1), a six-element handoff record
+(objective, expected output, tool/source guidance, task boundaries,
+decisions + rationale, resolved binding VALUES — never placeholder names),
+optional `creates:`/`requires:` artifact edges, authority rules with exactly one
+done-authority, named human checkpoints, and optional budget cap and team memory
+(a named status file, written before stage execution, statuses never downgraded).
+Validator stages receive only the handoff record plus the artifact under review —
+never the producing session. The template ships five predefined teams
+(feature-build, design-review, bug-diagnosis, research-to-decision,
+legal-vetting), the `feature-build` skill ships that chain as an executable
+process, and the `define-team` skill scaffolds and validates custom entries. The
 `person-of-contact` role consumes a per-repo `## RACI` section — component ownership
 rows it routes communication by — template in
 [rules/agents-md/raci-section.md](rules/agents-md/raci-section.md). Project-specific
@@ -319,8 +350,13 @@ Hard rules when editing anything in this repo:
    the `VENDOR-LICENSE-*.txt` files must be preserved.
 4. **OpenAI sidecar per skill.** Every skill directory carries
    `agents/openai.yaml` with `interface.display_name` and `interface.short_description`;
-   add `default_prompt` only for explicitly-invocable skills (the twelve listed above),
-   never for load-before-writing references.
+   add `default_prompt` only for explicitly-invocable skills (the thirteen listed above),
+   never for load-before-writing references. Explicit-ONLY skills additionally set
+   top-level `policy.allow_implicit_invocation: false` (nine: tighten-types,
+   contract-docstrings, architect-design-review, architect-codebase-review,
+   feature-build, define-team, role, skill-creator, grill-me); the four invocables
+   that also auto-trigger by description (mermaid-skill, gantt-roadmap,
+   systematic-debugging, deep-research) must not.
 5. **English only.** All content in this repo is written in English.
 6. **Keep the consumption docs true.** Adding or changing a harness class means updating
    the README consumption matrix and the relevant `docs/consume-<tool>.md`; a new
@@ -337,4 +373,7 @@ Three channels, detailed per tool in `docs/consume-<tool>.md`
 skills CLI (`npx skills add daedalus-ai-forge/developer-harness --all` — vendors into
 `.agents/skills/`, all four tools), Claude Code plugin (`/plugin marketplace add
 daedalus-ai-forge/developer-harness` — skills + commands + agents + hooks), and Codex
-plugin (`codex plugin marketplace add daedalus-ai-forge/developer-harness` — skills).
+plugin (`codex plugin marketplace add daedalus-ai-forge/developer-harness` — skills;
+pin with `--ref` for reproducible installs). Supply-chain review guidance —
+dependency auto-installs, hook wiring as executable code, instruction scanning —
+lives in the README's Supply chain and trust section.
