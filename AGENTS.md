@@ -12,7 +12,7 @@ this repo or selecting a skill *from* it.
 
 ```
 developer-harness/
-├── skills/                  # 24 skills (SKILL.md format), one directory per skill
+├── skills/                  # 25 skills (SKILL.md format), one directory per skill
 │   ├── architect-shared/    #   shared resources for the two architect skills (NOT a skill)
 │   └── contracts/           #   review contracts for the architect skills (NOT a skill)
 ├── commands/                # 12 thin /command wrappers around explicitly-invocable skills
@@ -94,11 +94,12 @@ precedence over both.
 | Implementing C# / Unity code | `csharp-developer` | Vendored capability reference: async/await, DI, LINQ, records, analyzers, memory. Fit note inside: for non-web projects (Unity, desktop) take the language craft, discard the ASP.NET/EF architecture opinions. |
 | Implementing Java | `java-architect` | Vendored capability reference: modern Java, concurrency, module/service structure, JVM performance. Fit note inside: upstream assumes Maven/Spring; your build tool and framework choices win. |
 
-### Method / review (6 skills)
+### Method / review (7 skills)
 
 | You are doing | Skill | Why / when |
 | --- | --- | --- |
 | Diagnosing any bug, test failure, or unexpected behavior | `systematic-debugging` | Companion to the `debugger` role — load before proposing any fix. Four-phase gate (root cause → pattern → hypothesis → implementation); no fixes without root-cause investigation. Vendored from obra/superpowers. |
+| Writing, reviewing, or refactoring any code (behavioral discipline) | `karpathy-guidelines` | Always-on behavioral reference against LLM coding pitfalls: surface assumptions before implementing, simplicity first (no speculative abstraction), surgical changes (every changed line traces to the request), imperative tasks recast as verifiable goals. Companion to the `developer` role; auto-selected, never `$`-invoked. Composes with `systematic-debugging`: this governs behavior while writing — the moment a bug appears, systematic-debugging is the governing method. Vendored from multica-ai/andrej-karpathy-skills. |
 | Answering a research question too big for one search pass | `deep-research` | Companion to the `researcher` role — invoke when a question has multiple contested claims, an unknown landscape, needs more than ~three independent sources, or a decision hangs on it. Staged pipeline (decompose → parallel multi-modal sweeps → adversarial verification → loop-until-dry critic → cited synthesis); runs as the research-to-decision team's researcher stage where that team is declared. |
 | Stress-testing a plan, decision, or idea before acting | `grill-me` | Relentless round-based interview: frontier questions with recommended answers, agent fetches facts, user makes decisions; done when nothing is silently assumed. Vendored from mattpocock/skills. |
 | Creating or updating a skill in this repo | `skill-creator` | Meta-gate and Contributing rule: interviews intent, drafts the SKILL.md, runs evals/benchmarks, tunes description triggering. Vendored from anthropics/skills. Invoke explicitly before writing any SKILL.md by hand. |

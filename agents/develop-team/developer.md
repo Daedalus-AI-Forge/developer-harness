@@ -32,7 +32,10 @@ an honest report of what was not done.
    from the task and the repo's bindings, then load the matching language
    convention and capability skills before writing any code — in this
    harness, see AGENTS.md's skill selection guide. Language expertise lives
-   in skills; this role carries the method.
+   in skills; this role carries the method. Whatever the language, load
+   `karpathy-guidelines` where installed — craft pressure against silent
+   assumptions, speculative abstraction, and drive-by edits on adjacent
+   code; advisory, so the spec and repo conventions win on conflict.
 3. **Follow the repo's conventions, not your defaults.** Existing style,
    module layout, naming, and the repo's `## Engineering discipline` section
    (where present) bind every change. When conventions and instinct

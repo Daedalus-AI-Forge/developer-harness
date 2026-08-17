@@ -33,8 +33,10 @@ invoke `$systematic-debugging` when debugging starts; `deep-research`
 (authored in-house, MIT) — `$deep-research` for multi-source verified
 evidence; `grill-me` (from mattpocock/skills, MIT) — `$grill-me` to
 stress-test a plan; `skill-creator` (from anthropics/skills, Apache-2.0) —
-`$skill-creator` when creating or updating a skill. Codex cannot read Claude
-Code plugins, so these vendored copies are the Codex path to those skills.
+`$skill-creator` when creating or updating a skill; and `karpathy-guidelines`
+(from multica-ai/andrej-karpathy-skills, MIT) — auto-selected while coding, no
+`$` invocation. Codex cannot read Claude Code plugins, so these vendored
+copies are the Codex path to those skills.
 
 Caveat: our marketplace entry points at the repo root (`"path": "."`); the
 official examples only show `./plugins/<name>` subdirectory paths, so the

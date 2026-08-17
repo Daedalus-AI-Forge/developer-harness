@@ -29,7 +29,9 @@ Vendored skills include `systematic-debugging` (from obra/superpowers),
 `deep-research` (authored in-house, MIT) for multi-source verified evidence,
 `grill-me` (from mattpocock/skills, MIT) to stress-test a plan, and
 `skill-creator` (from anthropics/skills, Apache-2.0) when creating or
-updating a skill — OpenCode cannot read Claude Code plugins, so these
+updating a skill, and `karpathy-guidelines` (from
+multica-ai/andrej-karpathy-skills, MIT), loaded on demand while writing or
+reviewing code — OpenCode cannot read Claude Code plugins, so these
 vendored copies are the OpenCode path to those skills.
 
 ## Commands (copy)

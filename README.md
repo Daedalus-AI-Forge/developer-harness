@@ -10,7 +10,7 @@ understand.
 
 ```
 developer-harness/
-├── skills/            # 24 Agent Skills (SKILL.md format) + 2 shared-resource dirs
+├── skills/            # 25 Agent Skills (SKILL.md format) + 2 shared-resource dirs
 │   │                  #   language: csharp-developer, java-architect, python-pro,
 │   │                  #     rust-engineer, typescript-pro
 │   │                  #   conventions: python-conventions, python-api-design,
@@ -18,7 +18,7 @@ developer-harness/
 │   │                  #   docs: contract-docstrings, python-documentation, typescript-docs
 │   │                  #   method/review: tighten-types, architect-design-review,
 │   │                  #     architect-codebase-review, systematic-debugging,
-│   │                  #     deep-research, grill-me
+│   │                  #     deep-research, grill-me, karpathy-guidelines, karpathy-guidelines
 │   │                  #   diagrams/planning: mermaid-skill, gantt-roadmap
 │   │                  #   team orchestration: feature-build, define-team
 │   │                  #   meta: skill-creator

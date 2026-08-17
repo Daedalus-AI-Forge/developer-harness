@@ -23,13 +23,15 @@ Two vendoring shapes are in use, and the difference matters when auditing:
 | `systematic-debugging` | [obra/superpowers](https://github.com/obra/superpowers) | `skills/systematic-debugging` | MIT | `b36e0829c6d0140e93cfef2ca599b1b07d4a7797` | verbatim | 2026-08-16 |
 | `grill-me` | [mattpocock/skills](https://github.com/mattpocock/skills) | `skills/productivity/grilling` (method) + `skills/productivity/grill-me` (dispatcher) | MIT | `86cba45f4244b2545112d13e77ba82eb2bfad325` | converted (collapsed) | 2026-08-16 |
 | `skill-creator` | [anthropics/skills](https://github.com/anthropics/skills) | `skills/skill-creator` | Apache-2.0 | `f6656c1256d5a8adfa37db9110046ef20bac644c` | verbatim | 2026-08-16 |
+| `karpathy-guidelines` | [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills) | `skills/karpathy-guidelines` | MIT (declared; no LICENSE file — see note) | `2c606141936f1eeef17fa3043a72095b4765b9c2` | verbatim | 2026-08-16 |
 
 Licence texts retained as required: `VENDOR-LICENSE-pm-claude-skills-MIT.txt`,
 `VENDOR-LICENSE-agents365-mermaid-MIT.txt`,
 `VENDOR-LICENSE-voltagent-awesome-claude-code-subagents-MIT.txt`,
 `VENDOR-LICENSE-architect-skills-MIT.txt`,
 `VENDOR-LICENSE-obra-superpowers-MIT.txt`,
-`VENDOR-LICENSE-mattpocock-skills-MIT.txt` (skill-creator's Apache-2.0 licence
+`VENDOR-LICENSE-mattpocock-skills-MIT.txt`,
+`VENDOR-LICENSE-andrej-karpathy-skills-MIT.txt` (skill-creator's Apache-2.0 licence
 is retained in-directory as `skills/skill-creator/LICENSE.txt` — see its note below).
 
 `architect-skills` pre-install content review (2026-08-02): no egress or exec in any
@@ -116,5 +118,23 @@ note above the plugin route is preferred. Wired reference-only: the `tech-lead`,
 `backend-developer`, `data-engineer`, and `devops-engineer` role contracts name its
 building blocks "where installed" (advisory — the approved design in `<design-docs>`
 always wins), and install pointers live in AGENTS.md's companion-skills note.
+
+`karpathy-guidelines` (2026-08-16): the single skill in an eponymous 9-file repo — the
+other files re-package the same four principles as CLAUDE.md/Cursor-rule distributions
+and were deliberately skipped, as was the root `EXAMPLES.md` (before/after pedagogy the
+skill never references). Body verified byte-identical to upstream blob `6a62d044` at the
+revision above; sole modification is the house `metadata.source` frontmatter field
+(`license: MIT` is upstream's own). Licence: the upstream repo ships NO LICENSE file
+(GitHub detection: none), but the author declares MIT in three places at that revision —
+README "## License", the SKILL.md `license:` frontmatter field, and
+`.claude-plugin/plugin.json` — recorded with the reproduced MIT template in
+`VENDOR-LICENSE-andrej-karpathy-skills-MIT.txt`. Rights note: the skill body quotes no
+prose by Andrej Karpathy — it is the upstream author's own operational text derived from
+ideas in Karpathy's public X post, which the vendored file itself links as its source;
+Karpathy is not affiliated with and has not endorsed the upstream project, and the skill
+claims neither. It is a load-before-writing reference (display-only sidecar, no command
+wrapper) wired into the `agents/develop-team/developer.md` role contract; it composes
+with `systematic-debugging` rather than competing — it governs behavior while writing
+code, and on any bug or test failure systematic-debugging is the governing method.
 
 To update: re-copy from the source repo and bump the revision above.

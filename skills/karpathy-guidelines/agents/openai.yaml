@@ -1,0 +1,3 @@
+interface:
+  display_name: "Karpathy Guidelines"
+  short_description: "Behavioral reference against common LLM coding pitfalls: surface assumptions, simplicity first, surgical changes, verifiable success criteria."
